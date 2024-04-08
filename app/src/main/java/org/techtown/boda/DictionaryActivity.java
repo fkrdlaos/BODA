@@ -27,7 +27,7 @@ public class DictionaryActivity extends AppCompatActivity {
         ArrayList<String> meanings = getIntent().getStringArrayListExtra("meanings");
 
         // Sort words alphabetically
-        Collections.sort(words);
+        //Collections.sort(words);
 
         ListView listView = findViewById(R.id.listView);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, words);
@@ -42,6 +42,14 @@ public class DictionaryActivity extends AppCompatActivity {
                 startActivity(intent);
                 // Finish current activity
                 finish();
+            }
+        });
+        Button sortButton = findViewById(R.id.sortbutton);
+        sortButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Collections.sort(words); //단어를 알파벳 순으로 정렬
+                adapter.notifyDataSetChanged(); //Listview 업데이트
             }
         });
     }

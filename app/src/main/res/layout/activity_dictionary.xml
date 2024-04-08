@@ -22,4 +22,13 @@
         android:layout_marginTop="32dp"
         android:text="홈 화면 이동" />
 
+    <Button
+        android:id="@+id/sortbutton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="286dp"
+        android:layout_marginTop="66dp"
+        android:text="정렬" />
 </RelativeLayout>

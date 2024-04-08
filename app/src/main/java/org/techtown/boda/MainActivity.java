@@ -51,12 +51,12 @@ public class MainActivity extends AppCompatActivity {
         mFirebaseAuth = FirebaseAuth.getInstance();
 
         // Sample data for dictionary
+        words.add("Cat");
         words.add("Apple");
         words.add("Banana");
-        words.add("Cat");
+        meanings.add("고양이");
         meanings.add("사과");
         meanings.add("바나나");
-        meanings.add("고양이");
 
         Intent intent = getIntent();
         String nickName = intent.getStringExtra("nickName");
