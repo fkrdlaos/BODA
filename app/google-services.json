@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "758241969651",
+    "firebase_url": "https://boda-4e223-default-rtdb.firebaseio.com",
+    "project_id": "boda-4e223",
+    "storage_bucket": "boda-4e223.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:758241969651:android:b73d7b4e9deb05dd2a3e86",
+        "android_client_info": {
+          "package_name": "org.techtown.boda"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "758241969651-k0lha0smqagntq9h9qeu03lcj98ai2jr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDk8QhJbpsfftZqO4rKUrBygx_6KgAFqwc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "758241969651-k0lha0smqagntq9h9qeu03lcj98ai2jr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
