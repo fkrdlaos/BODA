@@ -16,8 +16,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/tv_word"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="24dp"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="96dp"
+        android:layout_marginEnd="166dp"
         android:text="Next" />
 
     <Button
@@ -31,5 +32,28 @@
         android:layout_marginTop="135dp"
         android:layout_marginEnd="139dp"
         android:text="홈화면 이동" />
+
+    <Button
+        android:id="@+id/btn_check"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/btn_next"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="164dp"
+        android:layout_marginBottom="78dp"
+        android:text="Button" />
+
+    <EditText
+        android:id="@+id/et_input"
+        android:layout_width="245dp"
+        android:layout_height="60dp"
+        android:layout_below="@+id/btn_next"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="44dp"
+        android:layout_marginEnd="73dp"
+        android:layout_marginBottom="100dp"
+        android:ems="10"
+        android:inputType="text" />
 
 </RelativeLayout>
