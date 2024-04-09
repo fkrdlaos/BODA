@@ -21,7 +21,7 @@ public class StudyActivity extends AppCompatActivity {
     private Button btn_home;
     private List<String> words;
     private int currentIndex = 0;
-    private int correctCount = 0; // 정답 개수를 저장하는 변수 추가
+    private int correctCount = 0;
     private Random random = new Random();
 
     @Override
@@ -39,8 +39,10 @@ public class StudyActivity extends AppCompatActivity {
 
         // 학습할 단어 수를 최대 5개로 제한
         int studyCount = Math.min(words.size(), 5);
+
         // 학습할 단어를 무작위로 선택
         Collections.shuffle(words);
+
         // 선택된 단어 목록을 5개로 제한
         words = words.subList(0, studyCount);
 

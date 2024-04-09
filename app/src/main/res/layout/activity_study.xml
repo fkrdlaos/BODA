@@ -7,52 +7,62 @@
         android:id="@+id/tv_word"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:textSize="24sp"
-        android:text="Word Placeholder" />
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="107dp"
+        android:layout_marginTop="215dp"
+        android:layout_marginEnd="114dp"
+        android:text="Word Placeholder"
+        android:textSize="24sp" />
 
     <Button
         android:id="@+id/btn_next"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/tv_word"
+        android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="96dp"
-        android:layout_marginEnd="166dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="223dp"
+        android:layout_marginEnd="100dp"
+        android:layout_marginBottom="155dp"
         android:text="Next" />
 
     <Button
         android:id="@+id/button4"
-        android:layout_width="132dp"
+        android:layout_width="70dp"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginStart="140dp"
-        android:layout_marginTop="135dp"
-        android:layout_marginEnd="139dp"
-        android:text="홈화면 이동" />
+        android:layout_marginStart="306dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginEnd="35dp"
+        android:text="홈"
+        android:textSize="20sp" />
 
     <Button
         android:id="@+id/btn_check"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/btn_next"
+        android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginEnd="164dp"
-        android:layout_marginBottom="78dp"
-        android:text="Button" />
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="100dp"
+        android:layout_marginEnd="220dp"
+        android:layout_marginBottom="155dp"
+        android:text="Check" />
 
     <EditText
         android:id="@+id/et_input"
-        android:layout_width="245dp"
-        android:layout_height="60dp"
-        android:layout_below="@+id/btn_next"
+        android:layout_width="210dp"
+        android:layout_height="110dp"
+        android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginTop="44dp"
-        android:layout_marginEnd="73dp"
-        android:layout_marginBottom="100dp"
+        android:layout_marginStart="100dp"
+        android:layout_marginEnd="100dp"
+        android:layout_marginBottom="274dp"
         android:ems="10"
         android:inputType="text" />
 
