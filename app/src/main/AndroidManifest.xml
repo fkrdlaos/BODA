@@ -18,6 +18,12 @@
         android:theme="@style/Theme.BODA"
         tools:targetApi="31">
         <activity
+            android:name=".StudyResultActivity"
+            android:exported="false" />
+        <activity
+            android:name=".DetailActivity"
+            android:exported="false" />
+        <activity
             android:name=".StudyActivity"
             android:exported="false" />
         <activity

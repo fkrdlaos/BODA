@@ -1,35 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:context=".StudyActivity">
 
     <TextView
         android:id="@+id/tv_word"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="100dp"
+        android:text="Word"
         android:textSize="24sp"
-        android:text="Word Placeholder" />
+        android:visibility="gone" />
+
+    <EditText
+        android:id="@+id/et_input"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_word"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="50dp"
+        android:hint="스펠링을 입력하세요"
+        android:textSize="20sp" />
+
+    <Button
+        android:id="@+id/btn_check"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/et_input"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="50dp"
+        android:text="확인" />
 
     <Button
         android:id="@+id/btn_next"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/tv_word"
+        android:layout_below="@id/btn_check"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="24dp"
-        android:text="Next" />
+        android:layout_marginTop="20dp"
+        android:text="다음" />
 
     <Button
         android:id="@+id/button4"
-        android:layout_width="132dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="140dp"
-        android:layout_marginTop="135dp"
-        android:layout_marginEnd="139dp"
-        android:text="홈화면 이동" />
+        android:layout_below="@id/btn_next"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:text="홈" />
+
+    <Button
+        android:id="@+id/btn_listen"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/button4"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:text="다시 듣기" />
 
 </RelativeLayout>
+

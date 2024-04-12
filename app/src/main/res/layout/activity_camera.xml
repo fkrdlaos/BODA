@@ -1,29 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
     tools:context=".cameraActivity">
-
-    <ImageView
-        android:id="@+id/imageViewNext"
-        android:layout_width="match_parent"
-        android:layout_height="433dp"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginEnd="0dp"
-        android:layout_marginBottom="-2dp"
-        android:adjustViewBounds="true"
-        android:scaleType="fitCenter" />
 
     <Button
         android:id="@+id/button2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="141dp"
-        android:layout_marginTop="11dp"
-        android:text="홈 화면 이동" />
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="16dp"
+        android:text="홈으로 가기" />
 
-</RelativeLayout>
+    <ImageView
+        android:id="@+id/imageViewNext"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:scaleType="centerCrop" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:contentDescription="sv_123">
+
+        <LinearLayout
+            android:id="@+id/wordLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingTop="16dp" />
+    </ScrollView>
+
+</LinearLayout>
+
