@@ -62,10 +62,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 .addOnConnectionFailedListener(this) // 수정된 부분
                 .build(); // 수정된 부분
 
-        /*googleApiClient = new GoogleApiClient.Builder(this)
-                .enableAutoManage(this,this)
-                .addApi(Auth.GOOGLE_SIGN_IN_API,googleSignInOptions)
-                .build();*/
 
         auth =FirebaseAuth.getInstance(); //파이어베이스 인증 객체 초기화.
 
@@ -134,25 +130,6 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         }
     }
 
-    /*private void resultLogin(GoogleSignInAccount account) {
-        AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
-        auth.signInWithCredential(credential)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if(task.isSuccessful()){ //로그인이 성공했으면....
-                            Toast.makeText(LoginActivity.this, "로그인 성공", Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                            intent.putExtra("nickName", account.getDisplayName());
-                            intent.putExtra("photUrl", String.valueOf(account.getPhotoUrl())); //String.valueOf() 특정 자료형을 String 형태로 변환
-                            startActivity(intent); // MainActivity 시작
-                            finish(); // LoginActivity 종료
-                        } else {
-                            Toast.makeText(LoginActivity.this, "로그인 실패", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
-    }*/
 
     private void resultLogin(GoogleSignInAccount account) {
         AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
