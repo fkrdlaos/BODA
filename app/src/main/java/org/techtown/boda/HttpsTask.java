@@ -42,7 +42,7 @@ public class HttpsTask extends AsyncTask<Void, Void, String> {
 
         try {
             if (result != null) {
-                System.out.println(result);
+                System.out.println("[onPostExecute] output is ."+result);
             } else {
                 System.out.println("[onPostExecute] output is null state.");
             }
