@@ -8,14 +8,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.concurrent.TimeUnit;
 
-import okhttp3.Call;
-import okhttp3.Callback;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
-import okhttp3.Response;
 
 public class GetCaption {
     public static InputStream transformBMtoIS(Bitmap bitmap){
@@ -55,24 +52,25 @@ public class GetCaption {
                     .writeTimeout(60, TimeUnit.MINUTES) // write timeout
                     .readTimeout(60, TimeUnit.MINUTES) // read timeout
                     .build();
-            client.newCall(request).enqueue(new Callback() {
-                @Override
-                public void onFailure(Call call, IOException e) {
-                    e.printStackTrace();
-                }
 
-                @Override
-                public void onResponse(Call call, Response response) throws IOException {
-                    if (response.isSuccessful()) {
-                        System.out.println("Server Response: " + response.body().string());
-
-                    } else {
-                        System.out.println("Request failed: " + response.message());
-                    }
-                }
-            });
-
-            return "finish well";
+            final String result = client.newCall(request).execute().body().string();
+//            client.newCall(request).enqueue(new Callback() {
+//                @Override
+//                public void onFailure(Call call, IOException e) {
+//                    e.printStackTrace();
+//                }
+//
+//                @Override
+//                public void onResponse(Call call, Response response) throws IOException {
+//                    if (response.isSuccessful()) {
+//                        System.out.println("Server Response: " + response.body().string());
+//
+//                    } else {
+//                        System.out.println("Request failed: " + response.message());
+//                    }
+//                }
+//            });
+            return result;
         } catch (IOException e) {
             e.printStackTrace();
         } finally {

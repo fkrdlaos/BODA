@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,7 +31,8 @@ public class MainActivity extends AppCompatActivity {
 
     private TextView tv_result;
     private ImageView iv_profile;
-    private Button btnCamera, btnDictionary, btnStudy, btn_logout;
+    private ImageButton btnCamera, btnDictionary, btnStudy;
+    private Button btn_logout;
     private FirebaseAuth mFirebaseAuth;
 
     // Sample data for dictionary
