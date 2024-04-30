@@ -2,4 +2,7 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="correct_background">#00FF00</color> <!-- Green -->
+    <color name="incorrect_background">#FF0000</color> <!-- Red -->
+
 </resources>

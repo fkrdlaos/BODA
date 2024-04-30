@@ -29,8 +29,9 @@
         android:layout_marginEnd="82dp"
         app:srcCompat="@drawable/t3" />
 
+    <!-- 받아쓰기 유형 -->
     <LinearLayout
-        android:id="@+id/linearLayout"
+        android:id="@+id/spelling_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/imageView7"
@@ -41,17 +42,104 @@
 
         <EditText
             android:id="@+id/et_input"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:layout_height="wrap_content"
             android:hint="스펠링을 입력하세요"
             android:textSize="24sp" />
+
+        <Button
+            android:id="@+id/btn_check"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="#FF9800"
+            android:text="확인"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/btn_next"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="#FF9800"
+            android:text="다음"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <!-- 4지선다 유형 -->
+
+    <LinearLayout
+        android:id="@+id/multiple_choice_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/linearLayout3"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="3dp"
+        android:orientation="vertical">
+
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="0dp"
+            android:layout_marginBottom="0dp"
+            android:columnCount="2"
+            android:rowCount="2">
+
+            <Button
+                android:id="@+id/btn_choice1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:layout_weight="1"
+                android:background="#FF9800"
+                android:contentDescription="btn_choice1"
+                android:minHeight="48dp"
+                android:text=""
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/btn_choice2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:layout_weight="1"
+                android:background="#FF9800"
+                android:contentDescription="btn_choice2"
+                android:minHeight="48dp"
+                android:text=""
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/btn_choice3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:layout_weight="1"
+                android:background="#FF9800"
+                android:contentDescription="btn_choice3"
+                android:minHeight="48dp"
+                android:text=""
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/btn_choice4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:layout_weight="1"
+                android:background="#FF9800"
+                android:contentDescription="btn_choice4"
+                android:minHeight="48dp"
+                android:text=""
+                android:textStyle="bold" />
+        </GridLayout>
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/linearLayout2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/linearLayout"
+        android:layout_below="@+id/spelling_layout"
         android:layout_alignParentEnd="true"
         android:layout_marginTop="51dp"
         android:orientation="horizontal">
@@ -71,48 +159,20 @@
         android:id="@+id/linearLayout3"
         android:layout_width="match_parent"
         android:layout_height="76dp"
-        android:layout_below="@+id/linearLayout2"
+        android:layout_below="@+id/spelling_layout"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="53dp"
-        android:layout_marginEnd="0dp"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/btn_check"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="#FF9800"
-            android:text="확인"
-            android:textStyle="bold" />
-
-        <Button
-            android:id="@+id/btn_next"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="#FF9800"
-            android:text="다음"
-            android:textStyle="bold" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="70dp"
-        android:layout_below="@+id/linearLayout3"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="39dp"
-        android:layout_marginEnd="0dp"
+        android:layout_marginTop="110dp"
+        android:layout_marginEnd="-1dp"
         android:orientation="horizontal">
 
         <Button
             android:id="@+id/button4"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:background="#FF9800"
             android:text="홈"
             android:textStyle="bold" />
     </LinearLayout>
 
 </RelativeLayout>
-

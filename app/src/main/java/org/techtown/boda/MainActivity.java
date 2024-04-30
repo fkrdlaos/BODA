@@ -24,6 +24,7 @@ import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -40,6 +41,10 @@ public class MainActivity extends AppCompatActivity {
     private List<String> meanings = new ArrayList<>();
     private List<String> examples = new ArrayList<>(); // 예문을 추가
 
+    Random random = new Random();
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,9 +55,12 @@ public class MainActivity extends AppCompatActivity {
 
         // Sample data for dictionary
         words.add("Cat");
-        words.add("elephant");
+        words.add("Elephant");
         words.add("Apple");
         words.add("Banana");
+        words.add("Ant");
+        words.add("Bee");
+
 
 
         meanings.add("고양이");
@@ -108,12 +116,22 @@ public class MainActivity extends AppCompatActivity {
         btnStudy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Start StudyActivity
+                // 랜덤하게 받아쓰기 문제 또는 4지선다 문제를 선택
+                boolean isSpelling = random.nextBoolean();
                 Intent studyIntent = new Intent(MainActivity.this, StudyActivity.class);
                 studyIntent.putStringArrayListExtra("words", (ArrayList<String>) words);
+                if (isSpelling) {
+                    // 받아쓰기 문제 선택
+                    studyIntent.putExtra("isMultipleChoice", false); // 받아쓰기 유형임을 알려주는 플래그 추가
+                } else {
+                    // 4지선다 문제 선택
+                    studyIntent.putExtra("isMultipleChoice", true); // 4지선다 유형임을 알려주는 플래그 추가
+                }
                 startActivity(studyIntent);
             }
         });
+
+
 
         btn_logout.setOnClickListener(new View.OnClickListener() {
             @Override
