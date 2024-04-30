@@ -1,16 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/some_id"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/be3"
+    android:clipToOutline="true"
     tools:context=".DictionaryActivity">
 
-    <ListView
-        android:id="@+id/listView"
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="134dp"
+        android:layout_height="24dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="28dp"
+        android:layout_marginEnd="142dp"
+        app:srcCompat="@drawable/t" />
+
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/button_layout"
-        android:layout_marginBottom="8dp" />
+        android:layout_height="664dp"
+        android:layout_below="@+id/imageView"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="0dp"
+        android:layout_marginBottom="0dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <ListView
+                android:id="@+id/listView"
+                android:layout_width="match_parent"
+                android:layout_height="656dp"
+                android:layout_marginBottom="8dp" />
+        </LinearLayout>
+    </ScrollView>
 
     <LinearLayout
         android:id="@+id/button_layout"
@@ -24,6 +54,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:background="#FF9800"
             android:text="정렬" />
 
         <Button
@@ -31,6 +62,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:background="#FF9800"
             android:text="홈으로" />
     </LinearLayout>
 

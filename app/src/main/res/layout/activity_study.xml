@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:clipToOutline="true"
+    android:background="@drawable/be"
     tools:context=".StudyActivity">
 
     <TextView
@@ -15,51 +19,100 @@
         android:textSize="24sp"
         android:visibility="gone" />
 
-    <EditText
-        android:id="@+id/et_input"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/tv_word"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="50dp"
-        android:hint="스펠링을 입력하세요"
-        android:textSize="20sp" />
+    <ImageView
+        android:id="@+id/imageView7"
+        android:layout_width="265dp"
+        android:layout_height="24dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="58dp"
+        android:layout_marginEnd="82dp"
+        app:srcCompat="@drawable/t3" />
 
-    <Button
-        android:id="@+id/btn_check"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/et_input"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="50dp"
-        android:text="확인" />
+        android:layout_below="@+id/imageView7"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="86dp"
+        android:layout_marginEnd="0dp"
+        android:orientation="horizontal">
 
-    <Button
-        android:id="@+id/btn_next"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/btn_check"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        android:text="다음" />
+        <EditText
+            android:id="@+id/et_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="스펠링을 입력하세요"
+            android:textSize="24sp" />
+    </LinearLayout>
 
-    <Button
-        android:id="@+id/button4"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/btn_next"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        android:text="홈" />
+        android:layout_below="@+id/linearLayout"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="51dp"
+        android:orientation="horizontal">
 
-    <Button
-        android:id="@+id/btn_listen"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/button4"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        android:text="다시 듣기" />
+        <Button
+            android:id="@+id/btn_listen"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="0dp"
+            android:layout_marginBottom="0dp"
+            android:background="#FF9800"
+            android:text="다시 듣기"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout3"
+        android:layout_width="match_parent"
+        android:layout_height="76dp"
+        android:layout_below="@+id/linearLayout2"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="53dp"
+        android:layout_marginEnd="0dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btn_check"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="#FF9800"
+            android:text="확인"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/btn_next"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="#FF9800"
+            android:text="다음"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:layout_below="@+id/linearLayout3"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="39dp"
+        android:layout_marginEnd="0dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/button4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#FF9800"
+            android:text="홈"
+            android:textStyle="bold" />
+    </LinearLayout>
 
 </RelativeLayout>
 
