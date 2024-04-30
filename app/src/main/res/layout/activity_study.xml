@@ -56,13 +56,6 @@
             android:text="확인"
             android:textStyle="bold" />
 
-        <Button
-            android:id="@+id/btn_next"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="#FF9800"
-            android:text="다음"
-            android:textStyle="bold" />
     </LinearLayout>
 
     <!-- 4지선다 유형 -->

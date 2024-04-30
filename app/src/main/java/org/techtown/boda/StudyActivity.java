@@ -24,7 +24,7 @@ public class StudyActivity extends AppCompatActivity {
     private TextView tv_word;
     private EditText et_input;
     private Button btn_check;
-    private Button btn_next;
+
     private Button btn_home;
     private Button btn_listen; // 추가된 버튼
     private Button[] btn_choices; // 4지선다 버튼 배열
@@ -52,7 +52,7 @@ public class StudyActivity extends AppCompatActivity {
         tv_word = findViewById(R.id.tv_word); // 여기로 이동
         et_input = findViewById(R.id.et_input);
         btn_check = findViewById(R.id.btn_check);
-        btn_next = findViewById(R.id.btn_next);
+
         btn_home = findViewById(R.id.button4);
         btn_listen = findViewById(R.id.btn_listen); // 버튼 연결
         btn_choices = new Button[]{findViewById(R.id.btn_choice1), findViewById(R.id.btn_choice2),
@@ -161,7 +161,6 @@ public class StudyActivity extends AppCompatActivity {
                 tv_word.setText(word);
                 et_input.setText("");
                 btn_check.setEnabled(true);
-                btn_next.setEnabled(false);
                 // 받아쓰기 유형 레이아웃을 보임
                 spellingLayout.setVisibility(View.VISIBLE);
                 // 4지선다 유형 레이아웃을 숨김
