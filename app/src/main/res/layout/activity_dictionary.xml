@@ -42,30 +42,17 @@
         android:src="@drawable/progress_bar_exp" />
 
     <!--스크롤뷰->리사이클러 뷰 사용-->
-
-    <ScrollView
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
         android:layout_width="match_parent"
-        android:layout_height="476dp"
-        android:layout_below="@+id/progressImageView"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:layout_below="@id/progressImageView"
+        android:layout_above="@+id/button_layout"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginTop="25dp"
-        android:layout_marginEnd="0dp"
-        android:layout_marginBottom="49dp">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerView"
-                android:layout_width="match_parent"
-                android:layout_height="446dp"
-                android:layout_marginTop="30dp"
-                android:background="@color/white" />
-        </LinearLayout>
-    </ScrollView>
+        android:layout_centerInParent="true"
+        android:layout_marginTop="30dp"/>
 
     <LinearLayout
         android:id="@+id/button_layout"
@@ -82,27 +69,6 @@
             android:layout_weight="1"
             android:background="#FF9800"
             android:text="홈으로" />
-
-        <Button
-            android:id="@+id/galleryButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_above="@id/button_layout"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="20dp"
-            android:text="그림도감"
-            android:textSize="16sp" />
-
-        <Button
-            android:id="@+id/fullDictionaryButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_above="@id/galleryButton"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="20dp"
-            android:text="전체도감"
-            android:textSize="16sp" />
-
     </LinearLayout>
 
     <Button
