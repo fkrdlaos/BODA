@@ -31,7 +31,7 @@
         android:layout_marginLeft="55dp"
         android:layout_marginTop="280dp"
         android:layout_marginEnd="56dp"
-        android:background="@drawable/activity_login_editText"
+        android:background="@drawable/activity_login_edittext"
         android:ems="10"
         android:hint="아이디"
         android:inputType="textEmailAddress"
@@ -51,7 +51,7 @@
         android:hint="비밀번호"
         android:textColorHint="#FF6F0F"
         android:inputType="textPassword"
-        android:background="@drawable/activity_login_editText"/>
+        android:background="@drawable/activity_login_edittext"/>
 
     <Button
         android:id="@+id/btn_login"
