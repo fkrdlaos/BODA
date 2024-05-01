@@ -12,6 +12,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,15 +25,14 @@ public class DictionaryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dictionary);
 
-        ArrayList<String> words = getIntent().getStringArrayListExtra("words");
-        ArrayList<String> meanings = getIntent().getStringArrayListExtra("meanings");
-
+        ArrayList<WordData> wordDataList = (ArrayList<WordData>) getIntent().getSerializableExtra("wordDataList");
         // Sort words alphabetically
-        Collections.sort(words);
-
-        ListView listView = findViewById(R.id.listView);
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, words);
-        listView.setAdapter(adapter);
+        Collections.sort(wordDataList, (word1, word2) -> word1.getWord().compareToIgnoreCase(word2.getWord()));
+        // recycler view로 변경
+        RecyclerView recyclerView = findViewById(R.id.recyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        WordDataAdapter adapter = new WordDataAdapter(wordDataList);
+        recyclerView.setAdapter(adapter);
 
         Button homeButton = findViewById(R.id.button3);
         homeButton.setOnClickListener(new View.OnClickListener() {
