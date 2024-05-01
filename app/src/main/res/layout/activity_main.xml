@@ -5,19 +5,19 @@
     android:id="@+id/some_id"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/be"
+    android:background="@color/white"
     android:clipToOutline="true"
     tools:context=".MainActivity">
 
     <View
         android:id="@+id/profile_car"
         android:layout_width="345dp"
-        android:layout_height="198dp"
+        android:layout_height="210dp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:layout_marginLeft="28dp"
         android:layout_marginTop="83dp"
-        android:background="#FF9800" />
+        android:background="@drawable/activity_main_profilecar"/>
 
     <View
         android:id="@+id/view2"
@@ -28,7 +28,7 @@
         android:layout_alignBottom="@+id/profile_car"
         android:layout_marginStart="12dp"
         android:layout_marginEnd="5dp"
-        android:layout_marginBottom="6dp"
+        android:layout_marginBottom="25dp"
         android:background="@color/white" />
 
     <ImageButton
@@ -86,12 +86,45 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/profile_car"
-        android:layout_marginTop="49dp"
-        android:layout_marginEnd="97dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="30dp"
         android:layout_toStartOf="@+id/iv_profile"
-        android:text="닉네임"
-        android:textSize="24sp"
+        android:layout_toEndOf="@+id/hi"
+        android:text="Nickname"
+        android:textColor="#FFFFFF"
+        android:textSize="30sp"
         android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/iv_profile" />
+
+    <TextView
+        android:id="@+id/hi"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/profile_car"
+        android:layout_marginLeft="50dp"
+        android:layout_marginTop="30dp"
+        android:text="Hi,"
+        android:textColor="#FFFFFF"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/iv_profile" />
+
+    <TextView
+        android:id="@+id/welcome"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/profile_car"
+        android:layout_marginLeft="50dp"
+        android:layout_marginTop="70dp"
+        android:text="Welcome back!"
+        android:textColor="#FFFFFF"
+        android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
@@ -117,7 +150,7 @@
         android:layout_alignParentStart="true"
         android:layout_marginStart="64dp"
         android:layout_marginEnd="32dp"
-        android:layout_marginBottom="18dp"
+        android:layout_marginBottom="38dp"
         android:max="100"
         android:progressDrawable="@drawable/progress_bar_exp"
         tools:progress="0" />

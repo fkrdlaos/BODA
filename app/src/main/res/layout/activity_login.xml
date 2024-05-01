@@ -31,7 +31,7 @@
         android:layout_marginLeft="55dp"
         android:layout_marginTop="280dp"
         android:layout_marginEnd="56dp"
-        android:background="@drawable/edit_text_border"
+        android:background="@drawable/activity_login_editText"
         android:ems="10"
         android:hint="아이디"
         android:inputType="textEmailAddress"
@@ -51,7 +51,7 @@
         android:hint="비밀번호"
         android:textColorHint="#FF6F0F"
         android:inputType="textPassword"
-        android:background="@drawable/edit_text_border"/>
+        android:background="@drawable/activity_login_editText"/>
 
     <Button
         android:id="@+id/btn_login"
@@ -65,7 +65,7 @@
         android:textColor="#FFFFFF"
         android:textStyle="bold"
         android:textSize="18sp"
-        android:background="@drawable/button_round"/>
+        android:background="@drawable/activity_login_button"/>
 
     <Button
         android:id="@+id/btn_register"
@@ -80,7 +80,7 @@
         android:textColor="#FFFFFF"
         android:textStyle="bold"
         android:textSize="18sp"
-        android:background="@drawable/button_round"/>
+        android:background="@drawable/activity_login_button"/>
 
 
     <com.google.android.gms.common.SignInButton
