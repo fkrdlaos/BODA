@@ -22,7 +22,6 @@ import androidx.core.content.ContextCompat;
 import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,21 +53,18 @@ public class MainActivity extends AppCompatActivity {
         words.add("elephant");
         words.add("Apple");
         words.add("Banana");
-        words.add("Door");
 
 
         meanings.add("고양이");
         meanings.add("코끼리");
         meanings.add("사과");
         meanings.add("바나나");
-        meanings.add("문");
 
         // 예문 데이터 초기화
         examples.add("Humans began keeping cats as pets to hunt rats and mice.");
         examples.add("The elephants are poached for their tusks.");
         examples.add("Eating more than one apple is prohibited");
         examples.add("I have a banana for lunch.");
-        examples.add("Love is an open door");
 
 
         Intent intent = getIntent();
@@ -100,20 +96,14 @@ public class MainActivity extends AppCompatActivity {
         btnDictionary.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Create WordData objects
-                List<WordData> wordDataList = new ArrayList<>();
-                for (int i = 0; i < words.size(); i++) {
-                    WordData wordData = new WordData(words.get(i), meanings.get(i), examples.get(i));
-                    wordDataList.add(wordData);
-                }
-
                 // Start DictionaryActivity
                 Intent dictionaryIntent = new Intent(MainActivity.this, DictionaryActivity.class);
-                dictionaryIntent.putExtra("wordDataList", (Serializable) wordDataList);
+                dictionaryIntent.putStringArrayListExtra("words", (ArrayList<String>) words);
+                dictionaryIntent.putStringArrayListExtra("meanings", (ArrayList<String>) meanings);
+                dictionaryIntent.putStringArrayListExtra("examples", (ArrayList<String>) examples); // 예문 데이터 전달
                 startActivity(dictionaryIntent);
             }
         });
-
 
         btnStudy.setOnClickListener(new View.OnClickListener() {
             @Override

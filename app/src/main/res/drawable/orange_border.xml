@@ -5,4 +5,8 @@
         android:width="2dp"
         android:color="#FFA500" />
     <corners android:radius="10dp" />
+<<<<<<< HEAD
 </shape>
+=======
+</shape>
+>>>>>>> origin/test

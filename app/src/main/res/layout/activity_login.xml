@@ -15,64 +15,81 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:layout_marginLeft="46dp"
+        android:layout_alignParentEnd="true"
+        android:layout_marginLeft="64dp"
         android:layout_marginTop="144dp"
+        android:layout_marginEnd="64dp"
         app:srcCompat="@drawable/ti" />
 
     <EditText
         android:id="@+id/et_email"
-        android:layout_width="280dp"
-        android:layout_height="70dp"
+        android:layout_width="300dp"
+        android:layout_height="55dp"
         android:layout_alignParentLeft="true"
-        android:layout_marginLeft="48dp"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="254dp"
+        android:layout_alignParentEnd="true"
+        android:layout_marginLeft="55dp"
+        android:layout_marginTop="280dp"
+        android:layout_marginEnd="56dp"
+        android:background="@drawable/activity_login_edittext"
         android:ems="10"
-        android:hint="아이디를 입력해주세요"
-        android:inputType="textEmailAddress" />
+        android:hint="아이디"
+        android:inputType="textEmailAddress"
+        android:paddingStart="15dp"
+        android:textColorHint="#FF6F0F" />
 
     <EditText
         android:id="@+id/et_pwd"
-        android:layout_width="280dp"
-        android:layout_height="70dp"
+        android:layout_width="300dp"
+        android:layout_height="55dp"
         android:layout_alignParentLeft="true"
-        android:layout_marginLeft="48dp"
+        android:layout_marginLeft="55dp"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="331dp"
+        android:layout_marginTop="370dp"
+        android:paddingStart="15dp"
         android:ems="10"
-        android:hint="비밀번호를 입력해주세요"
-        android:inputType="textPassword" />
+        android:hint="비밀번호"
+        android:textColorHint="#FF6F0F"
+        android:inputType="textPassword"
+        android:background="@drawable/activity_login_edittext"/>
 
     <Button
         android:id="@+id/btn_login"
-        android:layout_width="280dp"
-        android:layout_height="50dp"
+        android:layout_width="300dp"
+        android:layout_height="55dp"
         android:layout_alignParentLeft="true"
+        android:layout_marginLeft="55dp"
         android:layout_alignParentTop="true"
-        android:layout_marginLeft="48dp"
-        android:layout_marginTop="437dp"
-        android:backgroundTint="#FF9800"
-        android:text="로그인" />
+        android:layout_marginTop="480dp"
+        android:text="로그인"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold"
+        android:textSize="18sp"
+        android:background="@drawable/activity_login_button"/>
 
     <Button
         android:id="@+id/btn_register"
-        android:layout_width="280dp"
-        android:layout_height="50dp"
+        android:layout_width="300dp"
+        android:layout_height="55dp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:layout_marginLeft="48dp"
-        android:layout_marginTop="504dp"
-        android:backgroundTint="#FF9800"
-        android:text="회원가입" />
+        android:layout_marginLeft="55dp"
+        android:layout_marginTop="565dp"
+        android:backgroundTint="#FF6F0F"
+        android:text="회원가입"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold"
+        android:textSize="18sp"
+        android:background="@drawable/activity_login_button"/>
 
 
     <com.google.android.gms.common.SignInButton
         android:id="@+id/btn_google"
-        android:layout_width="280dp"
-        android:layout_height="50dp"
+        android:layout_width="300dp"
+        android:layout_height="55dp"
         android:layout_alignParentLeft="true"
-        android:layout_marginLeft="48dp"
+        android:layout_marginLeft="55dp"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="618dp" />
+        android:layout_marginTop="700dp" />
 
 </RelativeLayout>
