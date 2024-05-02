@@ -185,7 +185,8 @@
         android:layout_alignStart="@+id/profile_car"
         android:layout_alignEnd="@+id/profile_car"
         android:layout_marginTop="40dp"
-        android:background="@drawable/activity_main_today"/>
+        android:background="@drawable/activity_main_today"
+        android:contentDescription="today_words" />
 
     <Button
         android:id="@+id/today_study"
@@ -195,6 +196,7 @@
         android:layout_alignStart="@+id/profile_car"
         android:layout_alignEnd="@+id/profile_car"
         android:layout_marginTop="110dp"
-        android:background="@drawable/activity_main_today"/>
+        android:background="@drawable/activity_main_today"
+        android:contentDescription="today_study" />
 
 </RelativeLayout>
