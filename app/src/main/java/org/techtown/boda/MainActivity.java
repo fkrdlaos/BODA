@@ -1,5 +1,3 @@
-// MainActivity.java
-
 package org.techtown.boda;
 
 import android.Manifest;
@@ -37,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
     private SharedPreferences sharedPreferences;
 
     private ImageButton btnCamera, btnDictionary, btnStudy;
-    private Button btnLogout;
+    private Button btnsettings;
     private FirebaseAuth mFirebaseAuth;
 
     // Sample data for dictionary
@@ -54,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
         mFirebaseAuth = FirebaseAuth.getInstance();
 
         // Sample data for dictionary
-        /*words.add("Cat");
+        words.add("Cat");
         words.add("elephant");
         words.add("Apple");
         words.add("Banana");
@@ -70,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
         examples.add("The elephants are poached for their tusks.");
         examples.add("Eating more than one apple is prohibited");
         examples.add("I have a banana for lunch.");
-        examples.add("Love is an open door");*/
+        examples.add("Love is an open door");
 
         tvResult = findViewById(R.id.tv_result);
 
@@ -82,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
         btnCamera = findViewById(R.id.btnCamera);
         btnDictionary = findViewById(R.id.btn_Dictionary);
         btnStudy = findViewById(R.id.btn_Study);
-        btnLogout = findViewById(R.id.btn_logout);
+        btnsettings = findViewById(R.id.btn_settings);
 
         btnCamera.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -119,23 +117,14 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        btnLogout.setOnClickListener(new View.OnClickListener() {
+        btnsettings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Clear nickname from SharedPreferences
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.remove("nickname");
-                editor.apply();
-
-                // Sign out from Firebase Auth
-                mFirebaseAuth.signOut();
-
-                // Move back to LoginActivity
-                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
                 startActivity(intent);
-                finish();
             }
         });
+
     }
 
     private void dispatchTakePictureIntent() {
@@ -170,4 +159,3 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 }
-

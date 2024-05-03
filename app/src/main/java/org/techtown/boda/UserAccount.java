@@ -1,16 +1,23 @@
 package org.techtown.boda;
 
+import android.widget.Toast;
+
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 /**
  * 사용자 계정 정보 모델 클래스
  */
-public class UserAccount{
+public class UserAccount {
 
     private String idToken; // Firebase Uid (고유 토큰 정보)
     private String emailId; // 이메일 아이디
     private String password; // 비밀번호
     private String nickname; // 닉네임
 
-    public UserAccount() {}
+    public UserAccount() {
+    }
 
     public String getIdToken() {
         return idToken;
@@ -43,4 +50,5 @@ public class UserAccount{
     public void setNickname(String nickname) {
         this.nickname = nickname;
     }
+
 }

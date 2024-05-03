@@ -1,5 +1,3 @@
-// LoginActivity.java
-
 package org.techtown.boda;
 
 import android.content.Intent;
