@@ -40,38 +40,18 @@
         android:layout_centerInParent="true"
         android:layout_below="@id/imageView"
         android:src="@drawable/progress_bar_exp" />
+
     <!--스크롤뷰->리사이클러 뷰 사용-->
-    <!--    <ScrollView-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:layout_height="match_parent"-->
-    <!--        android:background="@color/white"-->
-    <!--        android:layout_below="@+id/progressImageView"-->
-    <!--        android:layout_alignParentEnd="true"-->
-    <!--        android:layout_alignParentBottom="true"-->
-    <!--        android:layout_marginTop="15dp"-->
-    <!--        android:layout_marginEnd="0dp"-->
-    <!--        android:layout_marginBottom="0dp">-->
-
-    <!--        <LinearLayout-->
-    <!--            android:layout_width="match_parent"-->
-    <!--            android:layout_height="wrap_content"-->
-    <!--            android:orientation="vertical">-->
-
-    <!--            <ListView-->
-    <!--                android:id="@+id/listView"-->
-    <!--                android:layout_width="match_parent"-->
-    <!--                android:layout_height="656dp"-->
-    <!--                android:layout_marginBottom="8dp" />-->
-    <!--        </LinearLayout>-->
-    <!--    </ScrollView>-->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:background="@color/white"
         android:layout_below="@id/progressImageView"
+        android:layout_above="@+id/button_layout"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
+        android:layout_centerInParent="true"
         android:layout_marginTop="30dp"/>
 
     <LinearLayout
@@ -99,7 +79,6 @@
         android:layout_alignParentTop="true"
         android:layout_marginStart="286dp"
         android:layout_marginTop="66dp"
-        android:background="#FF9800"
         android:text="정렬" />
 
 </RelativeLayout>

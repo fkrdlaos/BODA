@@ -1,8 +1,11 @@
+// MainActivity.java
+
 package org.techtown.boda;
 
 import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -10,7 +13,6 @@ import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,26 +26,23 @@ import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final int REQUEST_IMAGE_CAPTURE = 101;
 
-    private TextView tv_result;
-    private ImageView iv_profile;
+    private TextView tvResult;
+
+    private SharedPreferences sharedPreferences;
+
     private ImageButton btnCamera, btnDictionary, btnStudy;
-    private Button btn_logout;
+    private Button btnLogout;
     private FirebaseAuth mFirebaseAuth;
 
     // Sample data for dictionary
     private List<String> words = new ArrayList<>();
     private List<String> meanings = new ArrayList<>();
-    private List<String> examples = new ArrayList<>(); // 예문을 추가
-
-    Random random = new Random();
-
-
+    private List<String> examples = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,40 +54,34 @@ public class MainActivity extends AppCompatActivity {
 
         // Sample data for dictionary
         words.add("Cat");
-        words.add("Elephant");
+        words.add("elephant");
         words.add("Apple");
         words.add("Banana");
-        words.add("Ant");
-        words.add("Bee");
-
-
+        words.add("Door");
 
         meanings.add("고양이");
         meanings.add("코끼리");
         meanings.add("사과");
         meanings.add("바나나");
+        meanings.add("문");
 
-        // 예문 데이터 초기화
         examples.add("Humans began keeping cats as pets to hunt rats and mice.");
         examples.add("The elephants are poached for their tusks.");
         examples.add("Eating more than one apple is prohibited");
         examples.add("I have a banana for lunch.");
+        examples.add("Love is an open door");
 
+        tvResult = findViewById(R.id.tv_result);
 
-        Intent intent = getIntent();
-        String nickName = intent.getStringExtra("nickName");
-        String photoUrl = intent.getStringExtra("photoUrl");
+        sharedPreferences = getSharedPreferences("MY_PREFS", MODE_PRIVATE);
 
-        tv_result = findViewById(R.id.tv_result);
-        tv_result.setText(nickName);
-
-        iv_profile = findViewById(R.id.iv_profile);
-        Glide.with(this).load(photoUrl).into(iv_profile);
+        String nickname = sharedPreferences.getString("nickname", "");
+        tvResult.setText(nickname);
 
         btnCamera = findViewById(R.id.btnCamera);
         btnDictionary = findViewById(R.id.btn_Dictionary);
         btnStudy = findViewById(R.id.btn_Study);
-        btn_logout = findViewById(R.id.btn_logout);
+        btnLogout = findViewById(R.id.btn_logout);
 
         btnCamera.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -104,11 +97,14 @@ public class MainActivity extends AppCompatActivity {
         btnDictionary.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Start DictionaryActivity
+                List<WordData> wordDataList = new ArrayList<>();
+                for (int i = 0; i < words.size(); i++) {
+                    WordData wordData = new WordData(words.get(i), meanings.get(i), examples.get(i));
+                    wordDataList.add(wordData);
+                }
+
                 Intent dictionaryIntent = new Intent(MainActivity.this, DictionaryActivity.class);
-                dictionaryIntent.putStringArrayListExtra("words", (ArrayList<String>) words);
-                dictionaryIntent.putStringArrayListExtra("meanings", (ArrayList<String>) meanings);
-                dictionaryIntent.putStringArrayListExtra("examples", (ArrayList<String>) examples); // 예문 데이터 전달
+                dictionaryIntent.putExtra("wordDataList", (ArrayList<WordData>) wordDataList);
                 startActivity(dictionaryIntent);
             }
         });
@@ -116,27 +112,24 @@ public class MainActivity extends AppCompatActivity {
         btnStudy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // 랜덤하게 받아쓰기 문제 또는 4지선다 문제를 선택
-                boolean isSpelling = random.nextBoolean();
                 Intent studyIntent = new Intent(MainActivity.this, StudyActivity.class);
                 studyIntent.putStringArrayListExtra("words", (ArrayList<String>) words);
-                if (isSpelling) {
-                    // 받아쓰기 문제 선택
-                    studyIntent.putExtra("isMultipleChoice", false); // 받아쓰기 유형임을 알려주는 플래그 추가
-                } else {
-                    // 4지선다 문제 선택
-                    studyIntent.putExtra("isMultipleChoice", true); // 4지선다 유형임을 알려주는 플래그 추가
-                }
                 startActivity(studyIntent);
             }
         });
 
-
-
-        btn_logout.setOnClickListener(new View.OnClickListener() {
+        btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // Clear nickname from SharedPreferences
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.remove("nickname");
+                editor.apply();
+
+                // Sign out from Firebase Auth
                 mFirebaseAuth.signOut();
+
+                // Move back to LoginActivity
                 Intent intent = new Intent(MainActivity.this, LoginActivity.class);
                 startActivity(intent);
                 finish();
@@ -165,7 +158,7 @@ public class MainActivity extends AppCompatActivity {
                     nextIntent.putExtra("imageBitmap", imageBitmap);
                     nextIntent.putStringArrayListExtra("words", (ArrayList<String>) words);
                     nextIntent.putStringArrayListExtra("meanings", (ArrayList<String>) meanings);
-                    nextIntent.putStringArrayListExtra("examples", (ArrayList<String>) examples); // 수정된 부분
+                    nextIntent.putStringArrayListExtra("examples", (ArrayList<String>) examples);
                     startActivity(nextIntent);
                 } else {
                     Toast.makeText(this, "사진을 가져오는 중 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
