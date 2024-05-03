@@ -2,11 +2,17 @@ package org.techtown.boda;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.ContextWrapper;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
@@ -19,16 +25,24 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
-import com.bumptech.glide.Glide;
-import com.google.firebase.auth.FirebaseAuth;
 
+import com.google.firebase.auth.FirebaseAuth;
+import android.content.DialogInterface;
+import androidx.appcompat.app.AlertDialog;
+
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class MainActivity extends AppCompatActivity {
 
     private static final int REQUEST_IMAGE_CAPTURE = 101;
+    private static final int REQUEST_PICK_IMAGE = 102;
 
     private TextView tvResult;
 
@@ -52,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
         mFirebaseAuth = FirebaseAuth.getInstance();
 
         // Sample data for dictionary
-        words.add("Cat");
+        /*words.add("Cat");
         words.add("elephant");
         words.add("Apple");
         words.add("Banana");
@@ -68,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
         examples.add("The elephants are poached for their tusks.");
         examples.add("Eating more than one apple is prohibited");
         examples.add("I have a banana for lunch.");
-        examples.add("Love is an open door");
+        examples.add("Love is an open door");*/
 
         tvResult = findViewById(R.id.tv_result);
 
@@ -85,13 +99,33 @@ public class MainActivity extends AppCompatActivity {
         btnCamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.CAMERA}, REQUEST_IMAGE_CAPTURE);
-                } else {
-                    dispatchTakePictureIntent();
-                }
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder.setTitle("사진 선택")
+                        .setItems(new CharSequence[]{"카메라로 사진 찍기", "갤러리에서 사진 가져오기"}, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                switch (which) {
+                                    case 0: // 카메라로 사진 찍기 선택
+                                        if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                                            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.CAMERA}, REQUEST_IMAGE_CAPTURE);
+                                        } else {
+                                            dispatchTakePictureIntent();
+                                        }
+                                        break;
+                                    case 1: // 갤러리에서 사진 가져오기 선택
+                                        Intent pickPhotoIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                                        pickPhotoIntent.setType("image/*");
+                                        startActivityForResult(pickPhotoIntent, REQUEST_PICK_IMAGE);
+                                        break;
+                                }
+                            }
+                        });
+                AlertDialog alertDialog = builder.create();
+                alertDialog.show();
             }
         });
+
+
 
         btnDictionary.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -127,6 +161,9 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+
+
+
     private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
@@ -136,26 +173,92 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private String saveImageToFile(Bitmap imageBitmap) {
+        ContextWrapper cw = new ContextWrapper(getApplicationContext());
+        // 외부 저장소의 경로를 가져옴
+        File directory = cw.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File file = new File(directory, "image.jpg");
+
+        FileOutputStream fos = null;
+        try {
+            fos = new FileOutputStream(file);
+            imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (fos != null) {
+                    fos.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return file.getAbsolutePath();
+    }
+
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_IMAGE_CAPTURE) {
-            if (data != null && data.getExtras() != null) {
-                Bundle extras = data.getExtras();
-                Bitmap imageBitmap = (Bitmap) extras.get("data");
-                if (imageBitmap != null) {
-                    // Convert Bitmap to InputStream
-                    InputStream inputStream = GetCaption.transformBMtoIS(imageBitmap);
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == REQUEST_IMAGE_CAPTURE) {
+                // 카메라로 사진 찍은 경우
+                if (data != null && data.getExtras() != null) {
+                    // Display progress dialog
+                    ProgressDialog progressDialog = new ProgressDialog(this);
+                    progressDialog.setMessage("사진에서 문장과 단어를 추출하고 있습니다...");
+                    progressDialog.setCancelable(false);
+                    progressDialog.show();
 
-                    // Send captured image to GetCaption class for caption extraction
-                    new HttpsTask(this, inputStream, imageBitmap).execute();
+                    Bundle extras = data.getExtras();
+                    Bitmap imageBitmap = (Bitmap) extras.get("data");
+                    if (imageBitmap != null) {
+                        // Save image to file and get file path
+                        String imagePath = saveImageToFile(imageBitmap);
+
+                        // Send image file path to HttpsTask class for caption extraction
+                        new HttpsTask(this, imagePath).execute();
+                    } else {
+                        progressDialog.dismiss();
+                        Toast.makeText(this, "카메라로부터 이미지를 가져오는 중 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
+                    }
                 } else {
-                    Toast.makeText(this, "사진을 가져오는 중 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "카메라로부터 이미지를 가져오는 중 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
                 }
-            } else {
-                Toast.makeText(this, "사진을 가져오는 중 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
+            } else if (requestCode == REQUEST_PICK_IMAGE) {
+                // 갤러리에서 사진을 선택한 경우
+                if (data != null && data.getData() != null) {
+                    // Display progress dialog
+                    ProgressDialog progressDialog = new ProgressDialog(this);
+                    progressDialog.setMessage("사진에서 문장과 단어를 추출하고 있습니다...");
+                    progressDialog.setCancelable(false);
+                    progressDialog.show();
+
+                    Uri selectedImageUri = data.getData();
+                    try {
+                        Bitmap imageBitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImageUri);
+                        if (imageBitmap != null) {
+                            // Save image to file and get file path
+                            String imagePath = saveImageToFile(imageBitmap);
+
+                            // Send image file path to HttpsTask class for caption extraction
+                            new HttpsTask(this, imagePath).execute();
+                        } else {
+                            progressDialog.dismiss();
+                            Toast.makeText(this, "갤러리에서 이미지를 가져오는 중 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        Toast.makeText(this, "갤러리에서 이미지를 가져오는 중 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(this, "갤러리에서 이미지를 가져오는 중 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
+                }
             }
         }
     }
+
 }

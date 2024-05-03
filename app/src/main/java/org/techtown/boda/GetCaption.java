@@ -7,6 +7,7 @@ import android.util.Log;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.concurrent.TimeUnit;
@@ -26,7 +27,7 @@ public class GetCaption {
         return new ByteArrayInputStream(bitmapdata);
     }
 
-    public static String sendCaptionRequest(InputStream inputStream) {
+    public static String sendCaptionRequest(String imagePath) {
         OkHttpClient client = new OkHttpClient.Builder()
                 .connectTimeout(60, TimeUnit.MINUTES) // connect timeout
                 .writeTimeout(60, TimeUnit.MINUTES) // write timeout
@@ -34,6 +35,9 @@ public class GetCaption {
                 .build();
 
         try {
+            // 이미지 파일의 경로를 사용하여 InputStream을 가져옴
+            InputStream inputStream = new FileInputStream(imagePath);
+
             // InputStream에서 byte array로 변환
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
             byte[] buffer = new byte[1024];
@@ -62,18 +66,12 @@ public class GetCaption {
                 return response.body().string();
             } else {
                 Log.e("GetCaption", "Request failed: " + response.message());
+                return null; // 오류 발생 시 null 반환
             }
         } catch (IOException e) {
             e.printStackTrace();
-        } finally {
-            if (inputStream != null) {
-                try {
-                    inputStream.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
+            return null; // 예외 발생 시 null 반환
         }
-        return null;
     }
+
 }

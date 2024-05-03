@@ -3,10 +3,10 @@ package org.techtown.boda;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -21,7 +21,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.Locale;
 
 public class cameraActivity extends AppCompatActivity {
@@ -50,22 +49,35 @@ public class cameraActivity extends AppCompatActivity {
             // Process the result
             processResult(result);
         } else {
+            progressDialog.dismiss();
             Toast.makeText(this, "결과를 가져오는 중 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
             finish();
         }
 
         // Get the image from MainActivity
-        if (intent != null && intent.hasExtra("imageBitmap")) {
-            Bitmap imageBitmap = intent.getParcelableExtra("imageBitmap");
-            // Display the image
-            displayImage(imageBitmap);
+        if (intent != null && intent.hasExtra("imagePath")) {
+            String imagePath = intent.getStringExtra("imagePath");
+            // Load image from file path
+            Bitmap imageBitmap = BitmapFactory.decodeFile(imagePath);
+            if (imageBitmap != null) {
+                // Display the image
+                displayImage(imageBitmap);
+            } else {
+                progressDialog.dismiss();
+                Toast.makeText(this, "1단계 이미지를 가져오는 중 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
+                finish();
+            }
         } else {
-            Toast.makeText(this, "이미지를 가져오는 중 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
+            progressDialog.dismiss();
+            Toast.makeText(this, "2단계 이미지를 가져오는 중 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
             finish();
         }
 
+
         // Initialize TextToSpeech
         initializeTextToSpeech();
+
+        progressDialog.dismiss();
 
         // Initialize moveHomeButton
         Button moveHomeButton = findViewById(R.id.button2);
@@ -97,7 +109,6 @@ public class cameraActivity extends AppCompatActivity {
             e.printStackTrace();
             Toast.makeText(this, "결과를 처리하는 중 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
         } finally {
-            // Dismiss progress dialog
             progressDialog.dismiss();
         }
     }
@@ -118,7 +129,6 @@ public class cameraActivity extends AppCompatActivity {
             }
         });
     }
-
 
     private void displayWord(String word) {
         // Display a word
@@ -141,9 +151,6 @@ public class cameraActivity extends AppCompatActivity {
         ImageView imageView = findViewById(R.id.imageViewNext);
         imageView.setImageBitmap(imageBitmap);
     }
-
-
-
 
     private void initializeTextToSpeech() {
         textToSpeech = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
