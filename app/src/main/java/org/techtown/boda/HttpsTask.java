@@ -1,55 +1,39 @@
 package org.techtown.boda;
 
-import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.Intent;
 import android.os.AsyncTask;
-
-import java.io.InputStream;
 
 public class HttpsTask extends AsyncTask<Void, Void, String> {
 
-    private final InputStream inputStream;
+    private final String imagePath;
+    private final Activity activity;
 
-    // Constructor
-    public HttpsTask(InputStream inputStream) {
-        this.inputStream = inputStream;
+    public HttpsTask(Activity activity, String imagePath) {
+        this.activity = activity;
+        this.imagePath = imagePath;
     }
 
     @Override
     protected String doInBackground(Void... params) {
-        String result; // 요청 결과를 저장할 변수.
-
-//        HttpsGetCaption requestHttpsURLConnection = new HttpsGetCaption(this.imageBitmap);
-//        result = requestHttpsURLConnection.sendPostRequest();
-        result = GetCaption.sendCaptionRequest(inputStream);
-
         try {
-            if (result != null) {
-                System.out.println("[doInBackground] output : " + result);
-            } else {
-                System.out.println("[doInBackground] output is null state.");
-            }
-
+            // Extract caption from image path
+            return GetCaption.sendCaptionRequest(imagePath);
         } catch (Exception e) {
             e.printStackTrace();
+            // 예외가 발생했을 때 반환할 기본값 또는 오류 메시지를 반환합니다.
+            return "예외 발생: " + e.getMessage();
         }
-        return result;
     }
 
-    @SuppressLint("SetTextI18n")
     @Override
     protected void onPostExecute(String result) {
         super.onPostExecute(result);
-
-        try {
-            if (result != null) {
-                System.out.println("[onPostExecute] output is ."+result);
-            } else {
-                System.out.println("[onPostExecute] output is null state.");
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (result != null) {
+            // Pass the result to the cameraActivity using Intent
+            activity.startActivity(new Intent(activity, cameraActivity.class)
+                    .putExtra("result", result)
+                    .putExtra("imagePath", imagePath));
         }
-
     }
 }

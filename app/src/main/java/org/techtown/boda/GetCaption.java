@@ -1,9 +1,13 @@
+// GetCaption.java
+
 package org.techtown.boda;
 
 import android.graphics.Bitmap;
+import android.util.Log;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.concurrent.TimeUnit;
@@ -13,16 +17,26 @@ import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class GetCaption {
-    public static InputStream transformBMtoIS(Bitmap bitmap){
+    public static InputStream transformBMtoIS(Bitmap bitmap) {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG, 0 /*ignored for PNG*/, bos);
         byte[] bitmapdata = bos.toByteArray();
         return new ByteArrayInputStream(bitmapdata);
     }
-    public static String sendCaptionRequest(InputStream inputStream){
+
+    public static String sendCaptionRequest(String imagePath) {
+        OkHttpClient client = new OkHttpClient.Builder()
+                .connectTimeout(60, TimeUnit.MINUTES) // connect timeout
+                .writeTimeout(60, TimeUnit.MINUTES) // write timeout
+                .readTimeout(60, TimeUnit.MINUTES) // read timeout
+                .build();
+
         try {
+            // 이미지 파일의 경로를 사용하여 InputStream을 가져옴
+            InputStream inputStream = new FileInputStream(imagePath);
 
             // InputStream에서 byte array로 변환
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
@@ -47,43 +61,17 @@ public class GetCaption {
                     .build();
 
             // 요청 실행 및 응답 처리
-            OkHttpClient client = new OkHttpClient.Builder()
-                    .connectTimeout(60, TimeUnit.MINUTES) // connect timeout
-                    .writeTimeout(60, TimeUnit.MINUTES) // write timeout
-                    .readTimeout(60, TimeUnit.MINUTES) // read timeout
-                    .build();
-
-            final String result = client.newCall(request).execute().body().string();
-//            client.newCall(request).enqueue(new Callback() {
-//                @Override
-//                public void onFailure(Call call, IOException e) {
-//                    e.printStackTrace();
-//                }
-//
-//                @Override
-//                public void onResponse(Call call, Response response) throws IOException {
-//                    if (response.isSuccessful()) {
-//                        System.out.println("Server Response: " + response.body().string());
-//
-//                    } else {
-//                        System.out.println("Request failed: " + response.message());
-//                    }
-//                }
-//            });
-            return result;
+            Response response = client.newCall(request).execute();
+            if (response.isSuccessful()) {
+                return response.body().string();
+            } else {
+                Log.e("GetCaption", "Request failed: " + response.message());
+                return null; // 오류 발생 시 null 반환
+            }
         } catch (IOException e) {
             e.printStackTrace();
-        } finally {
-            if (inputStream != null) {
-                try {
-                    inputStream.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-
+            return null; // 예외 발생 시 null 반환
         }
-        return "finish not well";
-
     }
+
 }

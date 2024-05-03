@@ -68,7 +68,8 @@
         android:layout_alignParentEnd="true"
         android:layout_marginTop="30dp"
         android:layout_marginEnd="3dp"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:visibility="invisible">
 
         <GridLayout
             android:layout_width="match_parent"

@@ -1,7 +1,10 @@
 package org.techtown.boda;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.view.View;
@@ -14,91 +17,143 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import org.techtown.boda.MainActivity;
-import org.techtown.boda.WordData;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Locale;
 
 public class cameraActivity extends AppCompatActivity {
 
     private TextToSpeech textToSpeech;
     private LinearLayout wordLayout;
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera);
 
-        ImageView imageView = findViewById(R.id.imageViewNext);
         wordLayout = findViewById(R.id.wordLayout);
 
-        Bitmap imageBitmap = getIntent().getParcelableExtra("imageBitmap");
-        if (imageBitmap != null) {
-            imageView.setImageBitmap(imageBitmap);
+        // Display progress dialog
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("결과를 가져오는 중...");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+
+        // Get the result from MainActivity
+        Intent intent = getIntent();
+        if (intent != null && intent.hasExtra("result")) {
+            String result = intent.getStringExtra("result");
+            // Process the result
+            processResult(result);
+        } else {
+            progressDialog.dismiss();
+            Toast.makeText(this, "결과를 가져오는 중 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
+            finish();
         }
 
-        ArrayList<String> words = getIntent().getStringArrayListExtra("words");
-        ArrayList<String> meanings = getIntent().getStringArrayListExtra("meanings");
-        ArrayList<String> examples = getIntent().getStringArrayListExtra("examples");
-
-        if (words != null && meanings != null && examples != null && words.size() == meanings.size() && words.size() == examples.size()) {
-            // Combine word, meaning, and example data into WordData objects
-            ArrayList<WordData> wordDataList = new ArrayList<>();
-            for (int i = 0; i < words.size(); i++) {
-                wordDataList.add(new WordData(words.get(i), meanings.get(i), examples.get(i)));
+        // Get the image from MainActivity
+        if (intent != null && intent.hasExtra("imagePath")) {
+            String imagePath = intent.getStringExtra("imagePath");
+            // Load image from file path
+            Bitmap imageBitmap = BitmapFactory.decodeFile(imagePath);
+            if (imageBitmap != null) {
+                // Display the image
+                displayImage(imageBitmap);
+            } else {
+                progressDialog.dismiss();
+                Toast.makeText(this, "1단계 이미지를 가져오는 중 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
+                finish();
             }
+        } else {
+            progressDialog.dismiss();
+            Toast.makeText(this, "2단계 이미지를 가져오는 중 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
+            finish();
+        }
 
-            // Sort WordData objects alphabetically based on word
-            Collections.sort(wordDataList, new Comparator<WordData>() {
-                @Override
-                public int compare(WordData o1, WordData o2) {
-                    return o1.getWord().compareToIgnoreCase(o2.getWord());
+
+        // Initialize TextToSpeech
+        initializeTextToSpeech();
+
+        progressDialog.dismiss();
+
+        // Initialize moveHomeButton
+        Button moveHomeButton = findViewById(R.id.button2);
+        moveHomeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(cameraActivity.this, MainActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+    }
+
+    private void processResult(String result) {
+        try {
+            JSONObject jsonObject = new JSONObject(result);
+            String sentence = jsonObject.getString("sentence");
+            JSONArray wordsArray = jsonObject.getJSONArray("words");
+
+            // Display the sentence
+            displaySentence(sentence);
+
+            // Display the words
+            for (int i = 0; i < wordsArray.length(); i++) {
+                String word = wordsArray.getString(i);
+                displayWord(word);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+            Toast.makeText(this, "결과를 처리하는 중 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
+        } finally {
+            progressDialog.dismiss();
+        }
+    }
+
+    private void displaySentence(String sentence) {
+        // Display the sentence
+        TextView sentenceTextView = new TextView(this);
+        sentenceTextView.setText("문장: " + sentence);
+        wordLayout.addView(sentenceTextView);
+
+        // Set click listener to speak the sentence
+        sentenceTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (textToSpeech != null && !textToSpeech.isSpeaking()) {
+                    textToSpeech.speak(sentence, TextToSpeech.QUEUE_FLUSH, null, null);
                 }
-            });
-
-            // Display sorted word, meaning, and example data
-            for (final WordData wordData : wordDataList) {
-                TextView wordTextView = new TextView(this);
-                wordTextView.setText("단어: " + wordData.getWord());
-                wordTextView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        textToSpeech.speak(wordData.getWord(), TextToSpeech.QUEUE_FLUSH, null, null);
-                    }
-                });
-                wordLayout.addView(wordTextView);
-
-                TextView meaningTextView = new TextView(this);
-                meaningTextView.setText("의미: " + wordData.getMeaning());
-                meaningTextView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        String ssml = "<speak><prosody rate=\"medium\">" + wordData.getMeaning() + "</prosody></speak>";
-                        textToSpeech.speak(ssml, TextToSpeech.QUEUE_FLUSH, null, null);
-                    }
-                });
-                wordLayout.addView(meaningTextView);
-
-                TextView exampleTextView = new TextView(this);
-                exampleTextView.setText("예문: " + wordData.getExample());
-                exampleTextView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        textToSpeech.speak(wordData.getExample(), TextToSpeech.QUEUE_FLUSH, null, null);
-                    }
-                });
-                wordLayout.addView(exampleTextView);
-
-                View spaceView = new View(this);
-                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 20);
-                wordLayout.addView(spaceView, layoutParams);
             }
-        }
+        });
+    }
 
-        textToSpeech = new TextToSpeech(cameraActivity.this, new TextToSpeech.OnInitListener() {
+    private void displayWord(String word) {
+        // Display a word
+        TextView wordTextView = new TextView(this);
+        wordTextView.setText("단어: " + word);
+        // Set click listener to speak the word
+        wordTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (textToSpeech != null && !textToSpeech.isSpeaking()) {
+                    textToSpeech.speak(word, TextToSpeech.QUEUE_FLUSH, null, null);
+                }
+            }
+        });
+        wordLayout.addView(wordTextView);
+    }
+
+    private void displayImage(Bitmap imageBitmap) {
+        // Display the image
+        ImageView imageView = findViewById(R.id.imageViewNext);
+        imageView.setImageBitmap(imageBitmap);
+    }
+
+    private void initializeTextToSpeech() {
+        textToSpeech = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
             @Override
             public void onInit(int status) {
                 if (status == TextToSpeech.SUCCESS) {
@@ -111,21 +166,12 @@ public class cameraActivity extends AppCompatActivity {
                 }
             }
         });
-
-        Button moveHomeButton = findViewById(R.id.button2);
-        moveHomeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(cameraActivity.this, MainActivity.class);
-                startActivity(intent);
-                finish();
-            }
-        });
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        // Release the TextToSpeech resources
         if (textToSpeech != null) {
             textToSpeech.stop();
             textToSpeech.shutdown();
