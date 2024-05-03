@@ -1,55 +1,42 @@
 package org.techtown.boda;
 
-import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.AsyncTask;
+
+import org.techtown.boda.GetCaption;
+import org.techtown.boda.cameraActivity;
 
 import java.io.InputStream;
 
 public class HttpsTask extends AsyncTask<Void, Void, String> {
 
     private final InputStream inputStream;
+    private final Bitmap imageBitmap;
+    private final Activity activity;
 
     // Constructor
-    public HttpsTask(InputStream inputStream) {
+    public HttpsTask(Activity activity, InputStream inputStream, Bitmap imageBitmap) {
+        this.activity = activity;
         this.inputStream = inputStream;
+        this.imageBitmap = imageBitmap;
     }
 
     @Override
     protected String doInBackground(Void... params) {
-        String result; // 요청 결과를 저장할 변수.
-
-//        HttpsGetCaption requestHttpsURLConnection = new HttpsGetCaption(this.imageBitmap);
-//        result = requestHttpsURLConnection.sendPostRequest();
-        result = GetCaption.sendCaptionRequest(inputStream);
-
-        try {
-            if (result != null) {
-                System.out.println("[doInBackground] output : " + result);
-            } else {
-                System.out.println("[doInBackground] output is null state.");
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return result;
+        return GetCaption.sendCaptionRequest(inputStream);
     }
 
-    @SuppressLint("SetTextI18n")
     @Override
     protected void onPostExecute(String result) {
         super.onPostExecute(result);
-
-        try {
-            if (result != null) {
-                System.out.println("[onPostExecute] output is ."+result);
-            } else {
-                System.out.println("[onPostExecute] output is null state.");
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (result != null) {
+            // Pass the result and imageBitmap to the cameraActivity using Intent
+            Intent intent = new Intent(activity, cameraActivity.class);
+            intent.putExtra("result", result);
+            intent.putExtra("imageBitmap", imageBitmap);
+            activity.startActivity(intent);
         }
-
     }
 }

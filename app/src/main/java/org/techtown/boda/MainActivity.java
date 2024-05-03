@@ -24,6 +24,7 @@ import androidx.core.content.ContextCompat;
 import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
         mFirebaseAuth = FirebaseAuth.getInstance();
 
         // Sample data for dictionary
-        words.add("Cat");
+        /*words.add("Cat");
         words.add("elephant");
         words.add("Apple");
         words.add("Banana");
@@ -69,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
         examples.add("The elephants are poached for their tusks.");
         examples.add("Eating more than one apple is prohibited");
         examples.add("I have a banana for lunch.");
-        examples.add("Love is an open door");
+        examples.add("Love is an open door");*/
 
         tvResult = findViewById(R.id.tv_result);
 
@@ -146,6 +147,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -154,12 +156,11 @@ public class MainActivity extends AppCompatActivity {
                 Bundle extras = data.getExtras();
                 Bitmap imageBitmap = (Bitmap) extras.get("data");
                 if (imageBitmap != null) {
-                    Intent nextIntent = new Intent(MainActivity.this, cameraActivity.class);
-                    nextIntent.putExtra("imageBitmap", imageBitmap);
-                    nextIntent.putStringArrayListExtra("words", (ArrayList<String>) words);
-                    nextIntent.putStringArrayListExtra("meanings", (ArrayList<String>) meanings);
-                    nextIntent.putStringArrayListExtra("examples", (ArrayList<String>) examples);
-                    startActivity(nextIntent);
+                    // Convert Bitmap to InputStream
+                    InputStream inputStream = GetCaption.transformBMtoIS(imageBitmap);
+
+                    // Send captured image to GetCaption class for caption extraction
+                    new HttpsTask(this, inputStream, imageBitmap).execute();
                 } else {
                     Toast.makeText(this, "사진을 가져오는 중 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
                 }
@@ -169,3 +170,4 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 }
+
