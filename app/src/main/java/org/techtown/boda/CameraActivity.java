@@ -4,7 +4,6 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.view.View;
@@ -23,7 +22,7 @@ import org.json.JSONObject;
 
 import java.util.Locale;
 
-public class cameraActivity extends AppCompatActivity {
+public class CameraActivity extends AppCompatActivity {
 
     private TextToSpeech textToSpeech;
     private LinearLayout wordLayout;
@@ -84,7 +83,7 @@ public class cameraActivity extends AppCompatActivity {
         moveHomeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(cameraActivity.this, MainActivity.class);
+                Intent intent = new Intent(CameraActivity.this, MainActivity.class);
                 startActivity(intent);
                 finish();
             }
@@ -159,10 +158,10 @@ public class cameraActivity extends AppCompatActivity {
                 if (status == TextToSpeech.SUCCESS) {
                     int result = textToSpeech.setLanguage(Locale.US);
                     if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
-                        Toast.makeText(cameraActivity.this, "이 언어는 지원하지 않습니다.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(CameraActivity.this, "이 언어는 지원하지 않습니다.", Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    Toast.makeText(cameraActivity.this, "TTS 초기화에 실패했습니다.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(CameraActivity.this, "TTS 초기화에 실패했습니다.", Toast.LENGTH_SHORT).show();
                 }
             }
         });
