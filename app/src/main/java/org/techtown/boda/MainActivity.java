@@ -65,25 +65,6 @@ public class MainActivity extends AppCompatActivity {
         // Initialize Firebase Auth
         mFirebaseAuth = FirebaseAuth.getInstance();
 
-        // Sample data for dictionary
-        /*words.add("Cat");
-        words.add("elephant");
-        words.add("Apple");
-        words.add("Banana");
-        words.add("Door");
-
-        meanings.add("고양이");
-        meanings.add("코끼리");
-        meanings.add("사과");
-        meanings.add("바나나");
-        meanings.add("문");
-
-        examples.add("Humans began keeping cats as pets to hunt rats and mice.");
-        examples.add("The elephants are poached for their tusks.");
-        examples.add("Eating more than one apple is prohibited");
-        examples.add("I have a banana for lunch.");
-        examples.add("Love is an open door");*/
-
         tvResult = findViewById(R.id.tv_result);
 
         sharedPreferences = getSharedPreferences("MY_PREFS", MODE_PRIVATE);
@@ -132,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 List<WordData> wordDataList = new ArrayList<>();
                 for (int i = 0; i < words.size(); i++) {
-                    WordData wordData = new WordData(words.get(i), meanings.get(i), examples.get(i));
+                    WordData wordData = new WordData(words.get(i), meanings.get(i));
                     wordDataList.add(wordData);
                 }
 

@@ -27,7 +27,7 @@ public class DetailActivity extends AppCompatActivity {
         // Extract data from WordData object
         String word = wordData.getWord();
         String meaning = wordData.getMeaning();
-        String example = wordData.getExample();
+        //String example = wordData.getExample();
 
         TextView wordTextView = findViewById(R.id.wordTextView);
         TextView meaningTextView = findViewById(R.id.meaningTextView);
@@ -35,14 +35,14 @@ public class DetailActivity extends AppCompatActivity {
 
         wordTextView.setText("단어: " + word);
         meaningTextView.setText("의미: " + meaning);
-        exampleTextView.setText("예문: " + example);
+        //exampleTextView.setText("예문: " + example);
 
         Button ttsButton = findViewById(R.id.ttsButton);
         ttsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // TTS 발음 듣기
-                String text = word + ". " + meaning + ". " + example;
+                String text = word + ". " + meaning;
                 textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null, null);
             }
         });

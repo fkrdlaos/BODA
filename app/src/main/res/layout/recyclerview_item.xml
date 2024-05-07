@@ -35,8 +35,10 @@
             android:text="meaning"/>
     </LinearLayout>
 
-<<<<<<< HEAD
+    <TextView
+        android:id="@+id/item_example"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="14sp" />
+
 </LinearLayout>
-=======
-</LinearLayout>
->>>>>>> origin/test

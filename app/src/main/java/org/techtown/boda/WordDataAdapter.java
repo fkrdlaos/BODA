@@ -1,17 +1,23 @@
 package org.techtown.boda;
 
+import android.content.Context;
+import android.provider.ContactsContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class WordDataAdapter extends RecyclerView.Adapter<WordDataAdapter.ViewHolder>{
     private List<WordData> wordDataList;
+    private Context mContext;
 
-    public WordDataAdapter(List<WordData> wordDataList) {
+    public WordDataAdapter(Context context,List<WordData> wordDataList) {
+        mContext = context;
         this.wordDataList = wordDataList;
     }
 
