@@ -5,30 +5,20 @@
     android:layout_height="match_parent"
     tools:context=".SettingsActivity">
 
-    <EditText
-        android:id="@+id/editTextNickname"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="20dp"
-        android:hint="닉네임을 입력해주세요"
-        android:textSize="20sp" />
-
     <Button
-        android:id="@+id/buttonSave"
+        android:id="@+id/buttonNickname"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/editTextNickname"
+        android:layout_alignParentTop="true"
         android:layout_marginStart="20dp"
-        android:layout_marginTop="20dp"
-        android:text="저장" />
+        android:layout_marginTop="38dp"
+        android:text="닉네임 변경" />
 
     <Button
         android:id="@+id/buttonLogout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/buttonSave"
+        android:layout_below="@id/buttonNickname"
         android:layout_marginStart="20dp"
         android:layout_marginTop="20dp"
         android:text="로그아웃" />

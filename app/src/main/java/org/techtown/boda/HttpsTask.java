@@ -31,7 +31,7 @@ public class HttpsTask extends AsyncTask<Void, Void, String> {
         super.onPostExecute(result);
         if (result != null) {
             // Pass the result to the cameraActivity using Intent
-            activity.startActivity(new Intent(activity, cameraActivity.class)
+            activity.startActivity(new Intent(activity, CameraActivity.class)
                     .putExtra("result", result)
                     .putExtra("imagePath", imagePath));
         }

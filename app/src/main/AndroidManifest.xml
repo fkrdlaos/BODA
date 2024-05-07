@@ -31,7 +31,7 @@
             android:name=".SettingsActivity"
             android:exported="false" />
         <activity
-            android:name=".Study_StartActivity"
+            android:name=".StudyStartActivity"
             android:exported="false"
             android:theme="@style/Theme.BODA" />
         <activity
@@ -59,7 +59,7 @@
             android:name=".DictionaryActivity"
             android:exported="false" />
         <activity
-            android:name=".cameraActivity"
+            android:name=".CameraActivity"
             android:exported="false" />
         <activity
             android:name=".LoginActivity"
