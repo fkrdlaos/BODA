@@ -8,8 +8,17 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -26,53 +35,66 @@ public class StudyActivity extends AppCompatActivity {
     private Button btn_check;
 
     private Button btn_home;
-    private Button btn_listen; // 추가된 버튼
-    private Button[] btn_choices; // 4지선다 버튼 배열
-    private LinearLayout spellingLayout; // 받아쓰기 유형 레이아웃
-    private LinearLayout multipleChoiceLayout; // 4지선다 유형 레이아웃
+    private Button btn_listen;
+    private Button[] btn_choices;
+    private LinearLayout spellingLayout;
+    private LinearLayout multipleChoiceLayout;
     private List<String> words;
     private int currentIndex = 0;
-    private int correctCount = 0;
     private Random random = new Random();
     private TextToSpeech textToSpeech;
-    private Map<String, Integer> wordCountMap = new HashMap<>();
-    private boolean isMultipleChoice = false; // 4지선다 문제 여부
+    private Map<String, Boolean> wordAnswerMap = new HashMap<>();
+    private boolean isMultipleChoice = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_study);
 
-        words = getIntent().getStringArrayListExtra("words");
+        words = new ArrayList<>();
 
-        // 여기서 레이아웃 참조 가져오기
+        DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference().child("BODA")
+                .child("UserAccount").child(getUserId()).child("collection");
+
+        databaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    String word = snapshot.getKey();
+                    words.add(word);
+                }
+                if (!words.isEmpty()) {
+                    showNextWord();
+                } else {
+                    tv_word.setText("학습할 단어가 없습니다. 단어를 추가하세요.");
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Toast.makeText(StudyActivity.this, "Failed to load data", Toast.LENGTH_SHORT).show();
+            }
+        });
+
         spellingLayout = findViewById(R.id.spelling_layout);
         multipleChoiceLayout = findViewById(R.id.multiple_choice_layout);
-
-        tv_word = findViewById(R.id.tv_word); // 여기로 이동
+        tv_word = findViewById(R.id.tv_word);
         et_input = findViewById(R.id.et_input);
         btn_check = findViewById(R.id.btn_check);
-
         btn_home = findViewById(R.id.button4);
-        btn_listen = findViewById(R.id.btn_listen); // 버튼 연결
+        btn_listen = findViewById(R.id.btn_listen);
         btn_choices = new Button[]{findViewById(R.id.btn_choice1), findViewById(R.id.btn_choice2),
-                findViewById(R.id.btn_choice3), findViewById(R.id.btn_choice4)}; // 4지선다 버튼 초기화
+                findViewById(R.id.btn_choice3), findViewById(R.id.btn_choice4)};
 
-        // TextToSpeech 초기화 및 기본 언어 설정
         textToSpeech = new TextToSpeech(StudyActivity.this, new TextToSpeech.OnInitListener() {
             @Override
             public void onInit(int status) {
                 if (status == TextToSpeech.SUCCESS) {
                     int result = textToSpeech.setLanguage(Locale.US);
                     if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
-                        // 언어 지원되지 않을 경우 메시지 표시
                         tv_word.setText("이 언어는 지원하지 않습니다.");
-                    } else {
-                        // TextToSpeech가 초기화된 후에 showNextWord 호출
-                        showNextWord();
                     }
                 } else {
-                    // TTS 초기화 실패 시 메시지 표시
                     tv_word.setText("TTS 초기화에 실패했습니다.");
                 }
             }
@@ -82,21 +104,16 @@ public class StudyActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (isMultipleChoice) {
-                    // 4지선다 문제일 때는 선택된 답을 확인
                     checkMultipleChoice();
                 } else {
-                    // 받아쓰기 문제일 때는 입력된 단어와 정답을 비교
                     checkSpelling();
                 }
             }
         });
 
-
-
         btn_home.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // 홈 화면으로 이동
                 Intent intent = new Intent(StudyActivity.this, MainActivity.class);
                 startActivity(intent);
                 finish();
@@ -106,16 +123,15 @@ public class StudyActivity extends AppCompatActivity {
         btn_listen.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // 발음 듣기
                 listenWord();
             }
         });
     }
 
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        // TextToSpeech 종료
         if (textToSpeech != null) {
             textToSpeech.stop();
             textToSpeech.shutdown();
@@ -123,28 +139,9 @@ public class StudyActivity extends AppCompatActivity {
     }
 
     private void showNextWord() {
-        if (currentIndex < words.size()) {
-            String word = words.get(currentIndex);
-
-            // wordCountMap 초기화
-            if (wordCountMap == null) {
-                wordCountMap = new HashMap<>();
-            }
-
-            // 단어 카운트 증가
-            Integer count = wordCountMap.get(word);
-            if (count == null) {
-                // 단어가 맵에 없으면 초기값 0으로 설정
-                count = 0;
-            }
-            wordCountMap.put(word, count + 1);
-
-            // 자주 학습된 단어는 건너뜀 (카운트가 3 이상인 경우)
-            if (count >= 3) {
-                currentIndex++;
-                showNextWord();
-                return;
-            }
+        // 최대 10개의 단어만 표시
+        if (currentIndex < 10 && currentIndex < words.size()) {
+            String word = getRandomWord();
 
             // 4지선다 문제를 랜덤으로 선택
             isMultipleChoice = random.nextBoolean();
@@ -172,25 +169,33 @@ public class StudyActivity extends AppCompatActivity {
                 textToSpeech.speak(word, TextToSpeech.QUEUE_FLUSH, null);
             }
         } else {
-            // 모든 단어를 학습한 경우 결과 표시
+            // 최대 단어 수에 도달하면 학습이 끝난 것으로 간주하고 결과 표시
             showResult();
         }
     }
 
+    private String getRandomWord() {
+        // 단어 리스트에서 랜덤하게 단어 선택
+        return words.get(currentIndex);
+    }
+
+
     private void checkMultipleChoice() {
-        // 선택된 버튼의 텍스트와 정답을 비교하여 정답을 맞췄는지 확인
-        boolean isCorrect = false;
-        for (int i = 0; i < 4; i++) {
-            if (btn_choices[i].getText().toString().equals(words.get(currentIndex))) {
-                isCorrect = true;
+        // 정답 버튼의 텍스트와 실제 정답을 비교하여 정답 여부 확인
+        String correctAnswer = words.get(currentIndex);
+        Button selectedButton = null;
+        for (Button btn : btn_choices) {
+            if (btn.getText().toString().equals(correctAnswer)) {
+                selectedButton = btn;
                 break;
             }
         }
 
-        // 정답을 맞췄는지에 따라 다음 문제로 넘어가거나 결과를 표시하지 않고 다음 문제로 이동
-        if (isCorrect) {
-            correctCount++; // 정답 카운트 증가
-        }
+        // 선택된 버튼이 정답 버튼인지 확인
+        boolean isCorrect = selectedButton != null && selectedButton.getText().toString().equals(correctAnswer);
+
+        // 단어별 정답 여부 기록
+        wordAnswerMap.put(correctAnswer, isCorrect);
 
         // 다음 문제로 넘어가는 작업 추가
         if (currentIndex < words.size() - 1) {
@@ -201,6 +206,7 @@ public class StudyActivity extends AppCompatActivity {
             showResult();
         }
     }
+
 
     private void setMultipleChoice(String word) {
         // 정답의 위치를 랜덤하게 결정
@@ -237,10 +243,10 @@ public class StudyActivity extends AppCompatActivity {
 
     private void checkSpelling() {
         // 입력된 단어와 정답을 비교하여 결과 표시
-        boolean isCorrect = et_input.getText().toString().equalsIgnoreCase(words.get(currentIndex));
-        if (isCorrect) {
-            correctCount++; // 정답 카운트 증가
-        }
+        String correctAnswer = words.get(currentIndex);
+        boolean isCorrect = et_input.getText().toString().equalsIgnoreCase(correctAnswer);
+        // 단어별 정답 여부 기록
+        wordAnswerMap.put(correctAnswer, isCorrect);
 
         // 다음 문제로 넘어가는 작업 추가
         if (currentIndex < words.size() - 1) {
@@ -252,7 +258,6 @@ public class StudyActivity extends AppCompatActivity {
         }
     }
 
-
     private void listenWord() {
         if (textToSpeech != null) {
             String word = words.get(currentIndex);
@@ -262,10 +267,27 @@ public class StudyActivity extends AppCompatActivity {
 
     private void showResult() {
         // 학습 완료 후 결과를 표시하는 액티비티로 이동
+        int correctCount = 0;
+        for (Boolean isCorrect : wordAnswerMap.values()) {
+            if (isCorrect) {
+                correctCount++;
+            }
+        }
         Intent intent = new Intent(StudyActivity.this, StudyResultActivity.class);
-        intent.putExtra("totalWords", words.size());
+        intent.putExtra("totalWords", Math.min(words.size(), 10)); // 총 단어 갯수를 최대 10개로 제한
         intent.putExtra("correctCount", correctCount);
         startActivity(intent);
         finish();
+    }
+
+    // Firebase Realtime Database에서 사용자 ID 가져오기
+    private String getUserId() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            return user.getUid();
+        } else {
+            // 사용자가 로그인되어 있지 않은 경우 빈 문자열 반환
+            return "";
+        }
     }
 }
