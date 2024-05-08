@@ -42,17 +42,30 @@
         android:src="@drawable/progress_bar_exp" />
 
     <!--스크롤뷰->리사이클러 뷰 사용-->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
+
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/white"
-        android:layout_below="@id/progressImageView"
-        android:layout_above="@+id/button_layout"
+        android:layout_height="476dp"
+        android:layout_below="@+id/progressImageView"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_centerInParent="true"
-        android:layout_marginTop="30dp"/>
+        android:layout_marginTop="25dp"
+        android:layout_marginEnd="0dp"
+        android:layout_marginBottom="49dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="446dp"
+                android:layout_marginTop="30dp"
+                android:background="@color/white" />
+        </LinearLayout>
+    </ScrollView>
 
     <LinearLayout
         android:id="@+id/button_layout"
