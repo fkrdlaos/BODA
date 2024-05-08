@@ -145,8 +145,7 @@ public class MainActivity extends AppCompatActivity {
         btnStudy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent studyIntent = new Intent(MainActivity.this, StudyActivity.class);
-                studyIntent.putStringArrayListExtra("words", (ArrayList<String>) words);
+                Intent studyIntent = new Intent(MainActivity.this, StudyStartActivity.class);
                 startActivity(studyIntent);
             }
         });

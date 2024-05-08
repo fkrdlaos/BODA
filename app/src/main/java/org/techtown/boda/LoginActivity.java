@@ -166,6 +166,9 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                             editor.putString("nickname", nickname);
                             editor.apply();
 
+                            // Firebase 실시간 데이터베이스에 사용자 정보 저장
+                            saveUserToFirebase(account.getEmail(), nickname);
+
                             Toast.makeText(LoginActivity.this, "로그인 성공", Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                             startActivity(intent);
@@ -176,6 +179,30 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                         }
                     }
                 });
+    }
+
+    private void saveUserToFirebase(String email, String nickname) {
+        // Firebase 실시간 데이터베이스에서 'UserAccounts'라는 노드에 사용자 정보 저장
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("BODA").child("UserAccount");
+        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid(); // 현재 사용자의 UID 가져오기
+
+        // UserAccount 객체 생성
+        UserAccount userAccount = new UserAccount();
+        userAccount.setIdToken(userId);
+        userAccount.setEmailId(email);
+        userAccount.setNickname(nickname);
+
+        // 'UserAccounts' 노드에 사용자 정보 저장
+        userRef.child(userId).setValue(userAccount, new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
+                if (error == null) {
+                    Toast.makeText(LoginActivity.this, "사용자 정보가 저장되었습니다.", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(LoginActivity.this, "사용자 정보 저장에 실패했습니다.", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     @Override
