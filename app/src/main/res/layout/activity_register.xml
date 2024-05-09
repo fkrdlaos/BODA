@@ -67,15 +67,16 @@
 
     <Button
         android:id="@+id/btn_check"
-        android:layout_width="60dp"
-        android:layout_height="40dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/et_email"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="288dp"
-        android:layout_marginEnd="65dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="61dp"
         android:background="@drawable/activity_register_check"
         android:text="중복확인"
         android:textColor="#FF6F0F"
-        android:textSize="12dp"
+        android:textSize="12sp"
         android:textStyle="bold" />
 
     <Button
