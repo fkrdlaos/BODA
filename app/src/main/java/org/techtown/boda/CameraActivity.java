@@ -20,6 +20,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Iterator;
 import java.util.Locale;
 
 public class CameraActivity extends AppCompatActivity {
@@ -94,15 +95,17 @@ public class CameraActivity extends AppCompatActivity {
         try {
             JSONObject jsonObject = new JSONObject(result);
             String sentence = jsonObject.getString("sentence");
-            JSONArray wordsArray = jsonObject.getJSONArray("words");
+            JSONObject wordsObject = jsonObject.getJSONObject("words");
 
             // Display the sentence
             displaySentence(sentence);
 
-            // Display the words
-            for (int i = 0; i < wordsArray.length(); i++) {
-                String word = wordsArray.getString(i);
-                displayWord(word);
+            // Display the words and meanings
+            Iterator<String> keys = wordsObject.keys();
+            while (keys.hasNext()) {
+                String word = keys.next();
+                String meaning = wordsObject.getString(word);
+                displayWordAndMeaning(word, meaning);
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -111,6 +114,7 @@ public class CameraActivity extends AppCompatActivity {
             progressDialog.dismiss();
         }
     }
+
 
     private void displaySentence(String sentence) {
         // Display the sentence
@@ -129,10 +133,16 @@ public class CameraActivity extends AppCompatActivity {
         });
     }
 
-    private void displayWord(String word) {
-        // Display a word
+    private void displayWordAndMeaning(String word, String meaning) {
+        // Display a word and its meaning
         TextView wordTextView = new TextView(this);
         wordTextView.setText("단어: " + word);
+        wordLayout.addView(wordTextView);
+
+        TextView meaningTextView = new TextView(this);
+        meaningTextView.setText("뜻: " + meaning);
+        wordLayout.addView(meaningTextView);
+
         // Set click listener to speak the word
         wordTextView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -142,8 +152,8 @@ public class CameraActivity extends AppCompatActivity {
                 }
             }
         });
-        wordLayout.addView(wordTextView);
     }
+
 
     private void displayImage(Bitmap imageBitmap) {
         // Display the image
@@ -175,5 +185,14 @@ public class CameraActivity extends AppCompatActivity {
             textToSpeech.stop();
             textToSpeech.shutdown();
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        // 이전 화면으로 이동
+        super.onBackPressed();
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+        finish(); // 현재 액티비티 종료
     }
 }
