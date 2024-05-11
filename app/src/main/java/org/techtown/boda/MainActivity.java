@@ -116,7 +116,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 List<WordData> wordDataList = new ArrayList<>();
                 for (int i = 0; i < words.size(); i++) {
-                    WordData wordData = new WordData(words.get(i), meanings.get(i));
+                    WordData wordData = new WordData(words.get(i), meanings.get(i), examples.get(i));
                     wordDataList.add(wordData);
                 }
 

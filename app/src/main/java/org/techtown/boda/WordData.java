@@ -5,12 +5,12 @@ import java.io.Serializable;
 public class WordData implements Serializable {
     private String word;
     private String meaning;
-    //private String example;
+    private String example;
 
-    public WordData(String word, String meaning) {
+    public WordData(String word, String meaning, String example) {
         this.word = word;
         this.meaning = meaning;
-        //this.example = example;
+        this.example = example;
     }
 
     public String getWord() {
@@ -21,14 +21,13 @@ public class WordData implements Serializable {
         return meaning;
     }
 
-//    public String getExample() {
-//        return example;
-//    }
+    public String getExample() {
+        return example;
+    }
 
     @Override
     public String toString() {
         return word; // Only return the word for ArrayAdapter display
     }
 }
-
 

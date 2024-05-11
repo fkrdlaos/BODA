@@ -34,6 +34,7 @@
 
     <TextView
         android:id="@+id/meaningTextView"
+        android:text = "뜻:"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/wordTextView"
@@ -44,6 +45,7 @@
 
     <TextView
         android:id="@+id/exampleTextView"
+        android:text="예문"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="16sp"

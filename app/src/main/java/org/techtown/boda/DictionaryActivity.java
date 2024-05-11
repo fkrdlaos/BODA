@@ -33,7 +33,15 @@ public class DictionaryActivity extends AppCompatActivity {
 
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
+        // 클릭 이벤트를 처리하기 위한 listener 생성
+        WordDataAdapter.OnItemClickListener listener = new WordDataAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(int position) {
+                // 아이템 클릭 시 처리할 로직 작성
+                Intent intent = new Intent(DictionaryActivity.this, DetailActivity.class);
+                startActivity(intent);
+            }
+        };
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
             String userId = user.getUid();
@@ -50,7 +58,7 @@ public class DictionaryActivity extends AppCompatActivity {
                         WordData wordData = new WordData(word, meaning, "");
                         wordDataList.add(wordData);
                     }
-                    adapter = new WordDataAdapter(wordDataList);
+                    adapter = new WordDataAdapter(wordDataList,listener);
                     recyclerView.setAdapter(adapter);
                 }
 
@@ -65,10 +73,8 @@ public class DictionaryActivity extends AppCompatActivity {
         homeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Start activity_main activity
                 Intent intent = new Intent(DictionaryActivity.this, MainActivity.class);
                 startActivity(intent);
-                // Finish current activity
                 finish();
             }
         });
