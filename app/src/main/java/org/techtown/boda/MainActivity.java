@@ -11,6 +11,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -51,6 +52,8 @@ public class MainActivity extends AppCompatActivity {
     private ImageButton btnCamera, btnDictionary, btnStudy;
     private Button btnsettings;
     private FirebaseAuth mFirebaseAuth;
+
+    private ProgressDialog progressDialog;
 
     // Sample data for dictionary
     private List<String> words = new ArrayList<>();
@@ -126,8 +129,7 @@ public class MainActivity extends AppCompatActivity {
         btnStudy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent studyIntent = new Intent(MainActivity.this, StudyActivity.class);
-                studyIntent.putStringArrayListExtra("words", (ArrayList<String>) words);
+                Intent studyIntent = new Intent(MainActivity.this, StudyStartActivity.class);
                 startActivity(studyIntent);
             }
         });
@@ -189,9 +191,17 @@ public class MainActivity extends AppCompatActivity {
                 // 카메라로 사진 찍은 경우
                 if (data != null && data.getExtras() != null) {
                     // Display progress dialog
-                    ProgressDialog progressDialog = new ProgressDialog(this);
+                    progressDialog = new ProgressDialog(MainActivity.this);
                     progressDialog.setMessage("사진에서 문장과 단어를 추출하고 있습니다...");
                     progressDialog.setCancelable(false);
+                    progressDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "취소", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            if (progressDialog != null && progressDialog.isShowing()) {
+                                progressDialog.dismiss();
+                            }
+                        }
+                    });
                     progressDialog.show();
 
                     Bundle extras = data.getExtras();
@@ -213,9 +223,17 @@ public class MainActivity extends AppCompatActivity {
                 // 갤러리에서 사진을 선택한 경우
                 if (data != null && data.getData() != null) {
                     // Display progress dialog
-                    ProgressDialog progressDialog = new ProgressDialog(this);
+                    progressDialog = new ProgressDialog(MainActivity.this);
                     progressDialog.setMessage("사진에서 문장과 단어를 추출하고 있습니다...");
                     progressDialog.setCancelable(false);
+                    progressDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "취소", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            if (progressDialog != null && progressDialog.isShowing()) {
+                                progressDialog.dismiss();
+                            }
+                        }
+                    });
                     progressDialog.show();
 
                     Uri selectedImageUri = data.getData();
@@ -239,6 +257,15 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(this, "갤러리에서 이미지를 가져오는 중 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
                 }
             }
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // Prevent memory leaks by dismissing the dialog when the activity is destroyed
+        if (progressDialog != null && progressDialog.isShowing()) {
+            progressDialog.dismiss();
         }
     }
 

@@ -12,24 +12,17 @@
         android:id="@+id/explanation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
+        android:layout_marginStart="30dp"
         android:layout_marginTop="113dp"
-        android:gravity="center_horizontal|center_vertical"
-        android:lineSpacingExtra="-12sp"
         android:text="다보와 함께 모험을!"
-        android:textAppearance="@style/explanation"
-        android:textStyle="bold" />
+        android:textAppearance="@style/explanation" />
 
     <TextView
         android:id="@+id/explanationadd"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="159dp"
-        android:gravity="center_horizontal|center_vertical"
-        android:lineSpacingExtra="0sp"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="179dp"
         android:text="언제, 어디서든, 찰칵"
         android:textAppearance="@style/explanationadd" />
 
@@ -37,25 +30,22 @@
         android:id="@+id/explanationadd1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="192dp"
-        android:gravity="center_horizontal|center_vertical"
-        android:lineSpacingExtra="0sp"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="212dp"
         android:text="모험가가 되어 새로운 단어를 수집해요"
         android:textAppearance="@style/explanationadd" />
 
     <Button
         android:id="@+id/button5"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="310dp"
+        android:layout_height="55dp"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginLeft="2dp"
-        android:layout_marginTop="644dp"
-        android:background="@android:color/holo_orange_dark"
-        android:backgroundTint="@android:color/holo_orange_dark"
+        android:layout_marginLeft="50dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="80dp"
+        android:background="@drawable/activity_start_button"
         android:text="시작하기"
-        android:textColor="@color/black"
-        android:textColorLink="@android:color/holo_orange_dark" />
+        android:textColor="#FFFFFF"
+        android:textStyle="bold"
+        android:textSize="22sp" />
 </RelativeLayout>

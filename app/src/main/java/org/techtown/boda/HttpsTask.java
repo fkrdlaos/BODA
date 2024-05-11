@@ -34,6 +34,7 @@ public class HttpsTask extends AsyncTask<Void, Void, String> {
             activity.startActivity(new Intent(activity, CameraActivity.class)
                     .putExtra("result", result)
                     .putExtra("imagePath", imagePath));
+
         }
     }
 }

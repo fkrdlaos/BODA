@@ -45,6 +45,8 @@ public class StudyActivity extends AppCompatActivity {
     private TextToSpeech textToSpeech;
     private Map<String, Boolean> wordAnswerMap = new HashMap<>();
     private boolean isMultipleChoice = false;
+    private List<Integer> randomIndexes;
+    //private List<Integer> sdf = [];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +66,8 @@ public class StudyActivity extends AppCompatActivity {
                     words.add(word);
                 }
                 if (!words.isEmpty()) {
+                    setRandomIndex();
+
                     showNextWord();
                 } else {
                     tv_word.setText("학습할 단어가 없습니다. 단어를 추가하세요.");
@@ -174,15 +178,37 @@ public class StudyActivity extends AppCompatActivity {
         }
     }
 
+    //랜덤하게 불러올 단어 인덱스 리스트
+    //그리고 해당 리스트 무작위로 섞기
+    //randomIndexes 는 getRandomWord에서 불러서쓰기
+    private void setRandomIndex(){
+        int size = words.size(); // 전체 도감 사이즈
+        int count = 10; //문제 개수
+        if (size < count) {
+            throw new IllegalArgumentException("리스트의 크기가 요청된 개수보다 작습니다.");
+        }
+
+        // 도감의 사이즈만큼의 인덱스가 존재하는 상황
+        // 전체 인덱스를 랜덤으로 셔플
+        // 셔플한 리스트에서 상위 10개 추출하여 랜덤 인덱스저장
+        List<Integer> indexes = new ArrayList<>();
+        for (int i = 0; i < size; i++) {
+            indexes.add(i);
+        }
+        Collections.shuffle(indexes);
+
+        randomIndexes = indexes.subList(0, count);
+    }
     private String getRandomWord() {
         // 단어 리스트에서 랜덤하게 단어 선택
-        return words.get(currentIndex);
+
+        return words.get(randomIndexes.get(currentIndex));
     }
 
 
     private void checkMultipleChoice() {
         // 정답 버튼의 텍스트와 실제 정답을 비교하여 정답 여부 확인
-        String correctAnswer = words.get(currentIndex);
+        String correctAnswer = words.get(randomIndexes.get(currentIndex));
         Button selectedButton = null;
         for (Button btn : btn_choices) {
             if (btn.getText().toString().equals(correctAnswer)) {
@@ -243,7 +269,7 @@ public class StudyActivity extends AppCompatActivity {
 
     private void checkSpelling() {
         // 입력된 단어와 정답을 비교하여 결과 표시
-        String correctAnswer = words.get(currentIndex);
+        String correctAnswer = words.get(randomIndexes.get(currentIndex));
         boolean isCorrect = et_input.getText().toString().equalsIgnoreCase(correctAnswer);
         // 단어별 정답 여부 기록
         wordAnswerMap.put(correctAnswer, isCorrect);
@@ -260,7 +286,7 @@ public class StudyActivity extends AppCompatActivity {
 
     private void listenWord() {
         if (textToSpeech != null) {
-            String word = words.get(currentIndex);
+            String word = words.get(randomIndexes.get(currentIndex));
             textToSpeech.speak(word, TextToSpeech.QUEUE_FLUSH, null);
         }
     }
