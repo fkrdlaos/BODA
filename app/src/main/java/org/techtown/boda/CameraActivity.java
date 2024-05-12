@@ -170,7 +170,18 @@ public class CameraActivity extends AppCompatActivity {
                 }
             }
         });
+
+        // Set click listener to speak the meaning
+        meaningTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (textToSpeech != null && !textToSpeech.isSpeaking()) {
+                    textToSpeech.speak(meaning, TextToSpeech.QUEUE_FLUSH, null, null);
+                }
+            }
+        });
     }
+
 
 
     private void displayImage(Bitmap imageBitmap) {
