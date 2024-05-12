@@ -67,14 +67,25 @@
 
                 <TextView
                     android:id="@+id/exampleTextView"
-                    android:text="예문"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="16sp"
                     android:layout_below="@id/meaningTextView"
                     android:layout_marginStart="16dp"
+                    android:layout_marginTop="8dp"
                     android:layout_marginEnd="16dp"
-                    android:layout_marginTop="8dp" />
+                    android:text="예문:"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/dateTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/meaningTextView"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="16dp"
+                    android:text="날짜:"
+                    android:textSize="18sp"/>
             </LinearLayout>
 
             <!-- 사진 추가하기 버튼 -->

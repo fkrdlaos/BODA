@@ -62,8 +62,11 @@ public class DictionaryActivity extends AppCompatActivity {
                     int wordCount = 0;
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                         String word = snapshot.getKey();
-                        String meaning = snapshot.getValue(String.class);
-                        WordData wordData = new WordData(word, meaning, "");
+                        String meaning = snapshot.child("meanings").getValue(String.class);
+                        String sentence = snapshot.child("sentence").getValue(String.class);
+                        String dateTime = snapshot.child("dateTime").getValue(String.class); // "date_time"으로 수정
+                        WordData wordData = new WordData(word, meaning, sentence, dateTime);
+
                         wordDataList.add(wordData);
                         wordCount++;
                     }

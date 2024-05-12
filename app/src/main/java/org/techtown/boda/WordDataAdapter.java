@@ -13,13 +13,16 @@ import java.util.List;
 public class WordDataAdapter extends RecyclerView.Adapter<WordDataAdapter.ViewHolder>{
     private List<WordData> wordDataList;
     private OnItemClickListener listener;
-    public WordDataAdapter(List<WordData> wordDataList,OnItemClickListener listener) {
+
+    public WordDataAdapter(List<WordData> wordDataList, OnItemClickListener listener) {
         this.listener = listener;
         this.wordDataList = wordDataList;
     }
+
     public interface OnItemClickListener {
         void onItemClick(int position);
     }
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -34,20 +37,19 @@ public class WordDataAdapter extends RecyclerView.Adapter<WordDataAdapter.ViewHo
         holder.meaningTextView.setText(wordData.getMeaning());
 
         // 아이템 클릭 이벤트 처리
-        holder.itemView.setOnClickListener(new View.OnClickListener(){
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v){
-                    int clickedPosition = holder.getAdapterPosition(); // 클릭된 아이템의 위치를 가져옴
-                    if(listener != null && clickedPosition != RecyclerView.NO_POSITION){ // 클릭된 위치가 유효한지 확인
-                        listener.onItemClick(clickedPosition);
-                    }
-                    Intent intent = new Intent(v.getContext(),DetailActivity.class);
-                    intent.putExtra("wordData",wordData);
-                    v.getContext().startActivity(intent);
+            public void onClick(View v) {
+                int clickedPosition = holder.getAdapterPosition(); // 클릭된 아이템의 위치를 가져옴
+                if (listener != null && clickedPosition != RecyclerView.NO_POSITION) { // 클릭된 위치가 유효한지 확인
+                    listener.onItemClick(clickedPosition);
+                }
+                Intent intent = new Intent(v.getContext(), DetailActivity.class);
+                intent.putExtra("wordData", wordData);
+                v.getContext().startActivity(intent);
             }
         });
     }
-
 
     @Override
     public int getItemCount() {

@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
     private List<String> words = new ArrayList<>();
     private List<String> meanings = new ArrayList<>();
     private List<String> examples = new ArrayList<>();
-
+    private List<String> dateTime = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -116,7 +116,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 List<WordData> wordDataList = new ArrayList<>();
                 for (int i = 0; i < words.size(); i++) {
-                    WordData wordData = new WordData(words.get(i), meanings.get(i), examples.get(i));
+                    WordData wordData = new WordData(words.get(i), meanings.get(i), examples.get(i), dateTime.get(i));
                     wordDataList.add(wordData);
                 }
 

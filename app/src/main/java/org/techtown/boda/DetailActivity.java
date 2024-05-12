@@ -49,18 +49,24 @@ public class DetailActivity extends AppCompatActivity {
         // Get WordData object from Intent
         WordData wordData = (WordData) getIntent().getSerializableExtra("wordData");
 
+
+
+
         if (wordData != null) {
             String word = wordData.getWord();
             String meaning = wordData.getMeaning();
             String example = wordData.getExample();
+            String dateTime = wordData.getDateTime(); // 필드명 수정
 
             TextView wordTextView = findViewById(R.id.wordTextView);
             TextView meaningTextView = findViewById(R.id.meaningTextView);
             TextView exampleTextView = findViewById(R.id.exampleTextView);
+            TextView dateTextView = findViewById(R.id.dateTextView); // 날짜를 표시할 TextView
 
             wordTextView.setText("단어: " + word);
             meaningTextView.setText("의미: " + meaning);
             exampleTextView.setText("예문: " + example);
+            dateTextView.setText("날짜: " + dateTime); // 날짜를 TextView에 설정
 
             // TTS 버튼 클릭 이벤트 처리
             Button ttsButton = findViewById(R.id.ttsButton);
@@ -231,7 +237,6 @@ public class DetailActivity extends AppCompatActivity {
         }
     }
 
-
     // URI에서 비트맵 이미지를 가져오고 리사이징하는 메서드
     private Bitmap resizeBitmap(Uri uri) {
         try {
@@ -251,9 +256,6 @@ public class DetailActivity extends AppCompatActivity {
             return null;
         }
     }
-
-
-
 
     @Override
     protected void onDestroy() {
