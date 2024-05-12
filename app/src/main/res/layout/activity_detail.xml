@@ -8,74 +8,120 @@
     android:clipToOutline="true"
     tools:context=".DetailActivity">
 
-<LinearLayout
-    android:id="@+id/detailLinearLayout"
-    android:layout_width="300dp"
-    android:layout_height="250dp"
-    android:layout_centerInParent="true"
-    android:orientation="vertical"
-    android:background="@drawable/shape_drawable"
-    android:padding="16dp"
-    android:layout_marginTop="100dp"
-    android:layout_marginStart="16dp"
-    android:layout_marginEnd="16dp">
-
-    <TextView
-        android:id="@+id/wordTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/shape_drawable"
-        android:textSize="30sp"
-        android:layout_marginTop="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
-
-    <TextView
-        android:id="@+id/meaningTextView"
-        android:text = "뜻:"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/wordTextView"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
-        android:textSize="18sp" />
-
-    <TextView
-        android:id="@+id/exampleTextView"
-        android:text="예문"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="16sp"
-        android:layout_below="@id/meaningTextView"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginTop="8dp" />
-</LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/button_layout"
+    <!-- 스크롤 가능한 레이아웃을 감싸기 위한 ScrollView 추가 -->
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:orientation="horizontal">
+        android:layout_height="match_parent">
 
-        <Button
-            android:id="@+id/ttsButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="#FF9800"
-            android:text="발음 듣기" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-        <Button
-            android:id="@+id/backButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="#FF9800"
-            android:text="이전" />
-    </LinearLayout>
+            <!-- 이미지를 보여줄 ImageView -->
+            <ImageView
+                android:id="@+id/photoImageView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_centerHorizontal="true"
+                android:adjustViewBounds="true"
+                android:scaleType="fitCenter"
+                android:visibility="gone" />
+
+
+            <LinearLayout
+                android:id="@+id/detailLinearLayout"
+                android:layout_width="300dp"
+                android:layout_height="250dp"
+                android:layout_below="@id/photoImageView"
+                android:layout_centerHorizontal="true"
+                android:orientation="vertical"
+                android:background="@drawable/shape_drawable"
+                android:padding="16dp"
+                android:layout_marginTop="100dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp">
+
+                <TextView
+                    android:id="@+id/wordTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/shape_drawable"
+                    android:textSize="30sp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true" />
+
+                <TextView
+                    android:id="@+id/meaningTextView"
+                    android:text = "뜻:"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/wordTextView"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="16dp"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/exampleTextView"
+                    android:text="예문"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="16sp"
+                    android:layout_below="@id/meaningTextView"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginTop="8dp" />
+            </LinearLayout>
+
+            <!-- 사진 추가하기 버튼 -->
+            <Button
+                android:id="@+id/addPhotoButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/detailLinearLayout"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="16dp"
+                android:text="사진 추가하기" />
+
+            <!-- 사진 회전 버튼 -->
+            <Button
+                android:id="@+id/rotateImageButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/addPhotoButton"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="16dp"
+                android:text="사진 회전" />
+
+            <LinearLayout
+                android:id="@+id/button_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/rotateImageButton"
+                android:layout_alignParentBottom="true"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/ttsButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="#FF9800"
+                    android:text="발음 듣기" />
+
+                <Button
+                    android:id="@+id/backButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="#FF9800"
+                    android:text="이전" />
+            </LinearLayout>
+
+        </RelativeLayout>
+    </ScrollView>
 </RelativeLayout>

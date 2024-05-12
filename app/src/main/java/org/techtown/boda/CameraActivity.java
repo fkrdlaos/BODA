@@ -16,7 +16,6 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -89,6 +88,16 @@ public class CameraActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+        // 이미지뷰의 터치 이벤트 처리
+        ImageView imageView = findViewById(R.id.imageViewNext);
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // 이미지 회전
+                rotateImage();
+            }
+        });
     }
 
     private void processResult(String result) {
@@ -122,6 +131,9 @@ public class CameraActivity extends AppCompatActivity {
         sentenceTextView.setText("문장: " + sentence);
         wordLayout.addView(sentenceTextView);
 
+        // Add spacing after displaying the sentence
+        addSpacing(wordLayout);
+
         // Set click listener to speak the sentence
         sentenceTextView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -139,9 +151,15 @@ public class CameraActivity extends AppCompatActivity {
         wordTextView.setText("단어: " + word);
         wordLayout.addView(wordTextView);
 
+        // Add spacing after displaying the word
+        addSpacing(wordLayout);
+
         TextView meaningTextView = new TextView(this);
         meaningTextView.setText("뜻: " + meaning);
         wordLayout.addView(meaningTextView);
+
+        // Add spacing after displaying the meaning
+        addSpacing(wordLayout);
 
         // Set click listener to speak the word
         wordTextView.setOnClickListener(new View.OnClickListener() {
@@ -194,5 +212,34 @@ public class CameraActivity extends AppCompatActivity {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
         finish(); // 현재 액티비티 종료
+    }
+
+    // 이미지 회전 메서드
+    private void rotateImage() {
+        ImageView imageView = findViewById(R.id.imageViewNext);
+        if (imageView.getDrawable() == null) {
+            // 이미지가 없을 때는 회전하지 않음
+            Toast.makeText(this, "이미지가 없습니다.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // 현재 이미지 회전 각도 확인
+        float currentRotation = imageView.getRotation();
+        // 회전 각도 90도씩 증가시키기
+        float newRotation = currentRotation + 90f;
+        // 회전 애니메이션
+        imageView.animate().rotation(newRotation).setDuration(200).start();
+    }
+
+    // Method to add spacing
+    private void addSpacing(LinearLayout layout) {
+        TextView spacingTextView = new TextView(this);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        params.setMargins(0, 16, 0, 16); // Add top and bottom margins
+        spacingTextView.setLayoutParams(params);
+        layout.addView(spacingTextView);
     }
 }
