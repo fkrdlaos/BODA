@@ -151,6 +151,7 @@
         android:layout_marginStart="64dp"
         android:layout_marginEnd="32dp"
         android:layout_marginBottom="38dp"
+        android:indeterminateDrawable="@drawable/progress_bar_exp"
         android:max="100"
         android:progressDrawable="@drawable/progress_bar_exp"
         tools:progress="0" />

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@android:id/background">
+        <shape>
+            <corners android:radius="10dp" />
+            <solid android:color="#c8c8c8" />
+        </shape>
+    </item>
+    <!-- Bronze: 10개 이상일 때 -->
+    <item android:id="@+id/bronzeProgress">
+        <clip>
+            <shape>
+                <corners android:radius="10dp" />
+                <solid android:color="#CD7F32" /> <!-- Bronze color -->
+            </shape>
+        </clip>
+    </item>
+    <!-- Silver: 50개 이상일 때 -->
+    <item android:id="@+id/silverProgress">
+        <clip>
+            <shape>
+                <corners android:radius="10dp" />
+                <solid android:color="#C0C0C0" /> <!-- Silver color -->
+            </shape>
+        </clip>
+    </item>
+    <!-- Gold: 100개 이상일 때 -->
+    <item android:id="@+id/goldProgress">
+        <clip>
+            <shape>
+                <corners android:radius="10dp" />
+                <solid android:color="#FFD700" /> <!-- Gold color -->
+            </shape>
+        </clip>
+    </item>
+    <!-- Platinum: 200개 이상일 때 -->
+    <item android:id="@+id/platinumProgress">
+        <clip>
+            <shape>
+                <corners android:radius="10dp" />
+                <solid android:color="#E5E4E2" /> <!-- Platinum color -->
+            </shape>
+        </clip>
+    </item>
+    <!-- Diamond: 500개 이상일 때 -->
+    <item android:id="@+id/diamondProgress">
+        <clip>
+            <shape>
+                <corners android:radius="10dp" />
+                <solid android:color="#B9F2FF" /> <!-- Diamond color -->
+            </shape>
+        </clip>
+    </item>
+</layer-list>
