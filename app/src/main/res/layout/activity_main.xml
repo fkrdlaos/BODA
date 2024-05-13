@@ -11,93 +11,260 @@
 
     <View
         android:id="@+id/profile_car"
-        android:layout_width="345dp"
-        android:layout_height="210dp"
-        android:layout_alignParentLeft="true"
+        android:layout_width="960px"
+        android:layout_height="570px"
+        android:layout_centerHorizontal="true"
         android:layout_alignParentTop="true"
-        android:layout_marginLeft="28dp"
-        android:layout_marginTop="83dp"
+        android:layout_marginTop="240px"
         android:background="@drawable/activity_main_profilecar"/>
 
     <View
         android:id="@+id/view2"
-        android:layout_width="328dp"
-        android:layout_height="53dp"
-        android:layout_alignStart="@+id/profile_car"
-        android:layout_alignEnd="@+id/profile_car"
+        android:layout_width="900px"
+        android:layout_height="165px"
+        android:layout_centerHorizontal="true"
         android:layout_alignBottom="@+id/profile_car"
-        android:layout_marginStart="12dp"
-        android:layout_marginEnd="5dp"
-        android:layout_marginBottom="25dp"
+        android:layout_marginBottom="60px"
         android:background="@drawable/activity_main_view2" />
 
     <ImageButton
         android:id="@+id/today_words"
-        android:layout_width="wrap_content"
-        android:layout_height="60dp"
+        android:layout_width="960px"
+        android:layout_height="150px"
         android:layout_below="@+id/profile_car"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="60dp"
-        android:layout_marginEnd="20dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="165px"
         android:background="@color/white"
         android:contentDescription="today_words"
         app:srcCompat="@drawable/activity_main_today" />
 
     <ImageButton
         android:id="@+id/today_study"
-        android:layout_width="wrap_content"
-        android:layout_height="60dp"
-        android:layout_below="@+id/profile_car"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="140dp"
-        android:layout_marginEnd="20dp"
+        android:layout_width="960px"
+        android:layout_height="150px"
+        android:layout_below="@+id/today_words"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30px"
         android:background="@color/white"
         android:contentDescription="today_study"
         app:srcCompat="@drawable/activity_main_today" />
 
 
-    <ImageButton
-        android:id="@+id/btnCamera"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="35dp"
-        android:layout_marginLeft="34dp"
-        android:layout_marginTop="530dp"
-        android:layout_marginBottom="10dp"
-        android:background="@color/white"
-        android:contentDescription="btncamera"
-        app:srcCompat="@drawable/c" />
+        android:layout_centerHorizontal="true"
+        android:orientation="horizontal"
+        android:layout_below="@+id/today_study"
+        android:layout_marginTop="90px">
 
-    <ImageButton
-        android:id="@+id/btn_Study"
+        <ImageButton
+            android:id="@+id/btnCamera"
+            android:layout_width="465px"
+            android:layout_height="750px"
+            android:background="@color/white"
+            android:contentDescription="btnCamera"
+            app:srcCompat="@drawable/c" />
+
+        <LinearLayout
+            android:id="@+id/layout_study_dictionary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginStart="30px">
+
+            <ImageButton
+                android:id="@+id/btn_Study"
+                android:layout_width="465px"
+                android:layout_height="360px"
+                android:background="@color/white"
+                android:contentDescription="btn_Study"
+                app:srcCompat="@drawable/c1" />
+
+            <ImageButton
+                android:id="@+id/btn_Dictionary"
+                android:layout_width="465px"
+                android:layout_height="360px"
+                android:layout_marginTop="30px"
+                android:background="@color/white"
+                android:contentDescription="btn_Dictionary"
+                app:srcCompat="@drawable/c2" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_result"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/btnCamera"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="-260dp"
-        android:layout_marginEnd="35dp"
-        android:background="@color/white"
-        android:contentDescription="btn_Study"
-        app:srcCompat="@drawable/c1" />
+        android:layout_alignTop="@+id/profile_car"
+        android:layout_marginStart="15px"
+        android:layout_marginTop="105px"
+        android:layout_toStartOf="@+id/iv_profile"
+        android:layout_toEndOf="@+id/hi"
+        android:text="Nickname"
+        android:textColor="#FFFFFF"
+        android:textSize="26sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/iv_profile" />
 
-    <ImageButton
-        android:id="@+id/btn_Dictionary"
+    <TextView
+        android:id="@+id/hi"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/btn_Study"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="0dp"
-        android:layout_marginEnd="23dp"
-        android:backgroundTint="@color/white"
-        android:contentDescription="btn_Dictionary"
-        app:srcCompat="@drawable/c2" />
+        android:layout_alignTop="@+id/profile_car"
+        android:layout_alignStart="@+id/profile_car"
+        android:layout_marginLeft="54px"
+        android:layout_marginTop="105px"
+        android:text="Hi,"
+        android:textColor="#FFFFFF"
+        android:textSize="26sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/iv_profile" />
 
+    <TextView
+        android:id="@+id/welcome"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/profile_car"
+        android:layout_alignStart="@+id/profile_car"
+        android:layout_marginStart="54px"
+        android:layout_marginBottom="285px"
+        android:text="Welcome back!"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/iv_profile" />
+
+    <ImageView
+        android:id="@+id/iv_profile"
+        android:layout_width="240px"
+        android:layout_height="240px"
+        android:layout_alignTop="@+id/profile_car"
+        android:layout_alignEnd="@+id/profile_car"
+        android:layout_marginTop="54px"
+        android:layout_marginEnd="54px"
+        app:srcCompat="@drawable/p" />
+
+    <ProgressBar
+        android:id="@+id/progress_bar_exp"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="840px"
+        android:layout_height="30px"
+        android:layout_alignTop="@+id/view2"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="84px"
+        android:indeterminateDrawable="@drawable/progress_bar_exp"
+        android:max="100"
+        android:progressDrawable="@drawable/progress_bar_exp"
+        tools:progress="0" />
+
+    <TextView
+        android:id="@+id/textView_level"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/view2"
+        android:layout_alignTop="@+id/view2"
+        android:layout_marginStart="60px"
+        android:layout_marginTop="21px"
+        android:textSize="14sp"
+        android:text="LV. 1" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/view2"
+        android:layout_alignEnd="@+id/view2"
+        android:layout_marginEnd="60px"
+        android:layout_marginTop="21px"
+        android:textSize="14sp"
+        android:text="EXP 0 / 100" />
+
+    <ImageView
+        android:id="@+id/findIcon"
+        android:layout_width="90px"
+        android:layout_height="90px"
+        android:layout_alignTop="@+id/today_words"
+        android:layout_alignStart="@+id/today_words"
+        android:layout_marginTop="30px"
+        android:layout_marginStart="75px"
+        app:srcCompat="@drawable/today_find" />
+
+    <ImageView
+        android:id="@+id/challIcon"
+        android:layout_width="90px"
+        android:layout_height="90px"
+        android:layout_alignTop="@+id/today_study"
+        android:layout_alignStart="@+id/today_study"
+        android:layout_marginTop="30px"
+        android:layout_marginStart="75px"
+        app:srcCompat="@drawable/today_chall" />
+
+    <TextView
+        android:id="@+id/findText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/today_words"
+        android:layout_alignStart="@+id/today_words"
+        android:layout_marginStart="240px"
+        android:layout_marginTop="45px"
+        android:textSize="14sp"
+        android:text="새로운 단어 찾기" />
+
+    <TextView
+        android:id="@+id/findResult"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/today_words"
+        android:layout_alignEnd="@+id/today_words"
+        android:layout_marginTop="33px"
+        android:layout_marginEnd="105px"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:text="0/5" />
+
+    <TextView
+        android:id="@+id/challText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/today_study"
+        android:layout_alignStart="@+id/today_study"
+        android:layout_marginStart="240px"
+        android:layout_marginTop="45px"
+        android:textSize="14sp"
+        android:text="단어 학습 도전하기" />
+
+    <TextView
+        android:id="@+id/challResult"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/today_study"
+        android:layout_alignEnd="@+id/today_study"
+        android:layout_marginTop="33px"
+        android:layout_marginEnd="105px"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:text="0/2" />
+
+    <TextView
+        android:id="@+id/today"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/profile_car"
+        android:layout_alignStart="@+id/today_words"
+        android:layout_marginTop="75px"
+        android:layout_marginStart="30px"
+        android:text="오늘의 학습목표"
+        android:textSize="20sp"
+        android:textStyle="bold" />
 
     <Button
         android:id="@+id/btn_settings"
@@ -111,183 +278,6 @@
         android:text="설정"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/tv_result"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/profile_car"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="30dp"
-        android:layout_toStartOf="@+id/iv_profile"
-        android:layout_toEndOf="@+id/hi"
-        android:text="Nickname"
-        android:textColor="#FFFFFF"
-        android:textSize="30sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/iv_profile" />
-
-    <TextView
-        android:id="@+id/hi"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/profile_car"
-        android:layout_marginLeft="50dp"
-        android:layout_marginTop="30dp"
-        android:text="Hi,"
-        android:textColor="#FFFFFF"
-        android:textSize="30sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/iv_profile" />
-
-    <TextView
-        android:id="@+id/welcome"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/profile_car"
-        android:layout_marginLeft="50dp"
-        android:layout_marginTop="70dp"
-        android:text="Welcome back!"
-        android:textColor="#FFFFFF"
-        android:textSize="20sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/iv_profile" />
-
-    <ImageView
-        android:id="@+id/iv_profile"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_alignTop="@+id/profile_car"
-        android:layout_alignEnd="@+id/profile_car"
-        android:layout_marginTop="15dp"
-        android:layout_marginEnd="8dp"
-        app:srcCompat="@drawable/p" />
-
-    <ProgressBar
-        android:id="@+id/progress_bar_exp"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="0dp"
-        android:layout_height="15dp"
-        android:layout_alignEnd="@+id/profile_car"
-        android:layout_alignBottom="@+id/profile_car"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="64dp"
-        android:layout_marginEnd="32dp"
-        android:layout_marginBottom="38dp"
-        android:indeterminateDrawable="@drawable/progress_bar_exp"
-        android:max="100"
-        android:progressDrawable="@drawable/progress_bar_exp"
-        tools:progress="0" />
-
-    <TextView
-        android:id="@+id/textView_level"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/view2"
-        android:layout_alignTop="@+id/view2"
-        android:layout_alignEnd="@+id/view2"
-        android:layout_marginStart="21dp"
-        android:layout_marginTop="3dp"
-        android:layout_marginEnd="225dp"
-        android:text="LV. 1" />
-
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/view2"
-        android:layout_alignEnd="@+id/view2"
-        android:layout_marginEnd="21dp"
-        android:layout_marginTop="3dp"
-        android:text="EXP 0 / 100" />
-
-    <ImageView
-        android:id="@+id/findIcon"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_alignTop="@+id/today_words"
-        android:layout_alignStart="@+id/today_words"
-        android:layout_marginTop="5dp"
-        android:layout_marginStart="25dp"
-        app:srcCompat="@drawable/today_find" />
-
-    <ImageView
-        android:id="@+id/challIcon"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_alignTop="@+id/today_study"
-        android:layout_alignStart="@+id/today_study"
-        android:layout_marginTop="5dp"
-        android:layout_marginStart="25dp"
-        app:srcCompat="@drawable/today_chall" />
-
-    <TextView
-        android:id="@+id/findText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/today_words"
-        android:layout_alignStart="@+id/today_words"
-        android:layout_marginStart="90dp"
-        android:layout_marginTop="20dp"
-        android:textSize="15sp"
-        android:textStyle="bold"
-        android:text="새로운 단어 찾기" />
-
-    <TextView
-        android:id="@+id/findResult"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/today_words"
-        android:layout_alignEnd="@+id/today_words"
-        android:layout_marginTop="7dp"
-        android:layout_marginEnd="35dp"
-        android:textSize="35sp"
-        android:textStyle="bold"
-        android:text="0/5" />
-
-    <TextView
-        android:id="@+id/challText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/today_study"
-        android:layout_alignStart="@+id/today_study"
-        android:layout_marginStart="90dp"
-        android:layout_marginTop="20dp"
-        android:textSize="15sp"
-        android:textStyle="bold"
-        android:text="단어 학습 도전하기" />
-
-    <TextView
-        android:id="@+id/challResult"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/today_study"
-        android:layout_alignEnd="@+id/today_study"
-        android:layout_marginTop="7dp"
-        android:layout_marginEnd="35dp"
-        android:textSize="35sp"
-        android:textStyle="bold"
-        android:text="0/5" />
-
-    <TextView
-        android:id="@+id/today"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/today_words"
-        android:layout_alignStart="@+id/today_words"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="-35dp"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:text="오늘의 학습목표" />
 
 
 </RelativeLayout>
