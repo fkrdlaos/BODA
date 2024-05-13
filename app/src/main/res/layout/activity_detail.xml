@@ -22,7 +22,7 @@
                 android:id="@+id/photoImageView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="16px"
                 android:layout_centerHorizontal="true"
                 android:adjustViewBounds="true"
                 android:scaleType="fitCenter"
@@ -31,14 +31,14 @@
 
             <LinearLayout
                 android:id="@+id/detailLinearLayout"
-                android:layout_width="300dp"
-                android:layout_height="250dp"
+                android:layout_width="300px"
+                android:layout_height="250px"
                 android:layout_below="@id/photoImageView"
                 android:layout_centerHorizontal="true"
                 android:orientation="vertical"
                 android:background="@drawable/shape_drawable"
-                android:padding="16dp"
-                android:layout_marginTop="100dp"
+                android:padding="16px"
+                android:layout_marginTop="100px"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp">
 

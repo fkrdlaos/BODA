@@ -11,11 +11,11 @@
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="134dp"
-        android:layout_height="24dp"
+        android:layout_width="134px"
+        android:layout_height="24px"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="70dp"
+        android:layout_marginTop="70px"
         android:layout_marginEnd="142dp"
         android:layout_marginBottom="70dp"
         app:srcCompat="@drawable/t" />
