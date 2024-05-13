@@ -5,33 +5,60 @@
     android:layout_height="match_parent"
     tools:context=".SettingsActivity">
 
-    <Button
-        android:id="@+id/buttonNickname"
+    <TextView
+        android:id="@+id/setting"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="38dp"
-        android:text="닉네임 변경" />
-
-    <Button
-        android:id="@+id/buttonLogout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/buttonNickname"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="20dp"
-        android:text="로그아웃" />
+        android:layout_marginTop="150px"
+        android:layout_centerHorizontal="true"
+        android:text="설정"
+        android:textStyle="bold"
+        android:textSize="30sp"/>
 
     <Button
         android:id="@+id/backButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/buttonLogout"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="18dp"
-        android:layout_marginTop="26dp"
-        android:text="이전 " />
+        android:layout_width="150px"
+        android:layout_height="150px"
+        android:layout_marginTop="180px"
+        android:background="@drawable/back_gray"/>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/setting"
+        android:layout_marginTop="90px"
+        android:orientation="vertical">
+        <Button
+            android:id="@+id/buttonNickname"
+            android:layout_width="match_parent"
+            android:layout_height="180px"
+            android:background="#FFFFFF"
+            android:gravity="left|center_vertical"
+            android:paddingStart="45px"
+            android:textSize="20sp"
+            android:text="닉네임 변경" />
+
+
+        <Button
+            android:id="@+id/buttonLogout"
+            android:layout_width="match_parent"
+            android:layout_height="180px"
+            android:background="#FFFFFF"
+            android:gravity="left|center_vertical"
+            android:paddingStart="45px"
+            android:textSize="20sp"
+            android:text="로그아웃" />
+
+        <Button
+            android:id="@+id/reset"
+            android:layout_width="match_parent"
+            android:layout_height="180px"
+            android:background="#FFFFFF"
+            android:gravity="left|center_vertical"
+            android:paddingStart="45px"
+            android:textSize="20sp"
+            android:textColor="#FF6F0F"
+            android:text="탈퇴하기 " />
+    </LinearLayout>
 </RelativeLayout>
 
