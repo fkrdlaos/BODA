@@ -62,7 +62,6 @@ dependencies {
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
 
-
     implementation("org.pytorch:pytorch_android_lite:1.13.1")
     implementation("org.pytorch:pytorch_android_torchvision_lite:1.13.1")
     implementation("androidx.camera:camera-core:1.3.3")

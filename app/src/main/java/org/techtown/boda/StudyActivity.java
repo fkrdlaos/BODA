@@ -9,6 +9,8 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import androidx.annotation.NonNull;
+
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -183,14 +185,15 @@ public class StudyActivity extends AppCompatActivity {
     //randomIndexes 는 getRandomWord에서 불러서쓰기
     private void setRandomIndex(){
         int size = words.size(); // 전체 도감 사이즈
-        int count = 10; //문제 개수
+        int count = 10; // 문제 개수
+
+        // 전체 도감 사이즈가 요청된 개수보다 작은 경우
         if (size < count) {
-            throw new IllegalArgumentException("리스트의 크기가 요청된 개수보다 작습니다.");
+            count = size; // 요청된 개수를 전체 도감 사이즈로 설정
         }
 
-        // 도감의 사이즈만큼의 인덱스가 존재하는 상황
         // 전체 인덱스를 랜덤으로 셔플
-        // 셔플한 리스트에서 상위 10개 추출하여 랜덤 인덱스저장
+        // 셔플한 리스트에서 상위 10개 추출하여 랜덤 인덱스 저장
         List<Integer> indexes = new ArrayList<>();
         for (int i = 0; i < size; i++) {
             indexes.add(i);
@@ -199,6 +202,7 @@ public class StudyActivity extends AppCompatActivity {
 
         randomIndexes = indexes.subList(0, count);
     }
+
     private String getRandomWord() {
         // 단어 리스트에서 랜덤하게 단어 선택
 
@@ -222,6 +226,11 @@ public class StudyActivity extends AppCompatActivity {
 
         // 단어별 정답 여부 기록
         wordAnswerMap.put(correctAnswer, isCorrect);
+
+        // 단어를 맞췄을 때 exp 값을 10 증가시킴
+        if (isCorrect) {
+            increaseExp();
+        }
 
         // 다음 문제로 넘어가는 작업 추가
         if (currentIndex < words.size() - 1) {
@@ -274,6 +283,11 @@ public class StudyActivity extends AppCompatActivity {
         // 단어별 정답 여부 기록
         wordAnswerMap.put(correctAnswer, isCorrect);
 
+        // 단어를 맞췄을 때 exp 값을 10 증가시킴
+        if (isCorrect) {
+            increaseExp();
+        }
+
         // 다음 문제로 넘어가는 작업 추가
         if (currentIndex < words.size() - 1) {
             currentIndex++;
@@ -282,6 +296,30 @@ public class StudyActivity extends AppCompatActivity {
             // 학습이 끝난 후 결과 표시
             showResult();
         }
+    }
+
+
+    // 단어를 맞췄을 때 exp 값을 증가시키는 메서드
+    private void increaseExp() {
+        DatabaseReference expRef = FirebaseDatabase.getInstance().getReference().child("BODA").child("UserAccount").child(getUserId()).child("exp");
+        expRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    // 현재 exp 값을 가져옴
+                    int currentExp = dataSnapshot.getValue(Integer.class);
+                    // exp 값을 10 증가시킴
+                    currentExp += 10;
+                    // 업데이트된 exp 값을 Firebase에 저장
+                    expRef.setValue(currentExp);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Toast.makeText(StudyActivity.this, "데이터베이스 오류: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void listenWord() {

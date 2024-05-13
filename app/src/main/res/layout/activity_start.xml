@@ -12,8 +12,8 @@
         android:id="@+id/explanation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="30px"
-        android:layout_marginTop="113px"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="113dp"
         android:text="다보와 함께 모험을!"
         android:textAppearance="@style/explanation" />
 
@@ -21,8 +21,8 @@
         android:id="@+id/explanationadd"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="30px"
-        android:layout_marginTop="179px"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="179dp"
         android:text="언제, 어디서든, 찰칵"
         android:textAppearance="@style/explanationadd" />
 
@@ -30,19 +30,18 @@
         android:id="@+id/explanationadd1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="30px"
-        android:layout_marginTop="212px"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="212dp"
         android:text="모험가가 되어 새로운 단어를 수집해요"
         android:textAppearance="@style/explanationadd" />
 
     <Button
         android:id="@+id/button5"
-        android:layout_width="310px"
-        android:layout_height="55px"
-        android:layout_alignParentLeft="true"
-        android:layout_marginLeft="50px"
+        android:layout_width="310dp"
+        android:layout_height="55dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="80dp"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="80px"
         android:background="@drawable/activity_start_button"
         android:text="시작하기"
         android:textColor="#FFFFFF"

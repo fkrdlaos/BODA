@@ -131,7 +131,11 @@ public class RegisterActivity extends AppCompatActivity {
                                 account.setPassword(password);
                                 account.setNickname(nickname);
 
-                                // setValue : datavase에 insert(삽입) 행위
+                                // 실시간 데이터베이스에 exp와 LV 추가
+                                account.setExp(0); // 초기값 0으로 설정
+                                account.setLv(1); // 초기값 1로 설정
+
+                                // setValue : 데이터베이스에 insert(삽입) 행위
                                 mDatabaseRef.child("UserAccount").child(firebaseUser.getUid()).setValue(account);
 
                                 Toast.makeText(RegisterActivity.this, "회원가입에 성공하셨습니다.", Toast.LENGTH_SHORT).show();
