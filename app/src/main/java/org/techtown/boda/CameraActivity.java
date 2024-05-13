@@ -60,6 +60,37 @@ public class CameraActivity extends AppCompatActivity {
         if (user != null) {
             String userId = user.getUid();
             mDatabase = FirebaseDatabase.getInstance().getReference().child("BODA").child("UserAccount").child(userId).child("collection");
+
+            // 사용자 노드가 없는 경우에만 노드를 생성하고 컬렉션을 추가
+            mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if (!dataSnapshot.exists()) {
+                        // 사용자 노드가 없는 경우, 새로운 노드 및 컬렉션 추가
+                        mDatabase.setValue(true)
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        // 사용자 노드와 컬렉션 생성 성공
+                                        Toast.makeText(CameraActivity.this, "사용자 노드 및 컬렉션 생성 완료", Toast.LENGTH_SHORT).show();
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        // 생성 실패 처리
+                                        Toast.makeText(CameraActivity.this, "사용자 노드 및 컬렉션 생성 실패", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    // 취소 처리
+                    Toast.makeText(CameraActivity.this, "데이터베이스 오류: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
         } else {
             // 로그인하지 않은 사용자 처리
             Toast.makeText(this, "로그인이 필요합니다.", Toast.LENGTH_SHORT).show();
@@ -240,12 +271,6 @@ public class CameraActivity extends AppCompatActivity {
             }
         });
     }
-
-
-
-
-
-
 
     private void displaySentence(String sentence) {
         // Display the sentence
