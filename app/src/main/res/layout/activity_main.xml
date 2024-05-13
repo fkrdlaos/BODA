@@ -32,14 +32,41 @@
         android:background="@drawable/activity_main_view2" />
 
     <ImageButton
+        android:id="@+id/today_words"
+        android:layout_width="wrap_content"
+        android:layout_height="80dp"
+        android:layout_below="@+id/profile_car"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="20dp"
+        android:contentDescription="today_words"
+        app:srcCompat="@drawable/activity_main_today" />
+
+    <ImageButton
+        android:id="@+id/today_study"
+        android:layout_width="wrap_content"
+        android:layout_height="80dp"
+        android:layout_below="@+id/profile_car"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="120dp"
+        android:layout_marginEnd="20dp"
+        android:contentDescription="today_study"
+        app:srcCompat="@drawable/activity_main_today" />
+
+
+    <ImageButton
         android:id="@+id/btnCamera"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/today_study"
         android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
         android:layout_marginStart="28dp"
         android:layout_marginLeft="32dp"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="540dp"
         android:layout_marginBottom="138dp"
         android:contentDescription="btncamera"
         app:srcCompat="@drawable/c" />
@@ -48,9 +75,9 @@
         android:id="@+id/btn_Study"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/today_study"
+        android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="530dp"
         android:layout_marginEnd="28dp"
         android:background="@color/white"
         android:contentDescription="btn_Study"
@@ -67,6 +94,7 @@
         android:backgroundTint="@color/white"
         android:contentDescription="btn_Dictionary"
         app:srcCompat="@drawable/c2" />
+
 
     <Button
         android:id="@+id/btn_settings"
@@ -178,26 +206,6 @@
         android:layout_marginTop="3dp"
         android:text="EXP 150" />
 
-    <Button
-        android:id="@+id/today_words"
-        android:layout_width="wrap_content"
-        android:layout_height="55dp"
-        android:layout_below="@+id/profile_car"
-        android:layout_alignStart="@+id/profile_car"
-        android:layout_alignEnd="@+id/profile_car"
-        android:layout_marginTop="40dp"
-        android:background="@drawable/activity_main_today"
-        android:contentDescription="today_words" />
 
-    <Button
-        android:id="@+id/today_study"
-        android:layout_width="wrap_content"
-        android:layout_height="55dp"
-        android:layout_below="@+id/profile_car"
-        android:layout_alignStart="@+id/profile_car"
-        android:layout_alignEnd="@+id/profile_car"
-        android:layout_marginTop="110dp"
-        android:background="@drawable/activity_main_today"
-        android:contentDescription="today_study" />
 
 </RelativeLayout>
