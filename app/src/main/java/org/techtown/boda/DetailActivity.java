@@ -12,11 +12,15 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.speech.tts.TextToSpeech;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.text.ParseException;
+
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -49,24 +53,33 @@ public class DetailActivity extends AppCompatActivity {
         // Get WordData object from Intent
         WordData wordData = (WordData) getIntent().getSerializableExtra("wordData");
 
-
-
-
-        if (wordData != null) {
+        if (wordData != null && wordData.getDateTime() != null) {
             String word = wordData.getWord();
             String meaning = wordData.getMeaning();
             String example = wordData.getExample();
-            String dateTime = wordData.getDateTime(); // 필드명 수정
+            String dateTime = wordData.getDateTime();
 
             TextView wordTextView = findViewById(R.id.wordTextView);
             TextView meaningTextView = findViewById(R.id.meaningTextView);
             TextView exampleTextView = findViewById(R.id.exampleTextView);
-            TextView dateTextView = findViewById(R.id.dateTextView); // 날짜를 표시할 TextView
+            TextView dateTextView = findViewById(R.id.dateTextView);
 
             wordTextView.setText("단어: " + word);
             meaningTextView.setText("의미: " + meaning);
             exampleTextView.setText("예문: " + example);
-            dateTextView.setText("날짜: " + dateTime); // 날짜를 TextView에 설정
+
+            // "date_time" 값을 올바른 형식으로 변환하여 TextView에 표시
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+            try {
+                Date date = sdf.parse(dateTime);
+                dateTextView.setText("날짜: " + sdf.format(date));
+            } catch (ParseException e) {
+                e.printStackTrace();
+                Log.e("Date_Time_Debug", "Error parsing date: " + e.getMessage());
+                // ParseException 발생 시, TextView에 특정 메시지를 표시하거나 기본값을 사용할 수 있습니다.
+                dateTextView.setText("날짜 정보를 처리할 수 없습니다.");
+            }
+
 
             // TTS 버튼 클릭 이벤트 처리
             Button ttsButton = findViewById(R.id.ttsButton);
