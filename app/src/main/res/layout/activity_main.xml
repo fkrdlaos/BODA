@@ -203,7 +203,7 @@
         android:layout_alignEnd="@+id/view2"
         android:layout_marginEnd="21dp"
         android:layout_marginTop="3dp"
-        android:text="EXP 150" />
+        android:text="EXP 0" />
 
 
 
