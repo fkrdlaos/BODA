@@ -39,7 +39,7 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
         android:layout_marginStart="20dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="60dp"
         android:layout_marginEnd="20dp"
         android:contentDescription="today_words"
         app:srcCompat="@drawable/activity_main_today" />
@@ -52,7 +52,7 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
         android:layout_marginStart="20dp"
-        android:layout_marginTop="120dp"
+        android:layout_marginTop="140dp"
         android:layout_marginEnd="20dp"
         android:contentDescription="today_study"
         app:srcCompat="@drawable/activity_main_today" />
@@ -64,9 +64,9 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:layout_marginStart="28dp"
+        android:layout_marginStart="35dp"
         android:layout_marginLeft="34dp"
-        android:layout_marginTop="542dp"
+        android:layout_marginTop="530dp"
         android:layout_marginBottom="10dp"
         android:contentDescription="btncamera"
         app:srcCompat="@drawable/c" />
@@ -77,8 +77,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/btnCamera"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="-267dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginTop="-270dp"
+        android:layout_marginEnd="35dp"
         android:background="@color/white"
         android:contentDescription="btn_Study"
         app:srcCompat="@drawable/c1" />
@@ -89,7 +89,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/btn_Study"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="0dp"
+        android:layout_marginEnd="23dp"
         android:backgroundTint="@color/white"
         android:contentDescription="btn_Dictionary"
         app:srcCompat="@drawable/c2" />
@@ -205,6 +206,85 @@
         android:layout_marginTop="3dp"
         android:text="EXP 0" />
 
+    <ImageView
+        android:id="@+id/findIcon"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignTop="@+id/today_words"
+        android:layout_alignStart="@+id/today_words"
+        android:layout_marginTop="15dp"
+        android:layout_marginStart="25dp"
+        app:srcCompat="@drawable/today_find" />
+
+    <ImageView
+        android:id="@+id/challIcon"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignTop="@+id/today_study"
+        android:layout_alignStart="@+id/today_study"
+        android:layout_marginTop="15dp"
+        android:layout_marginStart="25dp"
+        app:srcCompat="@drawable/today_chall" />
+
+    <TextView
+        android:id="@+id/findText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/today_words"
+        android:layout_alignStart="@+id/today_words"
+        android:layout_marginStart="90dp"
+        android:layout_marginTop="28dp"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        android:text="새로운 단어 찾기" />
+
+    <TextView
+        android:id="@+id/findResult"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/today_words"
+        android:layout_alignEnd="@+id/today_words"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="35dp"
+        android:textSize="35sp"
+        android:textStyle="bold"
+        android:text="0/5" />
+
+    <TextView
+        android:id="@+id/challText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/today_study"
+        android:layout_alignStart="@+id/today_study"
+        android:layout_marginStart="90dp"
+        android:layout_marginTop="28dp"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        android:text="단어 학습 도전하기" />
+
+    <TextView
+        android:id="@+id/challResult"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/today_study"
+        android:layout_alignEnd="@+id/today_study"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="35dp"
+        android:textSize="35sp"
+        android:textStyle="bold"
+        android:text="0/5" />
+
+    <TextView
+        android:id="@+id/today"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/today_words"
+        android:layout_alignStart="@+id/today_words"
+        android:layout_marginStart="25dp"
+        android:layout_marginTop="-30dp"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:text="오늘의 학습목표" />
 
 
 </RelativeLayout>
