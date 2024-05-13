@@ -61,11 +61,15 @@
 
     <Button
         android:id="@+id/start_butto"
-        android:layout_width="match_parent"
+        android:layout_width="350dp"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:layout_marginTop="636dp"
-        android:background="#FF9800"
-        android:text="시작하기" />
+        android:layout_marginLeft="30dp"
+        android:background="@drawable/activity_study_button"
+        android:text="시작하기"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold"
+        android:textSize="18sp"/>
 </RelativeLayout>
