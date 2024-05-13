@@ -11,53 +11,56 @@
 
     <ImageView
         android:id="@+id/imageView2"
-        android:layout_width="314dp"
-        android:layout_height="120dp"
+        android:layout_width="900px"
+        android:layout_height="360px"
+        android:layout_below="@+id/imageView3"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="485dp"
+        android:layout_marginTop="55dp"
         app:srcCompat="@drawable/u" />
 
     <ImageView
         android:id="@+id/imageView3"
-        android:layout_width="194dp"
-        android:layout_height="24dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/imageView4"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="440dp"
-        android:layout_marginEnd="105dp"
+        android:layout_marginTop="30px"
         app:srcCompat="@drawable/s" />
 
     <ImageView
         android:id="@+id/imageView4"
-        android:layout_width="270dp"
-        android:layout_height="24dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/imageView5"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="405dp"
-        android:layout_marginEnd="65dp"
+        android:layout_marginTop="45px"
         app:srcCompat="@drawable/s1" />
 
     <ImageView
         android:id="@+id/imageView5"
-        android:layout_width="198dp"
-        android:layout_height="24dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/imageView6"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="362dp"
-        android:layout_marginEnd="101dp"
+        android:layout_marginTop="120px"
         app:srcCompat="@drawable/t1" />
 
     <ImageView
         android:id="@+id/imageView6"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
+        android:layout_width="600px"
+        android:layout_height="600px"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="116dp"
+        android:layout_marginTop="360px"
         app:srcCompat="@drawable/f" />
 
     <Button
-        android:id="@+id/start_butto"
-        android:layout_width="350dp"
-        android:layout_height="wrap_content"
+        android:id="@+id/start_button"
+        android:layout_width="900px"
+        android:layout_height="450px"
+        android:layout_below="@+id/imageView2"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="636dp"
+        android:layout_marginTop="165px"
+        android:layout_marginBottom="210px"
         android:background="@drawable/activity_study_button"
         android:text="시작하기"
         android:textColor="#FFFFFF"
