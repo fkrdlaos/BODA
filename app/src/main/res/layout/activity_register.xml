@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/some_id"
     android:layout_width="match_parent"
@@ -11,7 +12,7 @@
     <EditText
         android:id="@+id/et_email"
         android:layout_width="300dp"
-        android:layout_height="56dp"
+        android:layout_height="60dp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
@@ -28,11 +29,11 @@
     <EditText
         android:id="@+id/et_pwd"
         android:layout_width="300dp"
-        android:layout_height="56dp"
+        android:layout_height="60dp"
         android:layout_below="@+id/et_email"
         android:layout_alignParentLeft="true"
         android:layout_marginLeft="55dp"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="30dp"
         android:background="@drawable/activity_register_edittext"
         android:hint="비밀번호"
         android:paddingStart="18dp"
@@ -41,34 +42,36 @@
 
     <EditText
         android:id="@+id/et_nickname"
-        android:layout_width="280dp"
-        android:layout_height="50dp"
+        android:layout_width="300dp"
+        android:layout_height="60dp"
         android:layout_below="@+id/et_confirm_pwd"
         android:layout_alignParentLeft="true"
-        android:layout_marginStart="48dp"
-        android:layout_marginLeft="50dp"
-        android:layout_marginTop="62dp"
-        android:ems="10"
-        android:hint="닉네임을 입력해주세요"
-        android:inputType="text" />
+        android:layout_marginLeft="55dp"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/activity_register_edittext"
+        android:hint="닉네임"
+        android:paddingStart="18dp"
+        android:textColorHint="#FFFFFF"
+        android:inputType="textPassword" />
 
     <EditText
         android:id="@+id/et_confirm_pwd"
-        android:layout_width="280dp"
-        android:layout_height="50dp"
+        android:layout_width="300dp"
+        android:layout_height="60dp"
         android:layout_below="@+id/et_pwd"
         android:layout_alignParentLeft="true"
-        android:layout_marginStart="48dp"
-        android:layout_marginLeft="67dp"
-        android:layout_marginTop="64dp"
-        android:ems="10"
+        android:layout_marginLeft="55dp"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/activity_register_edittext"
         android:hint="비밀번호 확인"
+        android:paddingStart="18dp"
+        android:textColorHint="#FFFFFF"
         android:inputType="textPassword" />
 
     <Button
         android:id="@+id/btn_check"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:layout_alignTop="@+id/et_email"
         android:layout_alignParentEnd="true"
         android:layout_marginTop="5dp"
@@ -81,15 +84,16 @@
 
     <Button
         android:id="@+id/btn_register"
-        android:layout_width="280dp"
-        android:layout_height="50dp"
+        android:layout_width="300dp"
+        android:layout_height="60dp"
         android:layout_below="@+id/et_nickname"
-        android:layout_alignParentLeft="true"
-        android:layout_marginStart="48dp"
-        android:layout_marginLeft="58dp"
-        android:layout_marginTop="57dp"
-        android:background="#EFCB97"
-        android:text="가입완료" />
+        android:layout_marginStart="55dp"
+        android:layout_marginTop="40dp"
+        android:background="@drawable/activity_register_check"
+        android:text="가입하기"
+        android:textColor="#FF6F0F"
+        android:textSize="17dp"
+        android:textStyle="bold" />
 
     <Button
         android:id="@+id/button"
@@ -101,5 +105,18 @@
         android:layout_alignParentStart="true"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp" />
+
+    <ImageView
+        android:id="@+id/title_rg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginLeft="64dp"
+        android:layout_marginTop="144dp"
+        android:layout_marginEnd="64dp"
+        app:srcCompat="@drawable/ti1" />
+
 
 </RelativeLayout>
