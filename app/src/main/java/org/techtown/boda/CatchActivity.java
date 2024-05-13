@@ -48,8 +48,7 @@ public class CatchActivity extends AppCompatActivity {
     TextView resultText;
     private int REQUEST_CODE_PERMISSION = 101;
     private final String[] REQUIRED_PERMISSIONS = new String[] {"android.permission.CAMERA"};
-
-
+    private Module module;
     List<String> imagenet_classes;
 
     @Override
@@ -104,7 +103,6 @@ public class CatchActivity extends AppCompatActivity {
         Camera camera = cameraProvider.bindToLifecycle((LifecycleOwner) this, cameraSelector, preview, imageAnalysis);
     }
 
-    Module module;
     void LoadTorchModule(String fileName){
 
         File modelFile = new File(this.getFilesDir(), fileName);
