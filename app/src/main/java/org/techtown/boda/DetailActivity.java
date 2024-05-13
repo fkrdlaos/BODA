@@ -5,9 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.Matrix;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -19,21 +17,19 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.File;
+import java.io.IOException;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
-
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 
-import java.io.File;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
 
 public class DetailActivity extends AppCompatActivity {
     private TextToSpeech textToSpeech;
@@ -42,8 +38,6 @@ public class DetailActivity extends AppCompatActivity {
     private static final int REQUEST_IMAGE_PICK = 2;
     private static final int REQUEST_CAMERA_PERMISSION = 1001; // 카메라 권한 요청 코드
     private Uri photoUri;
-
-    private int rotationAngle = 0; // 이미지 회전 각도 변수
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,7 +81,7 @@ public class DetailActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     // TTS 발음 듣기
-                    String text = word + ". " + meaning;
+                    String text = word;
                     textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null, null);
                 }
             });
@@ -101,23 +95,15 @@ public class DetailActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     // 카메라로 사진 찍기 또는 갤러리에서 사진 선택하기
-                    showImageSourceDialog();
+                    //showImageSourceDialog();
+                    Intent intent = new Intent(DetailActivity.this, CatchActivity.class);
+                    startActivity(intent);
                 }
             });
         } else {
             Toast.makeText(this, "단어 데이터를 가져오지 못했습니다.", Toast.LENGTH_SHORT).show();
             finish();
         }
-
-        // "사진 회전" 버튼 클릭 이벤트 처리
-        Button rotateImageButton = findViewById(R.id.rotateImageButton);
-        rotateImageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // 이미지 회전
-                rotateImage();
-            }
-        });
 
         // 뒤로가기 버튼 클릭 이벤트 처리
         Button backButton = findViewById(R.id.backButton);
@@ -205,27 +191,6 @@ public class DetailActivity extends AppCompatActivity {
         return imageFile;
     }
 
-    // 이미지 회전 메서드
-    private void rotateImage() {
-        if (photoImageView != null && photoUri != null) {
-            rotationAngle += 90;
-            if (rotationAngle >= 360) {
-                rotationAngle = 0;
-            }
-
-            try {
-                // 이미지 회전
-                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), photoUri);
-                Matrix matrix = new Matrix();
-                matrix.postRotate(rotationAngle);
-                Bitmap rotatedBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
-                photoImageView.setImageBitmap(rotatedBitmap);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
     // onActivityResult 메서드 안에 추가
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -260,10 +225,7 @@ public class DetailActivity extends AppCompatActivity {
             int newHeight = (int) (height * ((float)newWidth / width));
             // 크기 조정
             Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap, newWidth, newHeight, true);
-            // 크기 조정한 이미지를 회전
-            Matrix matrix = new Matrix();
-            matrix.postRotate(rotationAngle);
-            return Bitmap.createBitmap(scaledBitmap, 0, 0, newWidth, newHeight, matrix, true);
+            return scaledBitmap;
         } catch (IOException e) {
             e.printStackTrace();
             return null;

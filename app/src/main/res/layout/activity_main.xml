@@ -188,7 +188,7 @@
         tools:progress="0" />
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/textView_level"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignStart="@+id/view2"
@@ -197,7 +197,7 @@
         android:layout_marginStart="21dp"
         android:layout_marginTop="3dp"
         android:layout_marginEnd="225dp"
-        android:text="LV.1" />
+        android:text="LV. 1" />
 
     <TextView
         android:id="@+id/textView2"
@@ -207,7 +207,7 @@
         android:layout_alignEnd="@+id/view2"
         android:layout_marginEnd="21dp"
         android:layout_marginTop="3dp"
-        android:text="EXP 0" />
+        android:text="EXP 0 / 100" />
 
     <ImageView
         android:id="@+id/findIcon"

@@ -70,39 +70,12 @@ public class DictionaryActivity extends AppCompatActivity {
                         wordDataList.add(wordData);
                         wordCount++;
                     }
-                    String grade = calculateGrade(wordCount);
                     adapter = new WordDataAdapter(wordDataList, listener);
                     recyclerView.setAdapter(adapter);
 
                     TextView wordCountTextView = findViewById(R.id.wordCount);
-                    wordCountTextView.setText("발견한 단어 갯수 : " + wordCount + " (등급: " + grade + ")");
+                    wordCountTextView.setText("발견한 단어 갯수 : " + wordCount);
 
-                    ProgressBar progressBar = findViewById(R.id.progressBar);
-                    // 등급에 따른 Clip drawable을 설정
-                    Drawable progressDrawable;
-                    switch (grade) {
-                        case "아이언":
-                            progressDrawable = getResources().getDrawable(R.drawable.progress_bar_exp2);
-                            break;
-                        case "브론즈":
-                            progressDrawable = getResources().getDrawable(R.drawable.progress_bar_exp2);
-                            break;
-                        case "실버":
-                            progressDrawable = getResources().getDrawable(R.drawable.progress_bar_exp2);
-                            break;
-                        case "골드":
-                            progressDrawable = getResources().getDrawable(R.drawable.progress_bar_exp2);
-                            break;
-                        case "플래티넘":
-                            progressDrawable = getResources().getDrawable(R.drawable.progress_bar_exp2);
-                            break;
-                        default:
-                            progressDrawable = getResources().getDrawable(R.drawable.progress_bar_exp2);
-                            break;
-                    }
-                    progressBar.setProgressDrawable(progressDrawable);
-                    // 단어 개수에 맞게 프로그래스 바의 진행 상태 설정
-                    progressBar.setProgress(wordCount); // 이 부분이 추가됨
                 }
 
                 @Override
@@ -123,19 +96,4 @@ public class DictionaryActivity extends AppCompatActivity {
 
     }
 
-    private String calculateGrade(int wordCount) {
-        if (wordCount >= 0 && wordCount <= 9) {
-            return "아이언";
-        } else if (wordCount >= 10 && wordCount <= 29) {
-            return "브론즈";
-        } else if (wordCount >= 30 && wordCount <= 59) {
-            return "실버";
-        } else if (wordCount >= 60 && wordCount <= 99) {
-            return "골드";
-        } else if (wordCount >= 100 && wordCount <= 149) {
-            return "플래티넘";
-        } else {
-            return "다이아몬드";
-        }
-    }
 }
