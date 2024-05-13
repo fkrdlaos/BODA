@@ -36,6 +36,12 @@
         android:background="#FF9800"
         android:text="홈으로 가기" />
 
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="300px"
+        android:layout_height="300px" />
+
 </RelativeLayout>
 
 
