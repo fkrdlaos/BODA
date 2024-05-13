@@ -13,69 +13,66 @@
         android:id="@+id/et_email"
         android:layout_width="300dp"
         android:layout_height="60dp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginLeft="55dp"
+        android:layout_centerHorizontal="true"
         android:layout_marginTop="280dp"
-        android:layout_marginEnd="56dp"
         android:background="@drawable/activity_register_edittext"
+        android:ems="10"
         android:hint="이메일"
+        android:inputType="textEmailAddress"
         android:paddingStart="18dp"
-        android:textColorHint="#FFFFFF"
         android:paddingEnd="100dp"
-        android:inputType="textEmailAddress" />
+        android:textColorHint="#FFFFFF" />
 
     <EditText
         android:id="@+id/et_pwd"
         android:layout_width="300dp"
         android:layout_height="60dp"
         android:layout_below="@+id/et_email"
-        android:layout_alignParentLeft="true"
-        android:layout_marginLeft="55dp"
+        android:layout_centerHorizontal="true"
         android:layout_marginTop="30dp"
         android:background="@drawable/activity_register_edittext"
+        android:ems="10"
         android:hint="비밀번호"
+        android:inputType="textPassword"
         android:paddingStart="18dp"
-        android:textColorHint="#FFFFFF"
-        android:inputType="textPassword" />
+        android:textColorHint="#FFFFFF" />
 
     <EditText
         android:id="@+id/et_nickname"
         android:layout_width="300dp"
         android:layout_height="60dp"
-        android:layout_below="@+id/et_confirm_pwd"
-        android:layout_alignParentLeft="true"
-        android:layout_marginLeft="55dp"
+        android:layout_below="@+id/et_pwd"
+        android:layout_centerHorizontal="true"
         android:layout_marginTop="30dp"
         android:background="@drawable/activity_register_edittext"
+        android:ems="10"
         android:hint="닉네임"
+        android:inputType="textPassword"
         android:paddingStart="18dp"
-        android:textColorHint="#FFFFFF"
-        android:inputType="textPassword" />
+        android:textColorHint="#FFFFFF" />
 
     <EditText
         android:id="@+id/et_confirm_pwd"
         android:layout_width="300dp"
         android:layout_height="60dp"
-        android:layout_below="@+id/et_pwd"
-        android:layout_alignParentLeft="true"
-        android:layout_marginLeft="55dp"
+        android:layout_below="@+id/et_nickname"
+        android:layout_centerHorizontal="true"
         android:layout_marginTop="30dp"
         android:background="@drawable/activity_register_edittext"
+        android:ems="10"
         android:hint="비밀번호 확인"
+        android:inputType="textPassword"
         android:paddingStart="18dp"
-        android:textColorHint="#FFFFFF"
-        android:inputType="textPassword" />
+        android:textColorHint="#FFFFFF" />
 
     <Button
         android:id="@+id/btn_check"
         android:layout_width="wrap_content"
         android:layout_height="50dp"
-        android:layout_alignTop="@+id/et_email"
+        android:layout_below="@+id/et_email"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="5dp"
-        android:layout_marginEnd="61dp"
+        android:layout_marginTop="-55dp"
+        android:layout_marginEnd="37dp"
         android:background="@drawable/activity_register_check"
         android:text="중복확인"
         android:textColor="#FF6F0F"
@@ -86,8 +83,8 @@
         android:id="@+id/btn_register"
         android:layout_width="300dp"
         android:layout_height="60dp"
-        android:layout_below="@+id/et_nickname"
-        android:layout_marginStart="55dp"
+        android:layout_below="@+id/et_confirm_pwd"
+        android:layout_centerHorizontal="true"
         android:layout_marginTop="40dp"
         android:background="@drawable/activity_register_check"
         android:text="가입하기"
@@ -99,24 +96,19 @@
         android:id="@+id/button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="#E8C591"
-        android:text="뒤로가기"
-        android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp" />
+        android:layout_marginTop="16dp"
+        android:background="#E8C591"
+        android:text="뒤로가기" />
 
     <ImageView
         android:id="@+id/title_rg"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginLeft="64dp"
+        android:layout_centerHorizontal="true"
         android:layout_marginTop="144dp"
-        android:layout_marginEnd="64dp"
         app:srcCompat="@drawable/ti1" />
-
 
 </RelativeLayout>

@@ -99,20 +99,12 @@
                 android:text="사진 추가하기" />
 
             <!-- 사진 회전 버튼 -->
-            <Button
-                android:id="@+id/rotateImageButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/addPhotoButton"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="16dp"
-                android:text="사진 회전" />
 
             <LinearLayout
                 android:id="@+id/button_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/rotateImageButton"
+                android:layout_below="@id/addPhotoButton"
                 android:layout_alignParentBottom="true"
                 android:orientation="horizontal">
 

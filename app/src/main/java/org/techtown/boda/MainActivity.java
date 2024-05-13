@@ -18,27 +18,29 @@ import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
-
 import com.google.firebase.auth.FirebaseAuth;
-import android.content.DialogInterface;
-import androidx.appcompat.app.AlertDialog;
-
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-
 
 public class MainActivity extends AppCompatActivity {
 
@@ -46,20 +48,29 @@ public class MainActivity extends AppCompatActivity {
     private static final int REQUEST_PICK_IMAGE = 102;
 
     private TextView tvResult;
+    private ProgressBar progressBarExp;
+    private TextView textViewExp;
+    private TextView textViewLevel; // 레벨을 표시하는 TextView 추가
 
     private SharedPreferences sharedPreferences;
 
     private ImageButton btnCamera, btnDictionary, btnStudy;
-    private Button btnsettings;
+    private Button btnSettings;
     private FirebaseAuth mFirebaseAuth;
+    private DatabaseReference mDatabaseRef;
 
     private ProgressDialog progressDialog;
+
+    private int exp = 0;
+    private int lv = 1;
+    private int maxExp = 100;
 
     // Sample data for dictionary
     private List<String> words = new ArrayList<>();
     private List<String> meanings = new ArrayList<>();
     private List<String> examples = new ArrayList<>();
     private List<String> dateTime = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,8 +78,12 @@ public class MainActivity extends AppCompatActivity {
 
         // Initialize Firebase Auth
         mFirebaseAuth = FirebaseAuth.getInstance();
+        mDatabaseRef = FirebaseDatabase.getInstance().getReference().child("BODA").child("UserAccount").child(mFirebaseAuth.getCurrentUser().getUid());
 
         tvResult = findViewById(R.id.tv_result);
+        textViewExp = findViewById(R.id.textView2);
+        progressBarExp = findViewById(R.id.progress_bar_exp);
+        textViewLevel = findViewById(R.id.textView_level); // 레벨을 표시하는 TextView 추가
 
         sharedPreferences = getSharedPreferences("MY_PREFS", MODE_PRIVATE);
 
@@ -78,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
         btnCamera = findViewById(R.id.btnCamera);
         btnDictionary = findViewById(R.id.btn_Dictionary);
         btnStudy = findViewById(R.id.btn_Study);
-        btnsettings = findViewById(R.id.btn_settings);
+        btnSettings = findViewById(R.id.btn_settings);
 
         btnCamera.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -109,8 +124,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
-
         btnDictionary.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -134,7 +147,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        btnsettings.setOnClickListener(new View.OnClickListener() {
+        btnSettings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
@@ -142,10 +155,40 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        // Firebase에서 경험치, 레벨 및 최대 경험치 정보 읽어오기
+        mDatabaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    exp = dataSnapshot.child("exp").getValue(Integer.class);
+                    lv = dataSnapshot.child("lv").getValue(Integer.class);
+
+                    // maxExp 값이 존재하지 않는 경우 기본값 설정
+                    if (dataSnapshot.hasChild("maxExp")) {
+                        maxExp = dataSnapshot.child("maxExp").getValue(Integer.class);
+                    } else {
+                        // 기본값으로 설정할 최대 경험치 값
+                        maxExp = DEFAULT_MAX_EXP;
+                        // 데이터베이스에 기본값 저장
+                        mDatabaseRef.child("maxExp").setValue(maxExp);
+                    }
+
+                    // 경험치, 레벨 및 최대 경험치 정보 업데이트
+                    updateExpAndLevelViews();
+
+                    // 경험치가 최대값에 도달했을 경우 레벨 업 및 경험치 초기화
+                    if (exp >= maxExp) {
+                        levelUp();
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // 오류 처리
+            }
+        });
     }
-
-
-
 
     private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -155,6 +198,30 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "카메라 앱을 찾을 수 없습니다.", Toast.LENGTH_SHORT).show();
         }
     }
+
+    private static final int DEFAULT_MAX_EXP = 100; // 기본 최대 경험치 값
+
+    private void updateExpAndLevelViews() {
+        textViewExp.setText("EXP " + exp);
+        textViewLevel.setText("Lv. " + lv); // 레벨을 표시
+        progressBarExp.setProgress(exp);
+        progressBarExp.setMax(maxExp);
+    }
+
+    private void levelUp() {
+        lv++; // 레벨 증가
+        exp -= maxExp; // 현재 경험치에서 최대 경험치를 뺌
+        maxExp *= 2; // 최대 경험치 2배 증가
+
+        // 레벨 및 경험치 업데이트
+        updateExpAndLevelViews();
+
+        // Firebase에 업데이트된 레벨, 경험치 및 최대 경험치 정보 저장
+        mDatabaseRef.child("exp").setValue(exp);
+        mDatabaseRef.child("lv").setValue(lv);
+        mDatabaseRef.child("maxExp").setValue(maxExp);
+    }
+
 
     private String saveImageToFile(Bitmap imageBitmap) {
         ContextWrapper cw = new ContextWrapper(getApplicationContext());

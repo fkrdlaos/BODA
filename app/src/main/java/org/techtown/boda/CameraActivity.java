@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -25,6 +26,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 
 import org.json.JSONException;
@@ -44,10 +46,13 @@ public class CameraActivity extends AppCompatActivity {
     private LinearLayout wordLayout;
     private ProgressDialog progressDialog;
     private DatabaseReference mDatabase;
+    private DatabaseReference expRef;
 
     private String sentence;
     private ArrayList<String> words = new ArrayList<>();
     private ArrayList<String> meanings = new ArrayList<>();
+
+    private int newWordsCount = 0; // 새로운 단어의 수를 세는 변수
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -60,6 +65,7 @@ public class CameraActivity extends AppCompatActivity {
         if (user != null) {
             String userId = user.getUid();
             mDatabase = FirebaseDatabase.getInstance().getReference().child("BODA").child("UserAccount").child(userId).child("collection");
+            expRef = FirebaseDatabase.getInstance().getReference().child("BODA").child("UserAccount").child(userId);
 
             // 사용자 노드가 없는 경우에만 노드를 생성하고 컬렉션을 추가
             mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -67,7 +73,7 @@ public class CameraActivity extends AppCompatActivity {
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     if (!dataSnapshot.exists()) {
                         // 사용자 노드가 없는 경우, 새로운 노드 및 컬렉션 추가
-                        mDatabase.setValue(true)
+                        mDatabase.setValue(new HashMap<>())
                                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void aVoid) {
@@ -82,6 +88,10 @@ public class CameraActivity extends AppCompatActivity {
                                         Toast.makeText(CameraActivity.this, "사용자 노드 및 컬렉션 생성 실패", Toast.LENGTH_SHORT).show();
                                     }
                                 });
+
+                        // 사용자 노드가 없는 경우, exp 및 lv 추가
+                        expRef.child("exp").setValue(0);
+                        expRef.child("lv").setValue(1);
                     }
                 }
 
@@ -152,16 +162,6 @@ public class CameraActivity extends AppCompatActivity {
             }
         });
 
-        // 이미지뷰의 터치 이벤트 처리
-        ImageView imageView = findViewById(R.id.imageViewNext);
-        imageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // 이미지 회전
-                rotateImage();
-            }
-        });
-
         // 저장 버튼 클릭 시 호출되는 메서드 등록
         Button saveButton = findViewById(R.id.saveButton);
         saveButton.setOnClickListener(new View.OnClickListener() {
@@ -198,10 +198,11 @@ public class CameraActivity extends AppCompatActivity {
         }
     }
 
+
+    // saveDataToFirebase() 메서드 내부 수정
     private void saveDataToFirebase() {
         // 현재 시간을 yyyy-MM-dd HH:mm:ss 형식으로 가져오기
         String currentDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
-
 
         // 데이터 생성
         Map<String, Object> newData = new HashMap<>();
@@ -213,7 +214,7 @@ public class CameraActivity extends AppCompatActivity {
             newData.put(words.get(i), wordData);
         }
 
-        // 기존 데이터베이스에서 데이터를 불러온 후 중복 단어를 제외한 새로운 데이터만 필터링
+        // 중복 단어를 제외하고 새로운 데이터만 필터링
         mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -235,7 +236,8 @@ public class CameraActivity extends AppCompatActivity {
                                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void aVoid) {
-                                        Toast.makeText(CameraActivity.this, "데이터 추가 성공", Toast.LENGTH_SHORT).show();
+                                        // 데이터베이스에 추가 성공한 후 exp 값을 업데이트
+                                        updateExp(filteredData.size());
                                     }
                                 })
                                 .addOnFailureListener(new OnFailureListener() {
@@ -253,7 +255,8 @@ public class CameraActivity extends AppCompatActivity {
                             .addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void aVoid) {
-                                    Toast.makeText(CameraActivity.this, "데이터 추가 성공", Toast.LENGTH_SHORT).show();
+                                    // 데이터베이스에 추가 성공한 후 exp 값을 업데이트
+                                    updateExp(newData.size());
                                 }
                             })
                             .addOnFailureListener(new OnFailureListener() {
@@ -271,6 +274,31 @@ public class CameraActivity extends AppCompatActivity {
             }
         });
     }
+
+    // 새로운 단어의 수에 따라 exp 값을 업데이트하는 메서드
+    private void updateExp(int newWordsCount) {
+        // 새로운 단어에 대한 exp 증가
+        expRef.child("exp").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    // 기존 exp 값이 있는 경우
+                    int currentExp = dataSnapshot.getValue(Integer.class);
+                    // 새로 추가된 단어의 갯수만큼 exp를 증가시킴
+                    int addedExp = newWordsCount * 10;
+                    currentExp += addedExp;
+                    // exp 값을 업데이트
+                    expRef.child("exp").setValue(currentExp);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Toast.makeText(CameraActivity.this, "데이터베이스 오류: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
 
     private void displaySentence(String sentence) {
         // Display the sentence
@@ -368,23 +396,6 @@ public class CameraActivity extends AppCompatActivity {
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
         finish(); // 현재 액티비티 종료
-    }
-
-    // 이미지 회전 메서드
-    private void rotateImage() {
-        ImageView imageView = findViewById(R.id.imageViewNext);
-        if (imageView.getDrawable() == null) {
-            // 이미지가 없을 때는 회전하지 않음
-            Toast.makeText(this, "이미지가 없습니다.", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        // 현재 이미지 회전 각도 확인
-        float currentRotation = imageView.getRotation();
-        // 회전 각도 90도씩 증가시키기
-        float newRotation = currentRotation + 90f;
-        // 회전 애니메이션
-        imageView.animate().rotation(newRotation).setDuration(200).start();
     }
 
     // Method to add spacing
