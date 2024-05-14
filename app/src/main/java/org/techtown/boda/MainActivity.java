@@ -296,7 +296,7 @@ public class MainActivity extends AppCompatActivity {
                 if (data != null && data.getData() != null) {
                     // Display progress dialog
                     progressDialog = new ProgressDialog(MainActivity.this);
-                    progressDialog.setMessage("사진에서 문장과 단어를 추출하고 있습니다...");
+                    progressDialog.setMessage("사진에서 문장, 단어, 뜻을 추출하고 있습니다...");
                     progressDialog.setCancelable(false);
                     progressDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "취소", new DialogInterface.OnClickListener() {
                         @Override
