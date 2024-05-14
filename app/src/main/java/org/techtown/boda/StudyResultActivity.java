@@ -42,6 +42,7 @@ public class StudyResultActivity extends AppCompatActivity {
 
         // 결과 텍스트를 화면에 표시
         tv_result.setText(resultText);
+        MissionManager.updateChallegeMission(StudyResultActivity.this);
         // 홈으로 버튼 클릭 이벤트 처리
         btnHome.setOnClickListener(new View.OnClickListener() {
             @Override

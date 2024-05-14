@@ -6,13 +6,13 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -25,8 +25,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 
 import org.json.JSONException;
@@ -46,7 +44,11 @@ public class CameraActivity extends AppCompatActivity {
     private LinearLayout wordLayout;
     private ProgressDialog progressDialog;
     private DatabaseReference mDatabase;
+
     private DatabaseReference expRef;
+    private DatabaseReference lvRef;
+
+    private RTDatabase rtDB;
 
     private String sentence;
     private ArrayList<String> words = new ArrayList<>();
@@ -64,9 +66,10 @@ public class CameraActivity extends AppCompatActivity {
         FirebaseUser user = mAuth.getCurrentUser();
         if (user != null) {
             String userId = user.getUid();
-            mDatabase = FirebaseDatabase.getInstance().getReference().child("BODA").child("UserAccount").child(userId).child("collection");
-            expRef = FirebaseDatabase.getInstance().getReference().child("BODA").child("UserAccount").child(userId);
-
+            rtDB = RTDatabase.getInstance(userId); // DB 최초 접근 시 경로 설정 용
+            mDatabase = RTDatabase.getUserDBRef().child("collection");
+            expRef = RTDatabase.getUserDBRef().child("exp");
+            lvRef = RTDatabase.getUserDBRef().child("lv");
             // 사용자 노드가 없는 경우에만 노드를 생성하고 컬렉션을 추가
             mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
@@ -90,8 +93,8 @@ public class CameraActivity extends AppCompatActivity {
                                 });
 
                         // 사용자 노드가 없는 경우, exp 및 lv 추가
-                        expRef.child("exp").setValue(0);
-                        expRef.child("lv").setValue(1);
+                        expRef.setValue(0);
+                        lvRef.setValue(1);
                     }
                 }
 
@@ -237,7 +240,13 @@ public class CameraActivity extends AppCompatActivity {
                                     @Override
                                     public void onSuccess(Void aVoid) {
                                         // 데이터베이스에 추가 성공한 후 exp 값을 업데이트
-                                        updateExp(filteredData.size());
+                                        try {
+                                            updateExp(filteredData.size());
+                                            MissionManager.updateWordMission(CameraActivity.this, filteredData.size());
+                                        } catch (Exception e){
+                                            Log.i("update exp, mission", e.toString());
+                                        }
+
                                     }
                                 })
                                 .addOnFailureListener(new OnFailureListener() {
@@ -256,7 +265,14 @@ public class CameraActivity extends AppCompatActivity {
                                 @Override
                                 public void onSuccess(Void aVoid) {
                                     // 데이터베이스에 추가 성공한 후 exp 값을 업데이트
-                                    updateExp(newData.size());
+                                    try {
+
+                                        updateExp(newData.size());
+                                        MissionManager.updateWordMission(CameraActivity.this, newData.size());
+
+                                    }catch (Exception e){
+                                        Log.i("update Exp, mission", e.toString());
+                                    }
                                 }
                             })
                             .addOnFailureListener(new OnFailureListener() {
@@ -277,26 +293,8 @@ public class CameraActivity extends AppCompatActivity {
 
     // 새로운 단어의 수에 따라 exp 값을 업데이트하는 메서드
     private void updateExp(int newWordsCount) {
+        ExpManager.updateExp(CameraActivity.this, newWordsCount);
         // 새로운 단어에 대한 exp 증가
-        expRef.child("exp").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
-                    // 기존 exp 값이 있는 경우
-                    int currentExp = dataSnapshot.getValue(Integer.class);
-                    // 새로 추가된 단어의 갯수만큼 exp를 증가시킴
-                    int addedExp = newWordsCount * 10;
-                    currentExp += addedExp;
-                    // exp 값을 업데이트
-                    expRef.child("exp").setValue(currentExp);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                Toast.makeText(CameraActivity.this, "데이터베이스 오류: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 
 

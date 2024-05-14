@@ -14,7 +14,7 @@ import java.util.Map;
 public class RTDatabase {
     private static RTDatabase instance = null;
     private static FirebaseDatabase database;
-    private static DatabaseReference dbRef;
+    private static DatabaseReference dbRef = null;
     private static Map<String,Object> wordMap;
 
 
@@ -56,9 +56,16 @@ public class RTDatabase {
         return instance;
     }
     //db에 key-value / 단어-뜻 형태로 각 UserAccount에 collection에 저장
+    public static DatabaseReference getUserDBRef(){
+        if(dbRef!=null){
+            return dbRef;
+        }
+        return null;
+    }
     public void addWords(HashMap wordMap){
         dbRef.child("collection").updateChildren(wordMap);
     }
+
 
     // 각 유저의 콜렉션에서 모든 단어-뜻 추출
     public Map<String,Object> getWords(){
