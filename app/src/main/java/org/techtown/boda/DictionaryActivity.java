@@ -3,6 +3,7 @@ package org.techtown.boda;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
@@ -13,7 +14,11 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
+import androidx.viewpager2.widget.ViewPager2;
 
+import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -33,6 +38,8 @@ public class DictionaryActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private WordDataAdapter adapter;
     private DatabaseReference databaseRef;
+    private TabLayout tabLayout;
+    private ViewPager2 viewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +48,16 @@ public class DictionaryActivity extends AppCompatActivity {
 
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        tabLayout = findViewById(R.id.tabs);
+        viewPager = findViewById(R.id.view_pager);
+
+        viewPager.setAdapter(new ViewPagerAdapter(this));
+
+        //attach()호출로 tablayout,viewpager연결
+        new TabLayoutMediator(tabLayout,viewPager,
+                (tab,position)->tab.setText(position==0?"전체":"그림")
+        ).attach();
 
         WordDataAdapter.OnItemClickListener listener = new WordDataAdapter.OnItemClickListener() {
             @Override
@@ -70,12 +87,13 @@ public class DictionaryActivity extends AppCompatActivity {
                         wordDataList.add(wordData);
                         wordCount++;
                     }
+
                     adapter = new WordDataAdapter(wordDataList, listener);
                     recyclerView.setAdapter(adapter);
 
                     TextView wordCountTextView = findViewById(R.id.wordCount);
                     wordCountTextView.setText("발견한 단어 갯수 : " + wordCount);
-
+                    adapter.notifyDataSetChanged();  // 데이터 변경 알림
                 }
 
                 @Override
@@ -95,5 +113,6 @@ public class DictionaryActivity extends AppCompatActivity {
         });
 
     }
+
 
 }

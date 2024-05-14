@@ -9,7 +9,6 @@
     android:clipToOutline="true"
     tools:context=".DictionaryActivity">
 
-    <!-- 등급과 단어 개수를 표시할 텍스트뷰 추가 -->
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="134dp"
@@ -17,10 +16,11 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_marginTop="70dp"
-        android:layout_marginEnd="110dp"
+        android:layout_marginEnd="142dp"
         android:layout_marginBottom="70dp"
         app:srcCompat="@drawable/t" />
 
+    <!-- 등급과 단어 개수를 표시할 텍스트뷰 추가 -->
     <TextView
         android:id="@+id/wordCount"
         android:layout_width="wrap_content"
@@ -31,43 +31,27 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="120dp"/>
 
-    <!--progress_bar_exp.xml파일 추가-->
-
-    <!--스크롤뷰->리사이클러 뷰 사용-->
-
-    <View
-        android:id="@+id/view"
-        android:layout_width="330dp"
-        android:layout_height="170dp"
-        android:layout_marginTop="30dp"
-        android:layout_centerInParent="true"
-        android:layout_below="@id/imageView"
-        android:background="@drawable/activity_main_view2" />
-
-    <ScrollView
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabs"
         android:layout_width="match_parent"
-        android:layout_height="476dp"
-        android:layout_below="@+id/view"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginTop="25dp"
-        android:layout_marginEnd="0dp"
-        android:layout_marginBottom="49dp">
+        android:layout_height="wrap_content"
+        android:layout_below="@id/wordCount"
+        app:tabMode="fixed"
+        app:tabGravity="fill"/>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/view_pager"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tabs"/>
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerView"
-                android:layout_width="match_parent"
-                android:layout_height="446dp"
-                android:layout_marginTop="30dp"
-                android:background="@color/white" />
-
-        </LinearLayout>
-    </ScrollView>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/tabs"
+        android:layout_above="@id/button_layout"
+        android:background="@color/white" />
 
     <LinearLayout
         android:id="@+id/button_layout"
@@ -84,37 +68,6 @@
             android:layout_weight="1"
             android:background="#FF9800"
             android:text="홈으로" />
-
-        <Button
-            android:id="@+id/galleryButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_above="@id/button_layout"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="20dp"
-            android:text="그림도감"
-            android:textSize="16sp" />
-
-        <Button
-            android:id="@+id/fullDictionaryButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_above="@id/galleryButton"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="20dp"
-            android:text="전체도감"
-            android:textSize="16sp" />
-
     </LinearLayout>
-
-    <Button
-        android:id="@+id/sortbutton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="286dp"
-        android:layout_marginTop="66dp"
-        android:text="정렬" />
 
 </RelativeLayout>
