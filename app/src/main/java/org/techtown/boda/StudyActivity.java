@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
@@ -32,28 +33,42 @@ import java.util.Random;
 
 public class StudyActivity extends AppCompatActivity {
 
+    // UI 요소 선언
+    private ProgressBar progressBar; // 진행상황을 표시하는 프로그레스 바
+    private TextView textViewCon; // 진행 상황을 표시하는 텍스트 뷰
+
     private TextView tv_word;
     private EditText et_input;
     private Button btn_check;
-
     private Button btn_home;
     private Button btn_listen;
     private Button[] btn_choices;
     private LinearLayout spellingLayout;
     private LinearLayout multipleChoiceLayout;
-    private List<String> words;
-    private int currentIndex = 0;
-    private Random random = new Random();
-    private TextToSpeech textToSpeech;
-    private Map<String, Boolean> wordAnswerMap = new HashMap<>();
-    private boolean isMultipleChoice = false;
-    private List<Integer> randomIndexes;
+
+    // 데이터 관련 변수 및 객체 선언
+    private List<String> words; // 사용자의 단어 목록을 저장하는 리스트
+    private int currentIndex = 0; // 현재 진행 중인 단어의 인덱스
+    private Random random = new Random(); // 랜덤 객체
+    private TextToSpeech textToSpeech; // 텍스트 음성 변환을 위한 객체
+    private Map<String, Boolean> wordAnswerMap = new HashMap<>(); // 단어와 정답 여부를 저장하는 맵
+    private boolean isMultipleChoice = false; // 현재 문제가 객관식 문제인지 여부
+    private List<Integer> randomIndexes; // 랜덤 단어 인덱스 리스트
+    private int maxProgress = 10; // 최대 진행 단어 개수
     //private List<Integer> sdf = [];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_study);
+
+
+        // UI 요소 초기화
+        progressBar = findViewById(R.id.progress_bar);
+        textViewCon = findViewById(R.id.TextView_con);
+
+        // 최대 진행 상태를 설정
+        progressBar.setMax(maxProgress);
 
         words = new ArrayList<>();
 
@@ -145,41 +160,31 @@ public class StudyActivity extends AppCompatActivity {
     }
 
     private void showNextWord() {
-        // 최대 10개의 단어만 표시
-        if (currentIndex < 10 && currentIndex < words.size()) {
+        if (currentIndex < maxProgress && currentIndex < words.size()) {
             String word = getRandomWord();
 
-            // 4지선다 문제를 랜덤으로 선택
             isMultipleChoice = random.nextBoolean();
 
             if (isMultipleChoice) {
-                // 4지선다 문제일 때는 랜덤하게 뜻을 선택하여 버튼에 배치
                 setMultipleChoice(word);
-                // 받아쓰기 유형 레이아웃을 숨김
                 spellingLayout.setVisibility(View.GONE);
-                // 4지선다 유형 레이아웃을 보임
                 multipleChoiceLayout.setVisibility(View.VISIBLE);
             } else {
-                // 받아쓰기 문제일 때는 화면에 단어 표시
                 tv_word.setText(word);
                 et_input.setText("");
                 btn_check.setEnabled(true);
-                // 받아쓰기 유형 레이아웃을 보임
                 spellingLayout.setVisibility(View.VISIBLE);
-                // 4지선다 유형 레이아웃을 숨김
                 multipleChoiceLayout.setVisibility(View.GONE);
             }
 
-            // 단어 발음 듣기
             if (textToSpeech != null) {
                 textToSpeech.speak(word, TextToSpeech.QUEUE_FLUSH, null);
             }
         } else {
-            // 최대 단어 수에 도달하면 학습이 끝난 것으로 간주하고 결과 표시
             showResult();
         }
+        updateProgress();
     }
-
     //랜덤하게 불러올 단어 인덱스 리스트
     //그리고 해당 리스트 무작위로 섞기
     //randomIndexes 는 getRandomWord에서 불러서쓰기
@@ -209,6 +214,15 @@ public class StudyActivity extends AppCompatActivity {
         return words.get(randomIndexes.get(currentIndex));
     }
 
+
+    private void updateProgress() {
+        int totalWords = Math.min(words.size(), maxProgress); // 최대 10개의 단어까지만 표시
+        String progressText = (currentIndex + 1) + "/" + totalWords; // 현재 진행 상황 텍스트
+        textViewCon.setText(progressText);
+
+        int progress = currentIndex + 1; // 현재 진행한 단어의 개수를 진행 값으로 사용
+        progressBar.setProgress(progress);
+    }
 
     private void checkMultipleChoice() {
         // 정답 버튼의 텍스트와 실제 정답을 비교하여 정답 여부 확인

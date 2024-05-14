@@ -36,16 +36,19 @@
         android:layout_height="45px"
         android:layout_marginTop="210px"
         android:layout_centerHorizontal="true"
-        android:max="10"
+        android:indeterminateDrawable="@drawable/progress_bar_exp"
+        android:max="100"
+        android:progressDrawable="@drawable/progress_bar_exp"
         tools:progress="0" />
 
         <TextView
+            android:id="@+id/TextView_con"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="160px"
             android:layout_marginLeft="36px"
+            android:layout_marginTop="160px"
             android:text="0/10"
-            android:textSize="16sp"/>
+            android:textSize="16sp" />
 
     </LinearLayout>
 

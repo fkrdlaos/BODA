@@ -20,7 +20,6 @@
         android:hint="이메일"
         android:inputType="textEmailAddress"
         android:paddingStart="54px"
-        android:paddingEnd="630px"
         android:textColorHint="#FFFFFF" />
 
     <EditText
