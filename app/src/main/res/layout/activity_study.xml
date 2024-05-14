@@ -14,7 +14,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="TextView"
-        android:visibility="gone" />
+        android:visibility="visible" />
 
     <LinearLayout
         android:id="@+id/progress"
@@ -29,17 +29,17 @@
             android:layout_marginTop="150px"
             android:background="@drawable/back_gray"
             android:contentDescription="button4"/>
-    <ProgressBar
-        android:id="@+id/progress_bar"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="750px"
-        android:layout_height="45px"
-        android:layout_marginTop="210px"
-        android:layout_centerHorizontal="true"
-        android:indeterminateDrawable="@drawable/progress_bar_exp"
-        android:max="100"
-        android:progressDrawable="@drawable/progress_bar_exp"
-        tools:progress="0" />
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="750px"
+            android:layout_height="45px"
+            android:layout_marginTop="210px"
+            android:layout_centerHorizontal="true"
+            android:indeterminateDrawable="@drawable/progress_bar_exp"
+            android:max="100"
+            android:progressDrawable="@drawable/progress_bar_exp"
+            tools:progress="0" />
 
         <TextView
             android:id="@+id/TextView_con"
@@ -148,34 +148,35 @@
     <!-- 받아쓰기 유형 -->
 
 
-    <Button
-        android:id="@+id/btn_check"
-        android:layout_width="900px"
-        android:layout_height="150px"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="270px"
-        android:background="@drawable/activity_study_button_gray"
-        android:text="다음으로"
-        android:textColor="#FFFFFF"
-        android:textStyle="bold" />
-
     <LinearLayout
         android:id="@+id/spelling_layout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/btn_listen"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="420px"
-        android:orientation="horizontal">
+        android:layout_width="match_parent"
+        android:layout_height="376dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="0dp"
+        android:layout_marginBottom="0dp"
+        android:orientation="vertical">
 
         <EditText
             android:id="@+id/et_input"
             android:layout_width="780px"
             android:layout_height="150px"
+            android:layout_gravity="center"
             android:layout_marginTop="0px"
             android:hint="정답을 입력하세요"
             android:textSize="18sp" />
+
+        <Button
+            android:id="@+id/btn_check"
+            android:layout_width="900px"
+            android:layout_height="150px"
+            android:layout_gravity="center"
+            android:layout_marginTop="500px"
+            android:background="@drawable/activity_study_button_gray"
+            android:text="다음으로"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold" />
     </LinearLayout>
 
 
