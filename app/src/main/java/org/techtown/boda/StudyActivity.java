@@ -120,7 +120,6 @@ public class StudyActivity extends AppCompatActivity {
         btn_home.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                cancelRewards(); // 홈 버튼 클릭 시 이전에 맞춘 문제들에 대한 보상 취소
                 Intent intent = new Intent(StudyActivity.this, MainActivity.class);
                 startActivity(intent);
                 finish();
@@ -135,11 +134,7 @@ public class StudyActivity extends AppCompatActivity {
         });
     }
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        cancelRewards(); // 뒤로가기 시 이전에 맞춘 문제들에 대한 보상 취소
-    }
+
 
     @Override
     protected void onDestroy() {
@@ -239,7 +234,7 @@ public class StudyActivity extends AppCompatActivity {
 
         if (isCorrect) {
             correctCount++; // 맞춘 문제 수 증가
-            increaseExp();
+
         }
 
         if (currentIndex < words.size() - 1) {
@@ -253,7 +248,7 @@ public class StudyActivity extends AppCompatActivity {
     private void checkSpelling() {
         if (et_input.getText().toString().equalsIgnoreCase(words.get(randomIndexes.get(currentIndex)))) {
             correctCount++; // 맞춘 문제 수 증가
-            increaseExp();
+
         }
         wordAnswerMap.put(words.get(randomIndexes.get(currentIndex)), et_input.getText().toString().equalsIgnoreCase(words.get(randomIndexes.get(currentIndex))));
         if (currentIndex < words.size() - 1) {
@@ -264,43 +259,7 @@ public class StudyActivity extends AppCompatActivity {
         }
     }
 
-    private void increaseExp() {
-        DatabaseReference expRef = FirebaseDatabase.getInstance().getReference().child("BODA").child("UserAccount").child(getUserId()).child("exp");
-        expRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
-                    int currentExp = dataSnapshot.getValue(Integer.class);
-                    currentExp += 10;
-                    expRef.setValue(currentExp);
-                }
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                Toast.makeText(StudyActivity.this, "데이터베이스 오류: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
-    private void cancelRewards() {
-        DatabaseReference expRef = FirebaseDatabase.getInstance().getReference().child("BODA").child("UserAccount").child(getUserId()).child("exp");
-        expRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
-                    int currentExp = dataSnapshot.getValue(Integer.class);
-                    currentExp -= correctCount * 10; // 이전에 맞춘 문제들의 보상을 취소
-                    expRef.setValue(currentExp);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                Toast.makeText(StudyActivity.this, "데이터베이스 오류: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
 
     private void listenWord() {
         if (textToSpeech != null) {
