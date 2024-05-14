@@ -136,6 +136,12 @@ public class StudyActivity extends AppCompatActivity {
     }
 
     @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        cancelRewards(); // 뒤로가기 시 이전에 맞춘 문제들에 대한 보상 취소
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         if (textToSpeech != null) {
