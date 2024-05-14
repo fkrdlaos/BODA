@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="1050px"
-    android:layout_height="650px"
+    android:layout_height="570px"
     android:background="@drawable/popup_round"
     android:gravity="center"
     android:orientation="vertical"
@@ -13,45 +13,30 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="30px"
         android:gravity="center"
-        android:text="닉네임 변경"
+        android:text="학습을 그만하시겠습니까?"
         android:textSize="20sp"
         android:textStyle="bold" />
 
-    <LinearLayout
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="30px"
         android:layout_marginTop="45px"
-        android:layout_marginEnd="30px"
-        android:orientation="horizontal">
+        android:gravity="center"
+        android:text="지금 나가면 경험치를 받지 못해요"
+        android:textSize="16sp"
+        android:textColor="#999999"/>
 
-        <EditText
-            android:id="@+id/editTextNewNickname"
-            android:layout_width="750px"
-            android:layout_height="wrap_content"
-            android:hint="새로운 닉네임을 입력하세요."
-            android:maxLength="15"
-            android:textSize="20sp" />
-
-        <TextView
-            android:id="@+id/textViewCharCount"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="0/15"
-            android:textSize="16sp" />
-
-    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="60px"
+        android:layout_marginTop="75px"
         android:orientation="horizontal">
 
         <Button
             android:id="@+id/buttonCancel"
             android:layout_width="450px"
-            android:layout_height="150px"
+            android:layout_height="144px"
             android:layout_marginEnd="30px"
             android:layout_weight="1"
             android:background="@drawable/popup_button1"
@@ -63,7 +48,7 @@
         <Button
             android:id="@+id/buttonConfirm"
             android:layout_width="450px"
-            android:layout_height="150px"
+            android:layout_height="144px"
             android:layout_weight="1"
             android:background="@drawable/popup_button2"
             android:text="확인"
