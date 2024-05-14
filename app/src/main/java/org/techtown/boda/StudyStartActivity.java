@@ -15,7 +15,7 @@ public class StudyStartActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_study_start);
 
-        btn_ss = findViewById(R.id.start_butto);
+        btn_ss = findViewById(R.id.start_button);
 
         btn_ss.setOnClickListener(new View.OnClickListener() {
             @Override

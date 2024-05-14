@@ -94,7 +94,7 @@ public class SettingsActivity extends AppCompatActivity {
         EditText editTextNewNickname = dialogView.findViewById(R.id.editTextNewNickname);
         Button buttonCancel = dialogView.findViewById(R.id.buttonCancel);
         Button buttonConfirm = dialogView.findViewById(R.id.buttonConfirm);
-        TextView textViewCharCount =dialogView.findViewById(R.id.textViewCharCount);
+        TextView textViewCharCount = dialogView.findViewById(R.id.textViewCharCount);
         // 기존 닉네임 설정
         editTextNewNickname.setText(nickname);
 
