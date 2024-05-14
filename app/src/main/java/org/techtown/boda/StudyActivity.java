@@ -124,13 +124,10 @@ public class StudyActivity extends AppCompatActivity {
         btn_check.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isMultipleChoice) {
-                    checkMultipleChoice();
-                } else {
-                    checkSpelling();
-                }
+                checkSpelling(); // 항상 철자를 확인하는 메서드를 호출합니다.
             }
         });
+
 
         btn_home.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -224,19 +221,41 @@ public class StudyActivity extends AppCompatActivity {
         progressBar.setProgress(progress);
     }
 
-    private void checkMultipleChoice() {
-        // 정답 버튼의 텍스트와 실제 정답을 비교하여 정답 여부 확인
-        String correctAnswer = words.get(randomIndexes.get(currentIndex));
-        Button selectedButton = null;
-        for (Button btn : btn_choices) {
-            if (btn.getText().toString().equals(correctAnswer)) {
-                selectedButton = btn;
-                break;
+    private void setMultipleChoice(String word) {
+        // 정답의 위치를 랜덤하게 결정
+        int correctPosition = random.nextInt(btn_choices.length);
+        // 정답을 버튼에 설정
+        btn_choices[correctPosition].setText(word);
+        // 정답 버튼에 대한 클릭 리스너 설정
+        btn_choices[correctPosition].setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // 버튼이 클릭되었을 때 실행되는 내용 추가
+                checkMultipleChoice(true); // 정답인 경우를 나타내기 위해 true 전달
+            }
+        });
+
+        // 나머지 버튼에 랜덤하게 다른 단어를 설정
+        List<String> otherWords = new ArrayList<>(words);
+        otherWords.remove(word);
+        Collections.shuffle(otherWords);
+        for (int i = 0; i < btn_choices.length; i++) {
+            if (i != correctPosition && i < otherWords.size()) {
+                btn_choices[i].setText(otherWords.get(i));
+                // 오답 버튼에 대한 클릭 리스너 설정
+                btn_choices[i].setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // 버튼이 클릭되었을 때 실행되는 내용 추가
+                        checkMultipleChoice(false); // 오답인 경우를 나타내기 위해 false 전달
+                    }
+                });
             }
         }
+    }
 
-        // 선택된 버튼이 정답 버튼인지 확인
-        boolean isCorrect = selectedButton != null && selectedButton.getText().toString().equals(correctAnswer);
+    private void checkMultipleChoice(boolean isCorrect) {
+        String correctAnswer = words.get(randomIndexes.get(currentIndex));
 
         // 단어별 정답 여부 기록
         wordAnswerMap.put(correctAnswer, isCorrect);
@@ -257,38 +276,6 @@ public class StudyActivity extends AppCompatActivity {
     }
 
 
-    private void setMultipleChoice(String word) {
-        // 정답의 위치를 랜덤하게 결정
-        int correctPosition = random.nextInt(btn_choices.length);
-        // 정답을 버튼에 설정
-        btn_choices[correctPosition].setText(word);
-        // 정답 버튼에 대한 클릭 리스너 설정
-        btn_choices[correctPosition].setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // 버튼이 클릭되었을 때 실행되는 내용 추가
-                checkMultipleChoice();
-            }
-        });
-
-        // 나머지 버튼에 랜덤하게 다른 단어를 설정
-        List<String> otherWords = new ArrayList<>(words);
-        otherWords.remove(word);
-        Collections.shuffle(otherWords);
-        for (int i = 0; i < btn_choices.length; i++) {
-            if (i != correctPosition && i < otherWords.size()) {
-                btn_choices[i].setText(otherWords.get(i));
-                // 오답 버튼에 대한 클릭 리스너 설정
-                btn_choices[i].setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        // 버튼이 클릭되었을 때 실행되는 내용 추가
-                        checkMultipleChoice();
-                    }
-                });
-            }
-        }
-    }
 
     private void checkSpelling() {
         // 입력된 단어와 정답을 비교하여 결과 표시

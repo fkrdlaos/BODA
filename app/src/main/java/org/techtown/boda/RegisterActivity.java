@@ -131,6 +131,12 @@ public class RegisterActivity extends AppCompatActivity {
                                 account.setPassword(password);
                                 account.setNickname(nickname);
 
+                                // 미션 정보 초기화
+                                Mission mission = new Mission();
+                                mission.setChallenges(0);
+                                mission.setWords(0);
+                                account.setMission(mission);
+
                                 // 실시간 데이터베이스에 exp와 LV 추가
                                 account.setExp(0); // 초기값 0으로 설정
                                 account.setLv(1); // 초기값 1로 설정

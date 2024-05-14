@@ -15,6 +15,7 @@ public class UserAccount {
     private String emailId; // 이메일 아이디
     private String password; // 비밀번호
     private String nickname; // 닉네임
+    private Mission mission; // 미션 정보
     private int exp; // 경험치
     private int lv; // 레벨
 
@@ -53,6 +54,14 @@ public class UserAccount {
         this.nickname = nickname;
     }
 
+    public Mission getMission() {
+        return mission;
+    }
+
+    public void setMission(Mission mission) {
+        this.mission = mission;
+    }
+
     public int getExp() {
         return exp;
     }
@@ -68,5 +77,28 @@ public class UserAccount {
     public void setLv(int lv) {
         this.lv = lv;
     }
+}
 
+class Mission {
+    private int challenges; // 도전 횟수
+    private int words; // 단어 수
+
+    public Mission() {
+    }
+
+    public int getChallenges() {
+        return challenges;
+    }
+
+    public void setChallenges(int challenges) {
+        this.challenges = challenges;
+    }
+
+    public int getWords() {
+        return words;
+    }
+
+    public void setWords(int words) {
+        this.words = words;
+    }
 }
