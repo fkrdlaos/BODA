@@ -9,6 +9,13 @@
     android:background="@color/white"
     tools:context=".StudyActivity">
 
+    <TextView
+        android:id="@+id/tv_word"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        android:visibility="gone" />
+
     <LinearLayout
         android:id="@+id/progress"
         android:layout_width="match_parent"
@@ -112,8 +119,8 @@
                 android:layout_marginLeft="66px"
                 android:layout_marginTop="45px"
                 android:layout_marginRight="24px"
-                android:background="@drawable/activity_study_choice"
                 android:layout_weight="1"
+                android:background="@drawable/activity_study_choice"
                 android:contentDescription="btn_choice3"
                 android:minHeight="144px"
                 android:text=""
@@ -150,15 +157,23 @@
         android:textColor="#FFFFFF"
         android:textStyle="bold" />
 
-    <EditText
-        android:id="@+id/et_input"
-        android:layout_width="780px"
-        android:layout_height="150px"
+    <LinearLayout
+        android:id="@+id/spelling_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_below="@+id/btn_listen"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="420px"
-        android:hint="정답을 입력하세요"
-        android:textSize="18sp" />
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/et_input"
+            android:layout_width="780px"
+            android:layout_height="150px"
+            android:layout_marginTop="0px"
+            android:hint="정답을 입력하세요"
+            android:textSize="18sp" />
+    </LinearLayout>
 
 
 </RelativeLayout>
