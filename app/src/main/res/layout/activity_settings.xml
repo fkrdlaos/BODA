@@ -57,7 +57,7 @@
             android:background="#FFFFFF"
             android:gravity="left|center_vertical"
             android:paddingStart="45px"
-            android:text="탈퇴하기 "
+            android:text="탈퇴하기"
             android:textColor="#FF0000"
             android:textSize="20sp" />
 
