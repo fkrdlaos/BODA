@@ -19,7 +19,8 @@
         android:layout_marginEnd="60px"
         android:background="@drawable/setting"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:contentDescription="settings"/>
 
     <View
         android:id="@+id/profile_car"
