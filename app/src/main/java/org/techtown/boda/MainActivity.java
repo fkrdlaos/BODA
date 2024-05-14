@@ -3,7 +3,6 @@ package org.techtown.boda;
 import android.Manifest;
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -11,7 +10,6 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -30,6 +28,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -78,7 +77,13 @@ public class MainActivity extends AppCompatActivity {
 
         // Initialize Firebase Auth
         mFirebaseAuth = FirebaseAuth.getInstance();
-        mDatabaseRef = FirebaseDatabase.getInstance().getReference().child("BODA").child("UserAccount").child(mFirebaseAuth.getCurrentUser().getUid());
+        FirebaseUser user = mFirebaseAuth.getCurrentUser();
+        String userId = "";
+        if (user != null) {
+            userId = user.getUid();
+        }
+        mDatabaseRef = FirebaseDatabase.getInstance().getReference().child("BODA").child("UserAccount").child(userId);
+        RTDatabase.getInstance(userId); // DB 최초 접근 시 경로 설정 용
 
         tvResult = findViewById(R.id.tv_result);
         textViewExp = findViewById(R.id.textView2);
