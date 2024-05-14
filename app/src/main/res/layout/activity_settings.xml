@@ -20,7 +20,8 @@
         android:layout_width="150px"
         android:layout_height="150px"
         android:layout_marginTop="180px"
-        android:background="@drawable/back_gray"/>
+        android:background="@drawable/back_gray"
+        android:contentDescription="backButton" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -56,9 +57,10 @@
             android:background="#FFFFFF"
             android:gravity="left|center_vertical"
             android:paddingStart="45px"
-            android:textSize="20sp"
-            android:textColor="#FF6F0F"
-            android:text="탈퇴하기 " />
+            android:text="탈퇴하기 "
+            android:textColor="#FF0000"
+            android:textSize="20sp" />
+
     </LinearLayout>
 </RelativeLayout>
 
