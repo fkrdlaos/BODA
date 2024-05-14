@@ -85,26 +85,6 @@
             android:background="#FF9800"
             android:text="홈으로" />
 
-        <Button
-            android:id="@+id/galleryButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_above="@id/button_layout"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="20dp"
-            android:text="그림도감"
-            android:textSize="16sp" />
-
-        <Button
-            android:id="@+id/fullDictionaryButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_above="@id/galleryButton"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="20dp"
-            android:text="전체도감"
-            android:textSize="16sp" />
-
     </LinearLayout>
 
     <Button
