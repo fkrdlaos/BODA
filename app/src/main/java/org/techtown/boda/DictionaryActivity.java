@@ -1,3 +1,4 @@
+// DictionaryActivity.java
 package org.techtown.boda;
 
 import android.content.Intent;
@@ -12,9 +13,10 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.viewpager.widget.ViewPager;
 
+import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -23,51 +25,45 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import org.techtown.boda.WordData;
-import org.techtown.boda.WordDataAdapter;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 public class DictionaryActivity extends AppCompatActivity {
 
-    private RecyclerView recyclerView;
-    private WordDataAdapter adapter;
     private DatabaseReference databaseRef;
-    private EditText searchBar;
-    private List<WordData> originalWordDataList;
-    private List<WordData> filteredWordDataList;
+    private fragment1 fragment1Instance;
+    private TextView wordCountTextView; // 발견한 단어 갯수를 표시할 TextView
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dictionary);
 
-        searchBar = findViewById(R.id.search_bar);
-        searchBar.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+        ViewPager viewPager = findViewById(R.id.view_pager);
+        TabLayout tabLayout = findViewById(R.id.tabs);
+        EditText searchBar = findViewById(R.id.search_bar);
+        Button homeButton = findViewById(R.id.button3);
+        wordCountTextView = findViewById(R.id.wordCount); // TextView 연결
 
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+        // Adapter 설정
+        VPAdapter vpAdapter = new VPAdapter(getSupportFragmentManager(), FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
+        vpAdapter.addFragment(new fragment1(), "전체");
+        vpAdapter.addFragment(new fragment2(), "그림 도감");
+        viewPager.setAdapter(vpAdapter);
+        tabLayout.setupWithViewPager(viewPager);
 
+        // fragment1 인스턴스 가져오기
+        fragment1Instance = (fragment1) vpAdapter.getItem(0);
+
+        // 홈 버튼 클릭 시 MainActivity로 이동
+        homeButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void afterTextChanged(Editable editable) {
-                filter(editable.toString());
+            public void onClick(View v) {
+                Intent intent = new Intent(DictionaryActivity.this, MainActivity.class);
+                startActivity(intent);
+                finish();
             }
         });
-
-        recyclerView = findViewById(R.id.recyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-        WordDataAdapter.OnItemClickListener listener = new WordDataAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(int position) {
-                Intent intent = new Intent(DictionaryActivity.this, DetailActivity.class);
-                startActivity(intent);
-            }
-        };
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
@@ -79,25 +75,20 @@ public class DictionaryActivity extends AppCompatActivity {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     List<WordData> wordDataList = new ArrayList<>();
-                    originalWordDataList = new ArrayList<>();
-                    filteredWordDataList = new ArrayList<>();
-                    int wordCount = 0;
+                    int wordCount = 0; // 발견한 단어의 개수를 세기 위한 변수
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                         String word = snapshot.getKey();
                         String meaning = snapshot.child("meanings").getValue(String.class);
                         String sentence = snapshot.child("sentence").getValue(String.class);
                         String dateTime = snapshot.child("date_time").getValue(String.class);
                         WordData wordData = new WordData(word, meaning, sentence, dateTime);
-
                         wordDataList.add(wordData);
-                        originalWordDataList.add(wordData);
-                        filteredWordDataList.add(wordData);
-                        wordCount++;
+                        wordCount++; // 단어를 추가할 때마다 개수를 증가시킴
                     }
-                    adapter = new WordDataAdapter(filteredWordDataList, listener);
-                    recyclerView.setAdapter(adapter);
+                    // fragment1에 데이터 전달
+                    fragment1Instance.updateData(wordDataList);
 
-                    TextView wordCountTextView = findViewById(R.id.wordCount);
+                    // 발견한 단어의 개수를 TextView에 설정
                     wordCountTextView.setText("발견한 단어 갯수 : " + wordCount);
                 }
 
@@ -108,29 +99,19 @@ public class DictionaryActivity extends AppCompatActivity {
             });
         }
 
-        Button homeButton = findViewById(R.id.button3);
-        homeButton.setOnClickListener(new View.OnClickListener() {
+        // 검색 기능 구현
+        searchBar.addTextChangedListener(new TextWatcher() {
             @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(DictionaryActivity.this, MainActivity.class);
-                startActivity(intent);
-                finish();
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                fragment1Instance.filter(editable.toString());
             }
         });
     }
-
-    private void filter(String text) {
-        filteredWordDataList.clear();
-        if (text.isEmpty()) {
-            filteredWordDataList.addAll(originalWordDataList);
-        } else {
-            text = text.toLowerCase(Locale.getDefault());
-            for (WordData wordData : originalWordDataList) {
-                if (wordData.getWord().toLowerCase(Locale.getDefault()).contains(text)) {
-                    filteredWordDataList.add(wordData);
-                }
-            }
-        }
-        adapter.notifyDataSetChanged();
-    }
 }
+

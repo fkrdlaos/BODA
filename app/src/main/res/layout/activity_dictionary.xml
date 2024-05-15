@@ -9,7 +9,6 @@
     android:clipToOutline="true"
     tools:context=".DictionaryActivity">
 
-    <!-- 등급과 단어 개수를 표시할 텍스트뷰 추가 -->
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="134dp"
@@ -17,10 +16,11 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_marginTop="70dp"
-        android:layout_marginEnd="110dp"
+        android:layout_marginEnd="142dp"
         android:layout_marginBottom="70dp"
         app:srcCompat="@drawable/t" />
 
+    <!-- 등급과 단어 개수를 표시할 텍스트뷰 추가 -->
     <TextView
         android:id="@+id/wordCount"
         android:layout_width="wrap_content"
@@ -31,43 +31,37 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="120dp"/>
 
-    <!--progress_bar_exp.xml파일 추가-->
-
-    <!--스크롤뷰->리사이클러 뷰 사용-->
-
-    <View
-        android:id="@+id/view"
-        android:layout_width="330dp"
-        android:layout_height="170dp"
-        android:layout_marginTop="30dp"
-        android:layout_centerInParent="true"
-        android:layout_below="@id/imageView"
-        android:background="@drawable/activity_main_view2" />
-
-    <ScrollView
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabs"
         android:layout_width="match_parent"
-        android:layout_height="476dp"
-        android:layout_below="@+id/view"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginTop="25dp"
-        android:layout_marginEnd="0dp"
-        android:layout_marginBottom="49dp">
+        android:layout_height="wrap_content"
+        android:layout_below="@id/search_bar"
+        android:layout_marginTop="50dp"
+        android:background="@color/white"
+        app:tabGravity="fill"
+        app:tabMode="fixed">
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/tabItem1"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:text="전체" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerView"
-                android:layout_width="match_parent"
-                android:layout_height="446dp"
-                android:layout_marginTop="30dp"
-                android:background="@color/white" />
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/tabItem2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="그림 도감" />
+    </com.google.android.material.tabs.TabLayout>
 
-        </LinearLayout>
-    </ScrollView>
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/view_pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/button_layout"
+        android:layout_below="@id/tabs"
+        android:contentDescription="ViewPager" />
+
 
     <LinearLayout
         android:id="@+id/button_layout"
@@ -84,18 +78,7 @@
             android:layout_weight="1"
             android:background="#FF9800"
             android:text="홈으로" />
-
     </LinearLayout>
-
-    <Button
-        android:id="@+id/sortbutton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="286dp"
-        android:layout_marginTop="66dp"
-        android:text="정렬" />
 
     <EditText
         android:id="@+id/search_bar"
@@ -103,8 +86,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginStart="26dp"
-        android:layout_marginTop="254dp"
+        android:layout_marginStart="72dp"
+        android:layout_marginTop="167dp"
         android:ems="10"
         android:hint="단어를 입력하세요"
         android:inputType="text"
