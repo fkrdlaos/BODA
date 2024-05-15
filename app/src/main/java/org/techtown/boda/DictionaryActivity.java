@@ -8,6 +8,7 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -31,6 +32,7 @@ public class DictionaryActivity extends AppCompatActivity {
 
     private DatabaseReference databaseRef;
     private fragment1 fragment1Instance;
+    private TextView wordCountTextView; // 발견한 단어 갯수를 표시할 TextView
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,10 +43,10 @@ public class DictionaryActivity extends AppCompatActivity {
         TabLayout tabLayout = findViewById(R.id.tabs);
         EditText searchBar = findViewById(R.id.search_bar);
         Button homeButton = findViewById(R.id.button3);
+        wordCountTextView = findViewById(R.id.wordCount); // TextView 연결
 
         // Adapter 설정
         VPAdapter vpAdapter = new VPAdapter(getSupportFragmentManager(), FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
-        // Fragment를 먼저 추가한 후에 ViewPager에 어댑터를 설정합니다.
         vpAdapter.addFragment(new fragment1(), "전체");
         vpAdapter.addFragment(new fragment2(), "그림 도감");
         viewPager.setAdapter(vpAdapter);
@@ -52,7 +54,6 @@ public class DictionaryActivity extends AppCompatActivity {
 
         // fragment1 인스턴스 가져오기
         fragment1Instance = (fragment1) vpAdapter.getItem(0);
-
 
         // 홈 버튼 클릭 시 MainActivity로 이동
         homeButton.setOnClickListener(new View.OnClickListener() {
@@ -74,6 +75,7 @@ public class DictionaryActivity extends AppCompatActivity {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     List<WordData> wordDataList = new ArrayList<>();
+                    int wordCount = 0; // 발견한 단어의 개수를 세기 위한 변수
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                         String word = snapshot.getKey();
                         String meaning = snapshot.child("meanings").getValue(String.class);
@@ -81,9 +83,13 @@ public class DictionaryActivity extends AppCompatActivity {
                         String dateTime = snapshot.child("date_time").getValue(String.class);
                         WordData wordData = new WordData(word, meaning, sentence, dateTime);
                         wordDataList.add(wordData);
+                        wordCount++; // 단어를 추가할 때마다 개수를 증가시킴
                     }
                     // fragment1에 데이터 전달
                     fragment1Instance.updateData(wordDataList);
+
+                    // 발견한 단어의 개수를 TextView에 설정
+                    wordCountTextView.setText("발견한 단어 갯수 : " + wordCount);
                 }
 
                 @Override
@@ -108,3 +114,4 @@ public class DictionaryActivity extends AppCompatActivity {
         });
     }
 }
+
