@@ -74,6 +74,8 @@ public class StudyActivity extends AppCompatActivity {
                 }
                 if (!words.isEmpty()) {
                     setRandomIndex();
+                    // 처음 단어를 말하기 위해 showNextWord 메서드를 호출하기 전에 TTS를 사용하여 단어를 말합니다.
+                    speakFirstWord();
                     showNextWord();
                 } else {
                     tv_word.setText("학습할 단어가 없습니다. 단어를 추가하세요.");
@@ -134,7 +136,15 @@ public class StudyActivity extends AppCompatActivity {
         });
     }
 
-
+    // 처음 단어를 말하기 위한 메서드
+    private void speakFirstWord() {
+        if (!words.isEmpty()) {
+            String word = getRandomWord();
+            if (textToSpeech != null) {
+                textToSpeech.speak(word, TextToSpeech.QUEUE_FLUSH, null);
+            }
+        }
+    }
 
     @Override
     protected void onDestroy() {
