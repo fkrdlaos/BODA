@@ -16,6 +16,7 @@ import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -50,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
     private ProgressBar progressBarExp;
     private TextView textViewExp;
     private TextView textViewLevel; // 레벨을 표시하는 TextView 추가
+    private ImageView iv_profile;
 
     private SharedPreferences sharedPreferences;
 
@@ -89,6 +91,7 @@ public class MainActivity extends AppCompatActivity {
         textViewExp = findViewById(R.id.textView2);
         progressBarExp = findViewById(R.id.progress_bar_exp);
         textViewLevel = findViewById(R.id.textView_level); // 레벨을 표시하는 TextView 추가
+        iv_profile = findViewById(R.id.iv_profile);
 
         sharedPreferences = getSharedPreferences("MY_PREFS", MODE_PRIVATE);
 
@@ -209,6 +212,9 @@ public class MainActivity extends AppCompatActivity {
     private void updateExpAndLevelViews() {
         textViewExp.setText("EXP " + exp);
         textViewLevel.setText("Lv. " + lv); // 레벨을 표시
+        // 레벨에 따라 프로필을 변경합니다.
+        ProfileManager.updateProfileByLevel(lv, iv_profile);
+
         progressBarExp.setProgress(exp);
         progressBarExp.setMax(maxExp);
     }
@@ -225,6 +231,8 @@ public class MainActivity extends AppCompatActivity {
         mDatabaseRef.child("exp").setValue(exp);
         mDatabaseRef.child("lv").setValue(lv);
         mDatabaseRef.child("maxExp").setValue(maxExp);
+
+        Toast.makeText(this, "레벨 업!", Toast.LENGTH_SHORT).show();
     }
 
 
