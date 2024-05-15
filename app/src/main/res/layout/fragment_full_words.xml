@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/be3"
+    android:clipToOutline="true">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/full_recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp"
+        android:scrollbars="vertical"
+        tools:listitem="@layout/recyclerview_item" />
+
+</RelativeLayout>
