@@ -66,4 +66,9 @@ public class WordDataAdapter extends RecyclerView.Adapter<WordDataAdapter.ViewHo
             meaningTextView = itemView.findViewById(R.id.item_meaning);
         }
     }
+
+    // WordData 목록을 반환하는 메서드 추가
+    public List<WordData> getWordDataList() {
+        return wordDataList;
+    }
 }

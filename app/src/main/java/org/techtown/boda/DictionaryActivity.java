@@ -1,24 +1,21 @@
+// DictionaryActivity.java
 package org.techtown.boda;
 
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.util.Log;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ProgressBar;
-import android.widget.TextView;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
-import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.tabs.TabLayout;
-import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -27,45 +24,46 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import org.techtown.boda.WordData;
-import org.techtown.boda.WordDataAdapter;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class DictionaryActivity extends AppCompatActivity {
 
-    private RecyclerView recyclerView;
-    private WordDataAdapter adapter;
     private DatabaseReference databaseRef;
-    private TabLayout tabLayout;
-    private ViewPager2 viewPager;
+    private fragment1 fragment1Instance;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dictionary);
 
-        recyclerView = findViewById(R.id.recyclerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        ViewPager viewPager = findViewById(R.id.view_pager);
+        TabLayout tabLayout = findViewById(R.id.tabs);
+        EditText searchBar = findViewById(R.id.search_bar);
+        Button homeButton = findViewById(R.id.button3);
 
-        tabLayout = findViewById(R.id.tabs);
-        viewPager = findViewById(R.id.view_pager);
+        // Adapter 설정
+        VPAdapter vpAdapter = new VPAdapter(getSupportFragmentManager(), FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
+        // Fragment를 먼저 추가한 후에 ViewPager에 어댑터를 설정합니다.
+        vpAdapter.addFragment(new fragment1(), "전체");
+        vpAdapter.addFragment(new fragment2(), "그림 도감");
+        viewPager.setAdapter(vpAdapter);
+        tabLayout.setupWithViewPager(viewPager);
 
-        viewPager.setAdapter(new ViewPagerAdapter(this));
+        // fragment1 인스턴스 가져오기
+        fragment1Instance = (fragment1) vpAdapter.getItem(0);
 
-        //attach()호출로 tablayout,viewpager연결
-        new TabLayoutMediator(tabLayout,viewPager,
-                (tab,position)->tab.setText(position==0?"전체":"그림")
-        ).attach();
 
-        WordDataAdapter.OnItemClickListener listener = new WordDataAdapter.OnItemClickListener() {
+        // 홈 버튼 클릭 시 MainActivity로 이동
+        homeButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onItemClick(int position) {
-                Intent intent = new Intent(DictionaryActivity.this, DetailActivity.class);
+            public void onClick(View v) {
+                Intent intent = new Intent(DictionaryActivity.this, MainActivity.class);
                 startActivity(intent);
+                finish();
             }
-        };
+        });
+
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
             String userId = user.getUid();
@@ -76,24 +74,16 @@ public class DictionaryActivity extends AppCompatActivity {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     List<WordData> wordDataList = new ArrayList<>();
-                    int wordCount = 0;
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                         String word = snapshot.getKey();
                         String meaning = snapshot.child("meanings").getValue(String.class);
                         String sentence = snapshot.child("sentence").getValue(String.class);
-                        String dateTime = snapshot.child("date_time").getValue(String.class); // "date_time"으로 수정
+                        String dateTime = snapshot.child("date_time").getValue(String.class);
                         WordData wordData = new WordData(word, meaning, sentence, dateTime);
-
                         wordDataList.add(wordData);
-                        wordCount++;
                     }
-
-                    adapter = new WordDataAdapter(wordDataList, listener);
-                    recyclerView.setAdapter(adapter);
-
-                    TextView wordCountTextView = findViewById(R.id.wordCount);
-                    wordCountTextView.setText("발견한 단어 갯수 : " + wordCount);
-                    adapter.notifyDataSetChanged();  // 데이터 변경 알림
+                    // fragment1에 데이터 전달
+                    fragment1Instance.updateData(wordDataList);
                 }
 
                 @Override
@@ -102,17 +92,19 @@ public class DictionaryActivity extends AppCompatActivity {
                 }
             });
         }
-        Button homeButton = findViewById(R.id.button3);
-        homeButton.setOnClickListener(new View.OnClickListener() {
+
+        // 검색 기능 구현
+        searchBar.addTextChangedListener(new TextWatcher() {
             @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(DictionaryActivity.this, MainActivity.class);
-                startActivity(intent);
-                finish();
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                fragment1Instance.filter(editable.toString());
             }
         });
-
     }
-
-
 }
