@@ -16,6 +16,8 @@ public class StudyResultActivity extends AppCompatActivity {
         setContentView(R.layout.activity_study_result);
 
         TextView tv_result = findViewById(R.id.tv_result);
+        TextView tv_result3 = findViewById(R.id.tv_result3);
+        TextView tv_eva = findViewById(R.id.tv_eva);
         Button btnHome = findViewById(R.id.btn_home);
         ProgressBar progressBar = findViewById(R.id.circularProgress);
 
@@ -37,11 +39,16 @@ public class StudyResultActivity extends AppCompatActivity {
             evaluation = "조금 더 노력하면 될 거예요. 화이팅!";
         }
 
+        /*
         String resultText = "총 " + totalWords + "개의 단어 중 " + correctCount + "개를 맞췄습니다.\n";
         resultText += "정확도: " + String.format("%.2f", accuracy) + "%\n";
         resultText += "평가: " + evaluation;
+        */
 
-        tv_result.setText(resultText);
+
+        tv_result.setText(correctCount);
+        tv_result3.setText(totalWords);
+        tv_eva.setText(evaluation);
 
         MissionManager.updateChallegeMission(StudyResultActivity.this);
         ExpManager.updateExp(StudyResultActivity.this, correctCount);
