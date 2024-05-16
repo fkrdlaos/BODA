@@ -39,21 +39,20 @@ public class StudyResultActivity extends AppCompatActivity {
             evaluation = "조금 더 노력하면 될 거예요. 화이팅!";
         }
 
-        /*
-        String resultText = "총 " + totalWords + "개의 단어 중 " + correctCount + "개를 맞췄습니다.\n";
+
+        /*String resultText = "총 " + totalWords + "개의 단어 중 " + correctCount + "개를 맞췄습니다.\n";
         resultText += "정확도: " + String.format("%.2f", accuracy) + "%\n";
-        resultText += "평가: " + evaluation;
-        */
+        resultText += "평가: " + evaluation;*/
 
-
-        tv_result.setText(correctCount);
-        tv_result3.setText(totalWords);
+        // 결과와 평가를 화면에 표시
+        tv_result.setText(String.valueOf(correctCount));
+        tv_result3.setText(String.valueOf(totalWords));
         tv_eva.setText(evaluation);
 
         MissionManager.updateChallegeMission(StudyResultActivity.this);
         ExpManager.updateExp(StudyResultActivity.this, correctCount);
-        // 홈으로 버튼 클릭 이벤트 처리
 
+        // 홈으로 버튼 클릭 이벤트 처리
         btnHome.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

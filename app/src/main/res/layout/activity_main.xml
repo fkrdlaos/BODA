@@ -70,7 +70,7 @@
         android:layout_alignEnd="@+id/quest1"
         android:layout_marginTop="18px"
         android:layout_marginEnd="60px"
-        android:background="@drawable/activity_main_button2"
+        android:background="@drawable/activity_main_button1"
         android:text="보상받기"
         android:textColor="#FFFFFF"
         android:textSize="12sp"
@@ -203,7 +203,6 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="84px"
         android:indeterminateDrawable="@drawable/progress_bar_exp"
-        android:max="100"
         android:progressDrawable="@drawable/progress_bar_exp"
         tools:progress="0" />
 
@@ -233,21 +232,21 @@
         android:id="@+id/quest1_medal"
         android:layout_width="120px"
         android:layout_height="120px"
-        android:layout_alignTop="@+id/quest1"
         android:layout_alignStart="@+id/quest1"
-        android:layout_marginTop="30px"
+        android:layout_alignTop="@+id/quest1"
         android:layout_marginStart="30px"
-        app:srcCompat="@drawable/medal6" />
+        android:layout_marginTop="30px"
+        app:srcCompat="@drawable/medal4" />
 
     <ImageView
         android:id="@+id/quest2_medal"
         android:layout_width="120px"
         android:layout_height="120px"
-        android:layout_alignTop="@+id/quest2"
         android:layout_alignStart="@+id/quest2"
-        android:layout_marginTop="30px"
+        android:layout_alignTop="@+id/quest2"
         android:layout_marginStart="30px"
-        app:srcCompat="@drawable/medal2" />
+        android:layout_marginTop="30px"
+        app:srcCompat="@drawable/medal1" />
 
     <TextView
         android:id="@+id/quest1_detail"
@@ -265,12 +264,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/quest1"
-        android:layout_toEndOf="@+id/quest1_detail"
-        android:layout_marginTop="60px"
         android:layout_marginLeft="15px"
+        android:layout_marginTop="60px"
+        android:layout_toEndOf="@+id/quest1_detail"
+        android:text="(0/100)"
         android:textSize="14sp"
-        android:textStyle="bold"
-        android:text="(81/100)" />
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/quest2_detail"
@@ -288,12 +287,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/quest2"
-        android:layout_toEndOf="@+id/quest2_detail"
-        android:layout_marginTop="60px"
         android:layout_marginLeft="15px"
+        android:layout_marginTop="60px"
+        android:layout_toEndOf="@+id/quest2_detail"
+        android:text="(0/100)"
         android:textSize="14sp"
-        android:textStyle="bold"
-        android:text="(2/2)" />
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/quest"
@@ -301,9 +300,9 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/profile_car"
         android:layout_alignStart="@+id/quest1"
-        android:layout_marginTop="75px"
         android:layout_marginStart="30px"
-        android:text="오늘의 학습목표"
+        android:layout_marginTop="75px"
+        android:text="퀘스트 진행도"
         android:textSize="20sp"
         android:textStyle="bold" />
 
