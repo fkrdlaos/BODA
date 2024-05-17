@@ -3,7 +3,6 @@ package org.techtown.boda;
 import android.Manifest;
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -11,13 +10,13 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,6 +29,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -51,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
     private ProgressBar progressBarExp;
     private TextView textViewExp;
     private TextView textViewLevel; // 레벨을 표시하는 TextView 추가
+    private ImageView iv_profile;
 
     private SharedPreferences sharedPreferences;
 
@@ -65,6 +66,10 @@ public class MainActivity extends AppCompatActivity {
     private int lv = 1;
     private int maxExp = 100;
 
+    private TextView quest1ProgressText, quest2ProgressText;
+    private ImageView quest1MedalImage, quest2MedalImage;
+    private Button quest1Button, quest2Button;
+
     // Sample data for dictionary
     private List<String> words = new ArrayList<>();
     private List<String> meanings = new ArrayList<>();
@@ -78,12 +83,21 @@ public class MainActivity extends AppCompatActivity {
 
         // Initialize Firebase Auth
         mFirebaseAuth = FirebaseAuth.getInstance();
-        mDatabaseRef = FirebaseDatabase.getInstance().getReference().child("BODA").child("UserAccount").child(mFirebaseAuth.getCurrentUser().getUid());
+        FirebaseUser user = mFirebaseAuth.getCurrentUser();
+        String userId = "";
+        if (user != null) {
+            userId = user.getUid();
+        }
+        mDatabaseRef = FirebaseDatabase.getInstance().getReference().child("BODA").child("UserAccount").child(userId);
+        RTDatabase.getInstance(userId); // DB 최초 접근 시 경로 설정 용
+        Quest1RewardManager.initFirebase();
+        Quest2RewardManager.initFirebase();
 
         tvResult = findViewById(R.id.tv_result);
         textViewExp = findViewById(R.id.textView2);
         progressBarExp = findViewById(R.id.progress_bar_exp);
         textViewLevel = findViewById(R.id.textView_level); // 레벨을 표시하는 TextView 추가
+        iv_profile = findViewById(R.id.iv_profile);
 
         sharedPreferences = getSharedPreferences("MY_PREFS", MODE_PRIVATE);
 
@@ -94,6 +108,13 @@ public class MainActivity extends AppCompatActivity {
         btnDictionary = findViewById(R.id.btn_Dictionary);
         btnStudy = findViewById(R.id.btn_Study);
         btnSettings = findViewById(R.id.btn_settings);
+
+        quest1ProgressText = findViewById(R.id.quest1_progress);
+        quest2ProgressText = findViewById(R.id.quest2_progress);
+        quest1MedalImage = findViewById(R.id.quest1_medal);
+        quest2MedalImage = findViewById(R.id.quest2_medal);
+        quest1Button = findViewById(R.id.quest1_button);
+        quest2Button = findViewById(R.id.quest2_button);
 
         btnCamera.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -155,40 +176,124 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        // 보상 버튼 클릭 이벤트 핸들러 추가
+        quest1Button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // 퀘스트 1의 진행도를 가져와서 보상 주기
+                String progressText = quest1ProgressText.getText().toString();
+                int quest1Progress = Integer.parseInt(progressText.substring(1, progressText.indexOf('/')).trim());
+                Quest1RewardManager.giveQuest1Reward(getApplicationContext(), quest1Progress, quest1Button);
+
+                // 레벨 및 경험치 업데이트
+                updateExpAndLevelViews();
+
+            }
+        });
+
+        quest2Button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // 퀘스트 2의 진행도를 가져와서 보상 주기
+                String progressText = quest2ProgressText.getText().toString();
+                int quest2Progress = Integer.parseInt(progressText.substring(1, progressText.indexOf('/')).trim());
+                Quest2RewardManager.giveQuest2Reward(getApplicationContext(), quest2Progress, quest2Button);
+
+                // 레벨 및 경험치 업데이트
+                updateExpAndLevelViews();
+
+            }
+        });
+
+
+
+
+
         // Firebase에서 경험치, 레벨 및 최대 경험치 정보 읽어오기
-        mDatabaseRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        mDatabaseRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
-                    exp = dataSnapshot.child("exp").getValue(Integer.class);
-                    lv = dataSnapshot.child("lv").getValue(Integer.class);
+                    Integer expValue = dataSnapshot.child("exp").getValue(Integer.class);
+                    Integer lvValue = dataSnapshot.child("lv").getValue(Integer.class);
 
-                    // maxExp 값이 존재하지 않는 경우 기본값 설정
-                    if (dataSnapshot.hasChild("maxExp")) {
-                        maxExp = dataSnapshot.child("maxExp").getValue(Integer.class);
-                    } else {
-                        // 기본값으로 설정할 최대 경험치 값
-                        maxExp = DEFAULT_MAX_EXP;
-                        // 데이터베이스에 기본값 저장
-                        mDatabaseRef.child("maxExp").setValue(maxExp);
-                    }
+                    if (expValue != null && lvValue != null) {
+                        exp = expValue;
+                        lv = lvValue;
 
-                    // 경험치, 레벨 및 최대 경험치 정보 업데이트
-                    updateExpAndLevelViews();
+                        // maxExp 값이 존재하지 않는 경우 기본값 설정
+                        Integer maxExpValue = dataSnapshot.child("maxExp").getValue(Integer.class);
+                        if (maxExpValue != null) {
+                            maxExp = maxExpValue;
+                        } else {
+                            // 기본값으로 설정할 최대 경험치 값
+                            maxExp = DEFAULT_MAX_EXP;
+                            // 데이터베이스에 기본값 저장
+                            mDatabaseRef.child("maxExp").setValue(maxExp);
+                        }
 
-                    // 경험치가 최대값에 도달했을 경우 레벨 업 및 경험치 초기화
-                    if (exp >= maxExp) {
-                        levelUp();
+                        // 경험치, 레벨 및 최대 경험치 정보 업데이트
+                        updateExpAndLevelViews();
+
+                        // 경험치가 최대값에 도달했을 경우 레벨 업 및 경험치 초기화
+                        if (exp >= maxExp) {
+                            levelUp();
+                        }
                     }
                 }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                // 오류 처리
+                Toast.makeText(MainActivity.this, "데이터베이스 오류: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
+        // Firebase에서 퀘스트 진행 상황을 가져오고 UI를 업데이트합니다.
+        mDatabaseRef.child("mission").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    int wordsProgress = dataSnapshot.child("words").getValue(Integer.class);
+                    int challengesProgress = dataSnapshot.child("challenges").getValue(Integer.class);
+
+                    // 퀘스트 진행 상황을 UI에 업데이트합니다.
+                    updateQuestProgress(wordsProgress, challengesProgress);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Toast.makeText(MainActivity.this, "데이터베이스 오류: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
+
+    // 퀘스트 진행 상황을 UI에 업데이트합니다.
+    private void updateQuestProgress(int wordsProgress, int challengesProgress) {
+        // quest1_progress, quest2_progress 텍스트뷰 업데이트
+        quest1ProgressText.setText("(" + wordsProgress + "/100)");
+        quest2ProgressText.setText("(" + challengesProgress + "/100)");
+
+        // quest1_medal, quest2_medal 이미지뷰 업데이트
+        Quest1RewardManager.updateQuestProgress(wordsProgress, quest1ProgressText, quest1MedalImage);
+        Quest2RewardManager.updateQuestProgress(challengesProgress, quest2ProgressText, quest2MedalImage);
+
+        // quest1_button, quest2_button 업데이트
+        // MainActivity에서 호출하는 부분
+        Quest1RewardManager.updateQuest1RewardButtonVisibility(this, wordsProgress, quest1Button);
+        Quest2RewardManager.updateQuest2RewardButtonVisibility(this, challengesProgress, quest2Button);
+
+
+
+
+
+        // 경험치 및 레벨 업데이트
+        updateExpAndLevelViews();
+    }
+
+
 
     private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -204,6 +309,9 @@ public class MainActivity extends AppCompatActivity {
     private void updateExpAndLevelViews() {
         textViewExp.setText("EXP " + exp);
         textViewLevel.setText("Lv. " + lv); // 레벨을 표시
+        // 레벨에 따라 프로필을 변경합니다.
+        ProfileManager.updateProfileByLevel(lv, iv_profile);
+
         progressBarExp.setProgress(exp);
         progressBarExp.setMax(maxExp);
     }
@@ -211,7 +319,7 @@ public class MainActivity extends AppCompatActivity {
     private void levelUp() {
         lv++; // 레벨 증가
         exp -= maxExp; // 현재 경험치에서 최대 경험치를 뺌
-        maxExp *= 2; // 최대 경험치 2배 증가
+        maxExp *= 1.2; // 최대 경험치 1.2배 증가
 
         // 레벨 및 경험치 업데이트
         updateExpAndLevelViews();
@@ -220,8 +328,11 @@ public class MainActivity extends AppCompatActivity {
         mDatabaseRef.child("exp").setValue(exp);
         mDatabaseRef.child("lv").setValue(lv);
         mDatabaseRef.child("maxExp").setValue(maxExp);
+
+        Toast.makeText(this, "레벨 업!", Toast.LENGTH_SHORT).show();
     }
 
+    // 다음 메서드는 이미지 파일을 저장하고 해당 파일 경로를 반환하는 데 사용됩니다.
 
     private String saveImageToFile(Bitmap imageBitmap) {
         ContextWrapper cw = new ContextWrapper(getApplicationContext());
@@ -248,8 +359,7 @@ public class MainActivity extends AppCompatActivity {
         return file.getAbsolutePath();
     }
 
-
-
+    // 이미지 캡처 또는 갤러리에서 이미지를 가져온 후 호출되는 콜백 메서드입니다.
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -291,7 +401,7 @@ public class MainActivity extends AppCompatActivity {
                 if (data != null && data.getData() != null) {
                     // Display progress dialog
                     progressDialog = new ProgressDialog(MainActivity.this);
-                    progressDialog.setMessage("사진에서 문장과 단어를 추출하고 있습니다...");
+                    progressDialog.setMessage("사진에서 문장, 단어, 뜻을 추출하고 있습니다...");
                     progressDialog.setCancelable(false);
                     progressDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "취소", new DialogInterface.OnClickListener() {
                         @Override
@@ -335,5 +445,7 @@ public class MainActivity extends AppCompatActivity {
             progressDialog.dismiss();
         }
     }
+
+
 
 }

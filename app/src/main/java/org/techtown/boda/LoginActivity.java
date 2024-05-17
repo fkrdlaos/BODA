@@ -1,4 +1,5 @@
 package org.techtown.boda;
+
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -7,9 +8,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -29,6 +32,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
 public class LoginActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
     private FirebaseAuth mFirebaseAuth; // 파이어베이스 인증
     private DatabaseReference mDatabaseRef; // 실시간 데이터베이스
@@ -38,15 +42,18 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     private GoogleApiClient googleApiClient;
     private static final int REO_SIGN_GOOGLE = 100;
     private SharedPreferences sharedPreferences;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser != null) {
             startActivity(new Intent(LoginActivity.this, MainActivity.class));
             finish();
         }
+
         GoogleSignInOptions googleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
@@ -55,6 +62,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 .addApi(Auth.GOOGLE_SIGN_IN_API, googleSignInOptions)
                 .addOnConnectionFailedListener(this)
                 .build();
+
         auth = FirebaseAuth.getInstance();
         btn_google = findViewById(R.id.btn_google);
         btn_google.setOnClickListener(new View.OnClickListener() {
@@ -64,10 +72,12 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 startActivityForResult(intent, REO_SIGN_GOOGLE);
             }
         });
+
         mFirebaseAuth = FirebaseAuth.getInstance();
         mDatabaseRef = FirebaseDatabase.getInstance().getReference("BODA");
         mEtEnail = findViewById(R.id.et_email);
         mEtPwd = findViewById(R.id.et_pwd);
+
         Button btn_login = findViewById(R.id.btn_login);
         btn_login.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -92,11 +102,17 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                                                 Toast.makeText(LoginActivity.this, "닉네임: " + nickname, Toast.LENGTH_SHORT).show();
 
                                                 // 만약 exp 및 lv 필드가 존재하지 않으면 기본값으로 설정
-                                                if (!snapshot.hasChild("exp")) {
+                                                if (!snapshot.child("exp").exists()) {
                                                     snapshot.getRef().child("exp").setValue(0);
                                                 }
-                                                if (!snapshot.hasChild("lv")) {
+                                                if (!snapshot.child("lv").exists()) {
                                                     snapshot.getRef().child("lv").setValue(1);
+                                                }
+
+                                                // 미션이 없으면 미션 정보를 추가
+                                                if (!snapshot.child("mission").exists()) {
+                                                    snapshot.getRef().child("mission").child("challenges").setValue(0);
+                                                    snapshot.getRef().child("mission").child("words").setValue(0);
                                                 }
 
                                                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
@@ -104,6 +120,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                                                 finish();
                                             }
                                         }
+
                                         @Override
                                         public void onCancelled(@NonNull DatabaseError databaseError) {
                                             Toast.makeText(LoginActivity.this, "데이터베이스 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
@@ -116,6 +133,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 });
             }
         });
+
         Button btn_register = findViewById(R.id.btn_register);
         btn_register.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -124,8 +142,10 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 startActivity(intent);
             }
         });
+
         sharedPreferences = getSharedPreferences("MY_PREFS", MODE_PRIVATE);
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -137,6 +157,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             }
         }
     }
+
     private void resultLogin(GoogleSignInAccount account) {
         AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
         auth.signInWithCredential(credential)
@@ -176,23 +197,48 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         userAccount.setNickname(nickname);
 
         // 'UserAccounts' 노드에 사용자 정보 저장
-        userRef.child(userId).setValue(userAccount, new DatabaseReference.CompletionListener() {
-            @Override
-            public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
-                if (error == null) {
-                    // 사용자 정보 저장 성공
-                    Toast.makeText(LoginActivity.this, "사용자 정보가 저장되었습니다.", Toast.LENGTH_SHORT).show();
+        DatabaseReference currentUserRef = userRef.child(userId);
+        currentUserRef.setValue(userAccount)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            // 사용자 정보 저장 성공
+                            Toast.makeText(LoginActivity.this, "사용자 정보가 저장되었습니다.", Toast.LENGTH_SHORT).show();
 
-                    // exp 및 lv 필드가 없으면 기본값으로 설정
-                    ref.child("exp").setValue(0);
-                    ref.child("lv").setValue(1);
-                } else {
-                    // 사용자 정보 저장 실패
-                    Toast.makeText(LoginActivity.this, "사용자 정보 저장에 실패했습니다.", Toast.LENGTH_SHORT).show();
+                            // exp 및 lv 필드가 없으면 기본값으로 설정
+                            checkAndSetField(currentUserRef, "exp", 0);
+                            checkAndSetField(currentUserRef, "lv", 1);
+
+                            // 미션이 없으면 미션 정보를 추가
+                            DatabaseReference missionRef = currentUserRef.child("mission");
+                            checkAndSetField(missionRef, "challenges", 0);
+                            checkAndSetField(missionRef, "words", 0);
+                        } else {
+                            // 사용자 정보 저장 실패
+                            Toast.makeText(LoginActivity.this, "사용자 정보 저장에 실패했습니다.", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+    }
+
+    private void checkAndSetField(DatabaseReference ref, String fieldName, Object defaultValue) {
+        ref.child(fieldName).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (!snapshot.exists()) {
+                    // 필드가 존재하지 않으면 기본값으로 설정
+                    ref.child(fieldName).setValue(defaultValue);
                 }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e("LoginActivity", "Firebase onDataChange: " + error.getMessage());
             }
         });
     }
+
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {

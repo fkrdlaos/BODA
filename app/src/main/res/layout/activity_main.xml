@@ -9,13 +9,26 @@
     android:clipToOutline="true"
     tools:context=".MainActivity">
 
+    <Button
+        android:id="@+id/btn_settings"
+        android:layout_width="144px"
+        android:layout_height="144px"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="150px"
+        android:layout_marginEnd="60px"
+        android:background="@drawable/setting"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:contentDescription="settings"/>
+
     <View
         android:id="@+id/profile_car"
         android:layout_width="960px"
         android:layout_height="570px"
         android:layout_centerHorizontal="true"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="240px"
+        android:layout_marginTop="270px"
         android:background="@drawable/activity_main_profilecar"/>
 
     <View
@@ -28,26 +41,54 @@
         android:background="@drawable/activity_main_view2" />
 
     <ImageButton
-        android:id="@+id/today_words"
+        android:id="@+id/quest1"
         android:layout_width="960px"
-        android:layout_height="150px"
+        android:layout_height="180px"
         android:layout_below="@+id/profile_car"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="165px"
         android:background="@color/white"
         android:contentDescription="today_words"
-        app:srcCompat="@drawable/activity_main_today" />
+        app:srcCompat="@drawable/activity_main_quest" />
 
     <ImageButton
-        android:id="@+id/today_study"
+        android:id="@+id/quest2"
         android:layout_width="960px"
-        android:layout_height="150px"
-        android:layout_below="@+id/today_words"
+        android:layout_height="180px"
+        android:layout_below="@+id/quest1"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="30px"
         android:background="@color/white"
         android:contentDescription="today_study"
-        app:srcCompat="@drawable/activity_main_today" />
+        app:srcCompat="@drawable/activity_main_quest" />
+
+    <Button
+        android:id="@+id/quest1_button"
+        android:layout_width="144px"
+        android:layout_height="144px"
+        android:layout_alignTop="@+id/quest1"
+        android:layout_alignEnd="@+id/quest1"
+        android:layout_marginTop="18px"
+        android:layout_marginEnd="60px"
+        android:background="@drawable/activity_main_button1"
+        android:text="보상받기"
+        android:textColor="#FFFFFF"
+        android:textSize="12sp"
+        android:textStyle="bold" />
+
+    <Button
+        android:id="@+id/quest2_button"
+        android:layout_width="150px"
+        android:layout_height="144px"
+        android:layout_alignTop="@+id/quest2"
+        android:layout_alignEnd="@+id/quest2"
+        android:layout_marginTop="18px"
+        android:layout_marginEnd="60px"
+        android:background="@drawable/activity_main_button1"
+        android:text="보상받기"
+        android:textColor="#FFFFFF"
+        android:textSize="12sp"
+        android:textStyle="bold" />
 
 
     <LinearLayout
@@ -55,7 +96,7 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:orientation="horizontal"
-        android:layout_below="@+id/today_study"
+        android:layout_below="@+id/quest2"
         android:layout_marginTop="90px">
 
         <ImageButton
@@ -162,7 +203,6 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="84px"
         android:indeterminateDrawable="@drawable/progress_bar_exp"
-        android:max="100"
         android:progressDrawable="@drawable/progress_bar_exp"
         tools:progress="0" />
 
@@ -189,95 +229,83 @@
         android:text="EXP 0 / 100" />
 
     <ImageView
-        android:id="@+id/findIcon"
-        android:layout_width="90px"
-        android:layout_height="90px"
-        android:layout_alignTop="@+id/today_words"
-        android:layout_alignStart="@+id/today_words"
+        android:id="@+id/quest1_medal"
+        android:layout_width="120px"
+        android:layout_height="120px"
+        android:layout_alignStart="@+id/quest1"
+        android:layout_alignTop="@+id/quest1"
+        android:layout_marginStart="30px"
         android:layout_marginTop="30px"
-        android:layout_marginStart="75px"
-        app:srcCompat="@drawable/today_find" />
+        app:srcCompat="@drawable/medal4" />
 
     <ImageView
-        android:id="@+id/challIcon"
-        android:layout_width="90px"
-        android:layout_height="90px"
-        android:layout_alignTop="@+id/today_study"
-        android:layout_alignStart="@+id/today_study"
+        android:id="@+id/quest2_medal"
+        android:layout_width="120px"
+        android:layout_height="120px"
+        android:layout_alignStart="@+id/quest2"
+        android:layout_alignTop="@+id/quest2"
+        android:layout_marginStart="30px"
         android:layout_marginTop="30px"
-        android:layout_marginStart="75px"
-        app:srcCompat="@drawable/today_chall" />
+        app:srcCompat="@drawable/medal1" />
 
     <TextView
-        android:id="@+id/findText"
+        android:id="@+id/quest1_detail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/today_words"
-        android:layout_alignStart="@+id/today_words"
-        android:layout_marginStart="240px"
-        android:layout_marginTop="45px"
+        android:layout_alignTop="@+id/quest1"
+        android:layout_toEndOf="@+id/quest1_medal"
+        android:layout_marginStart="30px"
+        android:layout_marginTop="60px"
         android:textSize="14sp"
-        android:text="새로운 단어 찾기" />
+        android:text="새로운 단어 발견하기" />
 
     <TextView
-        android:id="@+id/findResult"
+        android:id="@+id/quest1_progress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/today_words"
-        android:layout_alignEnd="@+id/today_words"
-        android:layout_marginTop="33px"
-        android:layout_marginEnd="105px"
-        android:textSize="22sp"
-        android:textStyle="bold"
-        android:text="0/5" />
+        android:layout_alignTop="@+id/quest1"
+        android:layout_marginLeft="15px"
+        android:layout_marginTop="60px"
+        android:layout_toEndOf="@+id/quest1_detail"
+        android:text="(0/100)"
+        android:textSize="14sp"
+        android:textStyle="bold" />
 
     <TextView
-        android:id="@+id/challText"
+        android:id="@+id/quest2_detail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/today_study"
-        android:layout_alignStart="@+id/today_study"
-        android:layout_marginStart="240px"
-        android:layout_marginTop="45px"
+        android:layout_alignTop="@+id/quest2"
+        android:layout_toEndOf="@+id/quest2_medal"
+        android:layout_marginStart="30px"
+        android:layout_marginTop="60px"
         android:textSize="14sp"
         android:text="단어 학습 도전하기" />
 
     <TextView
-        android:id="@+id/challResult"
+        android:id="@+id/quest2_progress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/today_study"
-        android:layout_alignEnd="@+id/today_study"
-        android:layout_marginTop="33px"
-        android:layout_marginEnd="105px"
-        android:textSize="22sp"
-        android:textStyle="bold"
-        android:text="0/2" />
+        android:layout_alignTop="@+id/quest2"
+        android:layout_marginLeft="15px"
+        android:layout_marginTop="60px"
+        android:layout_toEndOf="@+id/quest2_detail"
+        android:text="(0/100)"
+        android:textSize="14sp"
+        android:textStyle="bold" />
 
     <TextView
-        android:id="@+id/today"
+        android:id="@+id/quest"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/profile_car"
-        android:layout_alignStart="@+id/today_words"
-        android:layout_marginTop="75px"
+        android:layout_alignStart="@+id/quest1"
         android:layout_marginStart="30px"
-        android:text="오늘의 학습목표"
+        android:layout_marginTop="75px"
+        android:text="퀘스트 진행도"
         android:textSize="20sp"
         android:textStyle="bold" />
 
-    <Button
-        android:id="@+id/btn_settings"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="2dp"
-        android:layout_marginEnd="1dp"
-        android:background="#FF9800"
-        android:text="설정"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
 
 </RelativeLayout>

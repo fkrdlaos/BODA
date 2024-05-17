@@ -58,6 +58,7 @@ dependencies {
     implementation(libs.navigation.ui)
     implementation(libs.camera.lifecycle)
     implementation(libs.camera.view)
+    implementation(libs.core)
     annotationProcessor("com.github.bumptech.glide:compiler:4.9.0")
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
