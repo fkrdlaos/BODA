@@ -67,9 +67,9 @@ public class CameraActivity extends AppCompatActivity {
         if (user != null) {
             String userId = user.getUid();
             rtDB = RTDatabase.getInstance(userId); // DB 최초 접근 시 경로 설정 용
-            mDatabase = RTDatabase.getUserDBRef().child("collection");
-            expRef = RTDatabase.getUserDBRef().child("exp");
-            lvRef = RTDatabase.getUserDBRef().child("lv");
+            mDatabase = RTDatabase.getUserDBRef(userId).child("collection");
+            expRef = RTDatabase.getUserDBRef(userId).child("exp");
+            lvRef = RTDatabase.getUserDBRef(userId).child("lv");
             // 사용자 노드가 없는 경우에만 노드를 생성하고 컬렉션을 추가
             mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
@@ -203,7 +203,11 @@ public class CameraActivity extends AppCompatActivity {
 
 
     // saveDataToFirebase() 메서드 내부 수정
+    // SaveDataToFirebase 메서드 내부 수정
     private void saveDataToFirebase() {
+        // 현재 사용자의 ID 가져오기
+        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
         // 현재 시간을 yyyy-MM-dd HH:mm:ss 형식으로 가져오기
         String currentDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
 
@@ -218,7 +222,9 @@ public class CameraActivity extends AppCompatActivity {
         }
 
         // 중복 단어를 제외하고 새로운 데이터만 필터링
-        mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+        DatabaseReference userDBRef = RTDatabase.getUserDBRef(userId);
+        DatabaseReference collectionRef = userDBRef.child("collection");
+        collectionRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
@@ -235,18 +241,17 @@ public class CameraActivity extends AppCompatActivity {
 
                     // 새로운 데이터가 있는 경우에만 데이터베이스에 추가
                     if (!filteredData.isEmpty()) {
-                        mDatabase.updateChildren(filteredData)
+                        collectionRef.updateChildren(filteredData)
                                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void aVoid) {
                                         // 데이터베이스에 추가 성공한 후 exp 값을 업데이트
                                         try {
-                                            updateExp(filteredData.size());
-                                            MissionManager.updateWordMission(CameraActivity.this, filteredData.size());
-                                        } catch (Exception e){
+                                            updateExp(newWordsCount, userId);
+                                            MissionManager.updateWordMission(CameraActivity.this, userId, newWordsCount);
+                                        } catch (Exception e) {
                                             Log.i("update exp, mission", e.toString());
                                         }
-
                                     }
                                 })
                                 .addOnFailureListener(new OnFailureListener() {
@@ -260,17 +265,15 @@ public class CameraActivity extends AppCompatActivity {
                     }
                 } else {
                     // 기존 데이터베이스에 데이터가 없는 경우
-                    mDatabase.setValue(newData)
+                    collectionRef.setValue(newData)
                             .addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void aVoid) {
                                     // 데이터베이스에 추가 성공한 후 exp 값을 업데이트
                                     try {
-
-                                        updateExp(newData.size());
-                                        MissionManager.updateWordMission(CameraActivity.this, newData.size());
-
-                                    }catch (Exception e){
+                                        updateExp(newWordsCount, userId);
+                                        MissionManager.updateWordMission(CameraActivity.this, userId, newWordsCount);
+                                    } catch (Exception e) {
                                         Log.i("update Exp, mission", e.toString());
                                     }
                                 }
@@ -292,9 +295,8 @@ public class CameraActivity extends AppCompatActivity {
     }
 
     // 새로운 단어의 수에 따라 exp 값을 업데이트하는 메서드
-    private void updateExp(int newWordsCount) {
-        ExpManager.updateExp(CameraActivity.this, newWordsCount);
-        // 새로운 단어에 대한 exp 증가
+    private void updateExp(int newWordsCount, String userId) {
+        ExpManager.updateExp(CameraActivity.this, userId, newWordsCount);
     }
 
 

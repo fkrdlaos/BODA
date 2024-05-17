@@ -1,6 +1,5 @@
 package org.techtown.boda;
 
-
 import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
@@ -17,20 +16,16 @@ public class MissionManager {
     private static DatabaseReference chgRef = null;
     private MissionManager(){}
 
-    public static void updateWordMission(Context context, int count) {
-        // 새로운 단어마다 미션 1씩 증가
+    public static void updateWordMission(Context context, String userId, int count) {
         if(wordRef==null){
-            wordRef = RTDatabase.getUserDBRef().child("/mission/words");
+            wordRef = RTDatabase.getUserDBRef(userId).child("/mission/words");
         }
         wordRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
-                    // 기존 exp 값이 있는 경우
                     int currentWords = dataSnapshot.getValue(Integer.class);
-                    // 새로 추가된 단어의 갯수만큼 exp를 증가시킴
                     currentWords += count;
-                    // exp 값을 업데이트
                     wordRef.setValue(currentWords);
                 }
             }
@@ -41,25 +36,17 @@ public class MissionManager {
         });
     }
 
-    public static void updateChallegeMission(Context context) {
-        // 챌린지 완료할 때 마다
+    public static void updateChallegeMission(Context context, String userId) {
         if(chgRef==null){
-            chgRef = RTDatabase.getUserDBRef().child("/mission/challenges");
-            Log.i("chgRef null", "chgRef NULL");
+            chgRef = RTDatabase.getUserDBRef(userId).child("/mission/challenges");
         }
-        Log.i("chgRef not null", "chgRef NOT NULL");
 
         chgRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
-                    // 기존 mission의 challenges 값이 있는 경우
                     int currentChallenges = dataSnapshot.getValue(Integer.class);
-                    // 새로 추가된 단어의 갯수만큼 exp를 증가시킴
                     currentChallenges++;
-                    // exp 값을 업데이트
-                    Log.i("chgRef null", "${currentChallenges}");
-
                     chgRef.setValue(currentChallenges);
                 }
             }

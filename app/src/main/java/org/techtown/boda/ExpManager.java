@@ -1,6 +1,7 @@
 package org.techtown.boda;
 
 import android.content.Context;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -11,32 +12,32 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
 public class ExpManager {
-    private static DatabaseReference dbRef = null;
-
-    private ExpManager(){}
-
-    public static void updateExp(Context context, int count) {
-        // 새로운 단어에 대한 exp 증가
-        if(dbRef==null){
-            dbRef = RTDatabase.getUserDBRef();
-        }
-        dbRef.child("exp").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
-                    // 기존 exp 값이 있는 경우
-                    int currentExp = dataSnapshot.getValue(Integer.class);
-                    // 새로 추가된 단어의 갯수만큼 exp를 증가시킴
-                    int addedExp = count * 10;
-                    currentExp += addedExp;
-                    // exp 값을 업데이트
-                    dbRef.child("exp").setValue(currentExp);
+    public static void updateExp(Context context, String userId, int count) {
+        DatabaseReference userDbRef = RTDatabase.getUserDBRef(userId);
+        if (userDbRef != null) {
+            userDbRef.child("exp").addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.exists()) {
+                        int currentExp = dataSnapshot.getValue(Integer.class);
+                        int addedExp = count * 10;
+                        currentExp += addedExp;
+                        userDbRef.child("exp").setValue(currentExp);
+                    }
                 }
-            }
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                Toast.makeText(context, "데이터베이스 오류: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    Toast.makeText(context, "데이터베이스 오류: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
+        } else {
+            // 데이터베이스 참조가 null인 경우
+            Toast.makeText(context, "사용자 데이터베이스를 찾을 수 없습니다.", Toast.LENGTH_SHORT).show();
+            Log.e("ExpManager", "사용자 데이터베이스 참조가 null입니다.");
+        }
     }
 }
+
+
+

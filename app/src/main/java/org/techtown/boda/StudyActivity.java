@@ -74,8 +74,7 @@ public class StudyActivity extends AppCompatActivity {
                 }
                 if (!words.isEmpty()) {
                     setRandomIndex();
-                    // 처음 단어를 말하기 위해 showNextWord 메서드를 호출하기 전에 TTS를 사용하여 단어를 말합니다.
-                    speakFirstWord();
+                    speakFirstWord(); // 수정: 데이터를 받은 후에 TTS로 첫 번째 단어 발음
                     showNextWord();
                 } else {
                     tv_word.setText("학습할 단어가 없습니다. 단어를 추가하세요.");
@@ -111,6 +110,8 @@ public class StudyActivity extends AppCompatActivity {
                 }
             }
         });
+        // 수정: 페이지에 들어가자마자 첫 번째 단어 발음
+        speakFirstWord();
 
         btn_check.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -136,16 +137,31 @@ public class StudyActivity extends AppCompatActivity {
         });
     }
 
-    // 처음 단어를 말하기 위한 메서드
-    private void speakFirstWord() {
-        if (!words.isEmpty()) {
-            String word = getRandomWord();
-            if (textToSpeech != null) {
-                textToSpeech.speak(word, TextToSpeech.QUEUE_FLUSH, null);
+    // onStart 메서드에서 TextToSpeech 객체 초기화
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        // TTS 객체 생성 및 초기화
+        textToSpeech = new TextToSpeech(StudyActivity.this, new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+                if (status == TextToSpeech.SUCCESS) {
+                    int result = textToSpeech.setLanguage(Locale.US);
+                    if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                        tv_word.setText("이 언어는 지원하지 않습니다.");
+                    } else {
+                        // TTS 초기화가 완료된 경우에는 첫 번째 단어 발음
+                        speakFirstWord();
+                    }
+                } else {
+                    tv_word.setText("TTS 초기화에 실패했습니다.");
+                }
             }
-        }
+        });
     }
 
+    // onDestroy 메서드에서 TextToSpeech 객체 정리
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -154,6 +170,22 @@ public class StudyActivity extends AppCompatActivity {
             textToSpeech.shutdown();
         }
     }
+
+    // 처음 단어를 말하기 위한 메서드
+    private void speakFirstWord() {
+        if (!words.isEmpty()) {
+            String word = getRandomWord();
+            if (textToSpeech != null) {
+                // TTS 초기화가 완료된 경우에만 발음 실행
+                if (textToSpeech.getLanguage() != null) {
+                    textToSpeech.speak(word, TextToSpeech.QUEUE_FLUSH, null);
+                } else {
+                    Toast.makeText(StudyActivity.this, "단어가 나오고 있습니다.", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+    }
+
 
     private void showNextWord() {
         if (currentIndex < maxProgress && currentIndex < words.size()) {

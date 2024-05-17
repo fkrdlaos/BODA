@@ -1,10 +1,12 @@
 package org.techtown.boda;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -61,7 +63,7 @@ public class Quest2RewardManager {
                     boolean rewardGiven = snapshot.getValue(Boolean.class);
                     if (!rewardReceived && !rewardGiven && currentProgress >= threshold) {
                         rewardReceived = true;
-                        giveExpAndHideButton(context, quest1Button, "quest2", threshold); // 획득한 보상에 대한 처리
+                        giveExpAndHideButton(context, quest1Button, "quest2", threshold, mAuth.getCurrentUser().getUid());
                         break;
                     }
                 }
@@ -87,22 +89,23 @@ public class Quest2RewardManager {
 
 
     // Give EXP and hide button when clicked
-    private static void giveExpAndHideButton(Context context, Button rewardButton, String quest, int threshold) {
-        // Firebase에 보상 상태 업데이트
-        mDatabaseRef.child("rewards").child(quest).child(String.valueOf(threshold)).setValue(true); // 수정된 부분
+    private static void giveExpAndHideButton(Context context, Button rewardButton, String quest, int threshold, String userId) {
+        DatabaseReference userDbRef = RTDatabase.getUserDBRef(userId);
+        if (userDbRef != null) {
+            userDbRef.child("rewards").child(quest).child(String.valueOf(threshold)).setValue(true);
 
-        // 버튼의 태그를 확인하여 해당 버튼에 대한 처리를 수행
-        if (quest.equals("quest2")) {
-            // 버튼이 quest1Button일 때의 처리
-            // Give EXP
-            int expAmount = threshold / 10; // Calculate EXP amount based on the threshold
-            ExpManager.updateExp(context, expAmount);
+            if (quest.equals("quest2")) {
+                int expAmount = threshold / 10;
+                ExpManager.updateExp(context, userId, expAmount);
 
-            // Hide button
-            rewardButton.setVisibility(View.GONE);
+                rewardButton.setVisibility(View.GONE);
+            }
+        } else {
+            // 데이터베이스 참조가 null인 경우
+            Toast.makeText(context, "사용자 데이터베이스를 찾을 수 없습니다.", Toast.LENGTH_SHORT).show();
+            Log.e("Quest1RewardManager", "사용자 데이터베이스 참조가 null입니다.");
         }
     }
-
 
 
 
@@ -138,7 +141,7 @@ public class Quest2RewardManager {
                             @Override
                             public void onClick(View v) {
                                 // 버튼을 클릭했을 때의 동작 처리
-                                giveExpAndHideButton(context, quest1Button, "quest2", threshold);
+                                giveExpAndHideButton(context, quest1Button, "quest2", threshold, mAuth.getCurrentUser().getUid());
                             }
                         });
 

@@ -7,6 +7,8 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class StudyResultActivity extends AppCompatActivity {
 
@@ -39,18 +41,18 @@ public class StudyResultActivity extends AppCompatActivity {
             evaluation = "조금 더 노력하면 될 거예요. 화이팅!";
         }
 
-
-        /*String resultText = "총 " + totalWords + "개의 단어 중 " + correctCount + "개를 맞췄습니다.\n";
-        resultText += "정확도: " + String.format("%.2f", accuracy) + "%\n";
-        resultText += "평가: " + evaluation;*/
-
-        // 결과와 평가를 화면에 표시
         tv_result.setText(String.valueOf(correctCount));
         tv_result3.setText(String.valueOf(totalWords));
         tv_eva.setText(evaluation);
 
-        MissionManager.updateChallegeMission(StudyResultActivity.this);
-        ExpManager.updateExp(StudyResultActivity.this, correctCount);
+        // Firebase에서 현재 사용자의 ID 가져오기
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        String userId = currentUser.getUid();
+
+        // 미션 및 경험치 업데이트
+        MissionManager.updateChallegeMission(StudyResultActivity.this, userId);
+        ExpManager.updateExp(StudyResultActivity.this, userId, correctCount);
 
         // 홈으로 버튼 클릭 이벤트 처리
         btnHome.setOnClickListener(new View.OnClickListener() {

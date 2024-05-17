@@ -12,62 +12,54 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class RTDatabase {
-    private static RTDatabase instance = null;
-    private static FirebaseDatabase database;
-    private static DatabaseReference dbRef = null;
-    private static Map<String,Object> wordMap;
+    private static Map<String, RTDatabase> instances = new HashMap<>();
+    private FirebaseDatabase database;
+    private DatabaseReference dbRef;
+    private Map<String,Object> wordMap;
 
+    private RTDatabase(String userId) {
+        database = FirebaseDatabase.getInstance("https://boda-4e223-default-rtdb.firebaseio.com");
+        dbRef = database.getReference().child("/BODA/UserAccount/"+userId);
+        wordMap = new HashMap<>();
 
-    // 새 유저 추가 시
-    private RTDatabase() {
+        dbRef.child("collection").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(snapshot.exists()){
+                    Map<String, Object> map = (Map<String, Object>)snapshot.getValue();
+                    map.forEach((key,value)->{
+                                wordMap.put(key, value);
+                                System.out.println(key);
+                            }
+                    );
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                // Handle cancellation
+            }
+        });
     }
 
-
-    //해당 사용자의 idToken으로 접근
-    //각 사용자마다 collection 존재
-    //해당 collection에 단어-뜻 쌍 여러개 존재
-    //생성자대신 getInstance로 객체 받기
-    public static RTDatabase getInstance(String idToken) {
-        if(instance == null) {
-            instance = new RTDatabase();
-            database = FirebaseDatabase.getInstance("https://boda-4e223-default-rtdb.firebaseio.com");
-            dbRef = database.getReference().child("/BODA/UserAccount/"+idToken);
-            wordMap = new HashMap<>();
-
-            dbRef.child("collection").addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    if(snapshot.exists()){
-                        Map<String, Object> map = (Map<String, Object>)snapshot.getValue();
-                        map.forEach((key,value)->{
-                                    wordMap.put(key, value);
-                                    System.out.println(key);
-
-                                }
-                        );
-                    }
-                }
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-
-                }
-            });
+    public static RTDatabase getInstance(String userId) {
+        if (!instances.containsKey(userId)) {
+            instances.put(userId, new RTDatabase(userId));
         }
-        return instance;
+        return instances.get(userId);
     }
-    //db에 key-value / 단어-뜻 형태로 각 UserAccount에 collection에 저장
-    public static DatabaseReference getUserDBRef(){
-        if(dbRef!=null){
-            return dbRef;
+
+    public static DatabaseReference getUserDBRef(String userId) {
+        RTDatabase instance = instances.get(userId);
+        if (instance != null) {
+            return instance.dbRef;
         }
         return null;
     }
+
     public void addWords(HashMap wordMap){
         dbRef.child("collection").updateChildren(wordMap);
     }
 
-
-    // 각 유저의 콜렉션에서 모든 단어-뜻 추출
     public Map<String,Object> getWords(){
         return wordMap;
     }
