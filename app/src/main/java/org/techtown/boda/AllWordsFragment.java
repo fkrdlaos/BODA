@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 
-public class fragment1 extends Fragment {
+public class AllWordsFragment extends Fragment {
 
     private RecyclerView recyclerView;
     private WordDataAdapter adapter;
@@ -22,7 +22,7 @@ public class fragment1 extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_fragment1, container, false);
+        View view = inflater.inflate(R.layout.fragment_allwords, container, false);
 
         recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
