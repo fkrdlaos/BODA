@@ -1,4 +1,3 @@
-// fragment1.java
 package org.techtown.boda;
 
 import android.content.Intent;
@@ -43,14 +42,16 @@ public class fragment1 extends Fragment {
         return view;
     }
 
-    // 데이터 업데이트 메서드 추가
+    // 데이터 업데이트 메서드 수정
     public void updateData(List<WordData> newData) {
         wordDataList.clear();
         wordDataList.addAll(newData);
-        adapter.notifyDataSetChanged();
+        if (adapter != null) {
+            adapter.notifyDataSetChanged();
+        }
     }
 
-    // 검색 필터링 메서드 추가
+    // 검색 필터링 메서드 수정
     public void filter(String text) {
         List<WordData> filteredList = new ArrayList<>();
         for (WordData wordData : wordDataList) {
@@ -58,16 +59,9 @@ public class fragment1 extends Fragment {
                 filteredList.add(wordData);
             }
         }
-        adapter = new WordDataAdapter(filteredList, new WordDataAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(int position) {
-                WordData clickedWord = filteredList.get(position);
-                Intent intent = new Intent(getActivity(), DetailActivity.class);
-                intent.putExtra("wordData", clickedWord);
-                startActivity(intent);
-            }
-        });
-        recyclerView.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
+        if (adapter != null) {
+            adapter.setData(filteredList);
+            adapter.notifyDataSetChanged();
+        }
     }
 }

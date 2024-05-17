@@ -1,7 +1,5 @@
 package org.techtown.boda;
 
-import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -13,22 +11,18 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import org.techtown.boda.LoginActivity;
-import org.techtown.boda.MainActivity;
-
 public class SettingsActivity extends AppCompatActivity {
 
-    private Button buttonNickname, buttonLogout;
+    private Button buttonNickname, buttonLogout, buttonReset;
     private SharedPreferences sharedPreferences;
 
     private FirebaseAuth mAuth;
@@ -48,10 +42,9 @@ public class SettingsActivity extends AppCompatActivity {
 
         buttonNickname = findViewById(R.id.buttonNickname);
         buttonLogout = findViewById(R.id.buttonLogout);
-
+        buttonReset = findViewById(R.id.reset);
 
         sharedPreferences = getSharedPreferences("MY_PREFS", MODE_PRIVATE);
-
         String nickname = sharedPreferences.getString("nickname", "");
 
         buttonNickname.setOnClickListener(new View.OnClickListener() {
@@ -71,6 +64,13 @@ public class SettingsActivity extends AppCompatActivity {
                 Intent intent = new Intent(SettingsActivity.this, LoginActivity.class);
                 startActivity(intent);
                 finish();
+            }
+        });
+
+        buttonReset.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDeleteAccountDialog();
             }
         });
 
@@ -176,5 +176,61 @@ public class SettingsActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    // 탈퇴 팝업창을 띄우는 함수
+    private void showDeleteAccountDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.popup_del_account, null);
+        builder.setView(dialogView);
+
+        Button buttonCancel = dialogView.findViewById(R.id.buttonCancel);
+        Button buttonConfirm = dialogView.findViewById(R.id.buttonConfirm);
+
+        buttonCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // 팝업창만 닫기
+                alertDialog.dismiss();
+            }
+        });
+
+        buttonConfirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                deleteAccount();
+                alertDialog.dismiss();
+            }
+        });
+
+        alertDialog = builder.create();
+        alertDialog.show();
+    }
+
+    // 계정 삭제 메서드
+    private void deleteAccount() {
+        FirebaseUser user = mAuth.getCurrentUser();
+        if (user != null) {
+            // 파이어베이스 실시간 데이터베이스에서 사용자 데이터 삭제
+            userRef.removeValue().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    // Firebase Auth에서 사용자 삭제
+                    user.delete().addOnCompleteListener(task1 -> {
+                        if (task1.isSuccessful()) {
+                            Toast.makeText(SettingsActivity.this, "계정이 삭제되었습니다.", Toast.LENGTH_SHORT).show();
+                            // LoginActivity로 이동
+                            Intent intent = new Intent(SettingsActivity.this, LoginActivity.class);
+                            startActivity(intent);
+                            finish();
+                        } else {
+                            Toast.makeText(SettingsActivity.this, "계정 삭제에 실패했습니다.", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                } else {
+                    Toast.makeText(SettingsActivity.this, "데이터베이스 삭제에 실패했습니다.", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
     }
 }
