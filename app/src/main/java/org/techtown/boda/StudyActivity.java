@@ -1,8 +1,11 @@
 package org.techtown.boda;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -123,9 +126,7 @@ public class StudyActivity extends AppCompatActivity {
         btn_home.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(StudyActivity.this, MainActivity.class);
-                startActivity(intent);
-                finish();
+                showQuitDialog();
             }
         });
 
@@ -301,8 +302,6 @@ public class StudyActivity extends AppCompatActivity {
         }
     }
 
-
-
     private void listenWord() {
         if (textToSpeech != null) {
             String word = words.get(randomIndexes.get(currentIndex));
@@ -325,5 +324,37 @@ public class StudyActivity extends AppCompatActivity {
         } else {
             return "";
         }
+    }
+
+    private void showQuitDialog() {
+        LayoutInflater inflater = getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.popup_quit_study, null);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setView(dialogView);
+
+        AlertDialog dialog = builder.create();
+
+        Button btnCancel = dialogView.findViewById(R.id.buttonCancel);
+        Button btnConfirm = dialogView.findViewById(R.id.buttonConfirm);
+
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        btnConfirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(StudyActivity.this, MainActivity.class);
+                startActivity(intent);
+                finish();
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
     }
 }

@@ -31,7 +31,10 @@ import java.util.List;
 public class DictionaryActivity extends AppCompatActivity {
 
     private DatabaseReference databaseRef;
-    private fragment1 fragment1Instance;
+
+    private AllWordsFragment allWordsInstance;
+    private ImgWordsFragment imgWordsInstance;
+
     private TextView wordCountTextView; // 발견한 단어 갯수를 표시할 TextView
 
     @Override
@@ -47,13 +50,14 @@ public class DictionaryActivity extends AppCompatActivity {
 
         // Adapter 설정
         VPAdapter vpAdapter = new VPAdapter(getSupportFragmentManager(), FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
-        vpAdapter.addFragment(new fragment1(), "전체");
-        vpAdapter.addFragment(new fragment2(), "그림 도감");
+        vpAdapter.addFragment(new AllWordsFragment(), "전체");
+        vpAdapter.addFragment(new ImgWordsFragment(), "그림 도감");
         viewPager.setAdapter(vpAdapter);
         tabLayout.setupWithViewPager(viewPager);
 
-        // fragment1 인스턴스 가져오기
-        fragment1Instance = (fragment1) vpAdapter.getItem(0);
+        // 각 도감 fragment 인스턴스 가져오기
+        allWordsInstance = (AllWordsFragment) vpAdapter.getItem(0);
+        imgWordsInstance = (ImgWordsFragment) vpAdapter.getItem(1);
 
         // 홈 버튼 클릭 시 MainActivity로 이동
         homeButton.setOnClickListener(new View.OnClickListener() {
@@ -85,8 +89,11 @@ public class DictionaryActivity extends AppCompatActivity {
                         wordDataList.add(wordData);
                         wordCount++; // 단어를 추가할 때마다 개수를 증가시킴
                     }
+                    List<WordData> imgWordList = getImgWords(wordDataList);
+
                     // fragment1에 데이터 전달
-                    fragment1Instance.updateData(wordDataList);
+                    allWordsInstance.updateData(wordDataList);
+                    imgWordsInstance.updateData(imgWordList);
 
                     // 발견한 단어의 개수를 TextView에 설정
                     wordCountTextView.setText("발견한 단어 갯수 : " + wordCount);
@@ -109,9 +116,21 @@ public class DictionaryActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable editable) {
-                fragment1Instance.filter(editable.toString());
+                allWordsInstance.filter(editable.toString());
             }
         });
+    }
+
+
+    private List<WordData> getImgWords(List<WordData> wordList){
+        List<WordData> imgWords = new ArrayList<WordData>();
+        for(WordData word : wordList){
+            if(LabelList.hasLabel(word.getWord())){
+                imgWords.add(word);
+            }
+        }
+
+        return imgWords;
     }
 }
 

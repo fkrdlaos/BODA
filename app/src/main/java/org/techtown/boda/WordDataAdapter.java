@@ -71,4 +71,10 @@ public class WordDataAdapter extends RecyclerView.Adapter<WordDataAdapter.ViewHo
     public List<WordData> getWordDataList() {
         return wordDataList;
     }
+
+    // 데이터 설정 메서드 추가
+    public void setData(List<WordData> newData) {
+        this.wordDataList = newData;
+        notifyDataSetChanged();
+    }
 }

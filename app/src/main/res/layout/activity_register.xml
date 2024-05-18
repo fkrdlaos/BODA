@@ -108,13 +108,5 @@
         android:layout_centerHorizontal="true"
         app:srcCompat="@drawable/ti1" />
 
-    <com.google.android.gms.common.SignInButton
-        android:id="@+id/btn_google"
-        android:layout_width="840px"
-        android:layout_height="150px"
-        android:layout_below="@+id/btn_register"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="210px" />
-
 
 </RelativeLayout>

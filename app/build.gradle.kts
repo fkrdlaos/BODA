@@ -1,6 +1,9 @@
 plugins {
     alias(libs.plugins.androidApplication)
     id("com.google.gms.google-services")
+    alias(libs.plugins.jetbrainsKotlinAndroid)
+    id("androidx.navigation.safeargs.kotlin")
+
 }
 
 android {
@@ -30,8 +33,12 @@ android {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
-    buildFeatures {
+    buildFeatures{
+        dataBinding = true
         viewBinding = true
+    }
+    kotlinOptions {
+        jvmTarget = "1.8"
     }
 }
 
@@ -59,6 +66,7 @@ dependencies {
     implementation(libs.camera.lifecycle)
     implementation(libs.camera.view)
     implementation(libs.core)
+    implementation(libs.core.ktx)
     annotationProcessor("com.github.bumptech.glide:compiler:4.9.0")
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
@@ -72,4 +80,28 @@ dependencies {
     implementation("androidx.camera:camera-lifecycle:1.3.3")
     implementation("androidx.camera:camera-view:1.3.3")
     implementation("androidx.camera:camera-extensions:1.3.3")
+
+    val nav_version = "2.5.0"
+    implementation ("androidx.navigation:navigation-fragment-ktx:$nav_version")
+    implementation ("androidx.navigation:navigation-ui-ktx:$nav_version")
+
+    val camerax_version = "1.4.0-beta01"
+    // The following line is optional, as the core library is included indirectly by camera-camera2
+    implementation("androidx.camera:camera-core:${camerax_version}")
+    implementation("androidx.camera:camera-camera2:${camerax_version}")
+    // If you want to additionally use the CameraX Lifecycle library
+    implementation("androidx.camera:camera-lifecycle:${camerax_version}")
+    // If you want to additionally use the CameraX VideoCapture library
+    implementation("androidx.camera:camera-video:${camerax_version}")
+    // If you want to additionally use the CameraX View class
+    implementation("androidx.camera:camera-view:${camerax_version}")
+    // If you want to additionally add CameraX ML Kit Vision Integration
+    implementation("androidx.camera:camera-mlkit-vision:${camerax_version}")
+    // If you want to additionally use the CameraX Extensions library
+    implementation("androidx.camera:camera-extensions:${camerax_version}")
+
+    implementation ("org.tensorflow:tensorflow-lite-task-vision:0.4.0")
+    // Import the GPU delegate plugin Library for GPU inference
+    implementation ("org.tensorflow:tensorflow-lite-gpu-delegate-plugin:0.4.0")
+    implementation ("org.tensorflow:tensorflow-lite-gpu:2.9.0")
 }
