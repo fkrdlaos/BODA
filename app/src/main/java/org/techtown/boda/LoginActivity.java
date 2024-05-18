@@ -48,8 +48,10 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-        if (currentUser != null) {
+        sharedPreferences = getSharedPreferences("MY_PREFS", MODE_PRIVATE);
+        boolean autoLogin = sharedPreferences.getBoolean("auto_login", false);
+
+        if (autoLogin) {
             startActivity(new Intent(LoginActivity.this, MainActivity.class));
             finish();
         }
@@ -97,6 +99,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                                                 UserAccount userAccount = snapshot.getValue(UserAccount.class);
                                                 String nickname = userAccount.getNickname();
                                                 SharedPreferences.Editor editor = sharedPreferences.edit();
+                                                editor.putBoolean("auto_login", true);
                                                 editor.putString("nickname", nickname);
                                                 editor.apply();
                                                 Toast.makeText(LoginActivity.this, "닉네임: " + nickname, Toast.LENGTH_SHORT).show();
@@ -165,18 +168,39 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            String nickname = account.getDisplayName();
-                            SharedPreferences.Editor editor = sharedPreferences.edit();
-                            editor.putString("nickname", nickname);
-                            editor.apply();
+                            FirebaseUser user = auth.getCurrentUser();
+                            if (user != null) {
+                                String userId = user.getUid();
+                                DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("BODA").child("UserAccount").child(userId);
+                                userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        if (snapshot.exists()) {
+                                            UserAccount userAccount = snapshot.getValue(UserAccount.class);
+                                            String nickname = userAccount.getNickname();
+                                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                                            editor.putBoolean("auto_login", true);
+                                            editor.putString("nickname", nickname);
+                                            editor.apply();
 
-                            // Firebase 실시간 데이터베이스에 사용자 정보 저장
-                            saveUserToFirebase(account.getEmail(), nickname);
+                                            Toast.makeText(LoginActivity.this, "로그인 성공", Toast.LENGTH_SHORT).show();
+                                            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                                            startActivity(intent);
+                                            finish();
+                                        } else {
+                                            // 사용자 정보가 없는 경우
+                                            String email = account.getEmail();
+                                            String nickname = account.getDisplayName();
+                                            saveUserToFirebase(email, nickname);
+                                        }
+                                    }
 
-                            Toast.makeText(LoginActivity.this, "로그인 성공", Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                            startActivity(intent);
-                            finish();
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+                                        Toast.makeText(LoginActivity.this, "데이터베이스 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                            }
                         } else {
                             Toast.makeText(LoginActivity.this, "로그인 실패", Toast.LENGTH_SHORT).show();
                             Log.e("LoginActivity", "signInWithCredential:failure", task.getException());
@@ -185,37 +209,25 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 });
     }
 
+
     private void saveUserToFirebase(String email, String nickname) {
         DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("BODA").child("UserAccount");
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-        userRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
+        // 새로운 사용자 정보를 Firebase에 저장
+        UserAccount userAccount = new UserAccount(userId, email, nickname, 0, 1, new Mission(0, 0));
+        userRef.child(userId).setValue(userAccount).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (!snapshot.exists()) {
-                    // UserAccount 객체 생성 (기본값 포함)
-                    UserAccount userAccount = new UserAccount(userId, email, nickname, 0, 1, new Mission(0, 0));
-                    userRef.child(userId).setValue(userAccount).addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if (task.isSuccessful()) {
-                                Toast.makeText(LoginActivity.this, "사용자 정보가 저장되었습니다.", Toast.LENGTH_SHORT).show();
-                            } else {
-                                Toast.makeText(LoginActivity.this, "사용자 정보 저장에 실패했습니다.", Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    });
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    Toast.makeText(LoginActivity.this, "사용자 정보가 저장되었습니다.", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(LoginActivity.this, "기존 사용자 정보가 있습니다.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LoginActivity.this, "사용자 정보 저장에 실패했습니다.", Toast.LENGTH_SHORT).show();
                 }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(LoginActivity.this, "데이터베이스 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
             }
         });
     }
+
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {

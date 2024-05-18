@@ -9,6 +9,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -24,26 +25,33 @@ public class Quest1RewardManager {
 
     public static void initFirebase() {
         mAuth = FirebaseAuth.getInstance();
-        mDatabaseRef = FirebaseDatabase.getInstance().getReference().child("BODA").child("UserAccount").child(mAuth.getCurrentUser().getUid());
+        FirebaseUser currentUser = mAuth.getCurrentUser();
 
-        mDatabaseRef.child("rewards").child("quest1").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (!dataSnapshot.exists()) {
-                    for (int threshold : QUEST_THRESHOLDS) {
-                        mDatabaseRef.child("rewards").child("quest1").child(String.valueOf(threshold)).setValue(false);
+        if (currentUser != null) {
+            mDatabaseRef = FirebaseDatabase.getInstance().getReference().child("BODA").child("UserAccount").child(currentUser.getUid());
+
+            mDatabaseRef.child("rewards").child("quest1").addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if (!dataSnapshot.exists()) {
+                        for (int threshold : QUEST_THRESHOLDS) {
+                            mDatabaseRef.child("rewards").child("quest1").child(String.valueOf(threshold)).setValue(false);
+                        }
                     }
                 }
-            }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                // 에러 처리
-                Log.e("initFirebase", "Firebase Database Error: " + databaseError.getMessage());
-
-            }
-        });
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    // 에러 처리
+                    Log.e("initFirebase", "Firebase Database Error: " + databaseError.getMessage());
+                }
+            });
+        } else {
+            // FirebaseUser가 null인 경우 처리
+            Log.e("initFirebase", "FirebaseUser is null");
+        }
     }
+
 
     public static void giveQuest1Reward(final Context context, final int currentProgress, final Button quest1Button) {
         mDatabaseRef.child("rewards").child("quest1").addListenerForSingleValueEvent(new ValueEventListener() {

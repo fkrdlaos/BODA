@@ -157,6 +157,7 @@ public class MainActivity extends AppCompatActivity {
                 Intent dictionaryIntent = new Intent(MainActivity.this, DictionaryActivity.class);
                 dictionaryIntent.putExtra("wordDataList", (ArrayList<WordData>) wordDataList);
                 startActivity(dictionaryIntent);
+
             }
         });
 
@@ -165,6 +166,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent studyIntent = new Intent(MainActivity.this, StudyStartActivity.class);
                 startActivity(studyIntent);
+
             }
         });
 
@@ -173,6 +175,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
                 startActivity(intent);
+
             }
         });
 
@@ -445,7 +448,4 @@ public class MainActivity extends AppCompatActivity {
             progressDialog.dismiss();
         }
     }
-
-
-
 }

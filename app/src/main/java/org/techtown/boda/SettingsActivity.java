@@ -11,9 +11,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseError;
@@ -57,15 +59,26 @@ public class SettingsActivity extends AppCompatActivity {
         buttonLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Sign out from Firebase Auth
-                mAuth.signOut();
-
-                // Move back to LoginActivity
-                Intent intent = new Intent(SettingsActivity.this, LoginActivity.class);
-                startActivity(intent);
-                finish();
+                // FirebaseUser가 null인지 확인하고 로그아웃 작업 수행
+                FirebaseUser user = mAuth.getCurrentUser();
+                if (user != null) {
+                    // Firebase Auth에서 로그아웃
+                    mAuth.signOut();
+                    // SharedPreferences에서 auto_login 값을 false로 설정
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putBoolean("auto_login", false);
+                    editor.apply();
+                    // Move back to LoginActivity
+                    Intent intent = new Intent(SettingsActivity.this, LoginActivity.class);
+                    startActivity(intent);
+                    finish();
+                } else {
+                    // 이미 로그아웃되었거나 사용자가 없음을 사용자에게 알림
+                    Toast.makeText(SettingsActivity.this, "이미 로그아웃되었습니다.", Toast.LENGTH_SHORT).show();
+                }
             }
         });
+
 
         buttonReset.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -219,7 +232,11 @@ public class SettingsActivity extends AppCompatActivity {
                     user.delete().addOnCompleteListener(task1 -> {
                         if (task1.isSuccessful()) {
                             Toast.makeText(SettingsActivity.this, "계정이 삭제되었습니다.", Toast.LENGTH_SHORT).show();
-                            // LoginActivity로 이동
+                            // SharedPreferences에서 auto_login 값을 false로 설정
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            editor.putBoolean("auto_login", false);
+                            editor.apply();
+                            // Move back to LoginActivity
                             Intent intent = new Intent(SettingsActivity.this, LoginActivity.class);
                             startActivity(intent);
                             finish();
