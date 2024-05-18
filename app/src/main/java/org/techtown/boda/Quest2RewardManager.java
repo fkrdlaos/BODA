@@ -43,7 +43,9 @@ public class Quest2RewardManager {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                // Error handling
+                // 에러 처리
+                Log.e("initFirebase", "Firebase Database Error: " + databaseError.getMessage());
+
             }
         });
     }
@@ -51,32 +53,32 @@ public class Quest2RewardManager {
 
 
     // Give reward based on the current progress for quest1Button
-    public static void giveQuest2Reward(final Context context, final int currentProgress, final Button quest1Button) {
+    public static void giveQuest2Reward(final Context context, final int currentProgress, final Button quest2Button) {
         mDatabaseRef.child("rewards").child("quest2").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                boolean rewardReceived = false; // 보상을 받은 경우를 나타내는 플래그
+                boolean rewardReceived = false;
 
-                // 보상 상태를 가져와서 처리
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     int threshold = Integer.parseInt(snapshot.getKey());
                     boolean rewardGiven = snapshot.getValue(Boolean.class);
                     if (!rewardReceived && !rewardGiven && currentProgress >= threshold) {
                         rewardReceived = true;
-                        giveExpAndHideButton(context, quest1Button, "quest2", threshold, mAuth.getCurrentUser().getUid());
+                        giveExpAndHideButton(context, quest2Button, "quest2", threshold, mAuth.getCurrentUser().getUid());
                         break;
                     }
                 }
 
-                // 보상을 받지 못한 경우 버튼을 숨김
                 if (!rewardReceived) {
-                    quest1Button.setVisibility(View.GONE);
+                    quest2Button.setVisibility(View.GONE);
                 }
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 // 에러 처리
+                Log.e("giveQuest2Reward", "Firebase Database Error: " + databaseError.getMessage());
+                Toast.makeText(context, "데이터베이스에서 정보를 가져오는 도중 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -103,7 +105,7 @@ public class Quest2RewardManager {
         } else {
             // 데이터베이스 참조가 null인 경우
             Toast.makeText(context, "사용자 데이터베이스를 찾을 수 없습니다.", Toast.LENGTH_SHORT).show();
-            Log.e("Quest1RewardManager", "사용자 데이터베이스 참조가 null입니다.");
+            Log.e("Quest2RewardManager", "사용자 데이터베이스 참조가 null입니다.");
         }
     }
 
@@ -121,55 +123,51 @@ public class Quest2RewardManager {
     }
 
 
-    // Quest1RewardManager 클래스 내부에 추가
-    public static void updateQuest2RewardButtonVisibility(Context context, final int currentProgress, final Button quest1Button) {
-        mDatabaseRef.child("rewards").child("quest2").addListenerForSingleValueEvent(new ValueEventListener() {
+    // Quest2RewardManager 클래스 내부에 추가
+    public static void updateQuest2RewardButtonVisibility(Context context, final int currentProgress, final Button quest2Button) {
+        mDatabaseRef.child("rewards").child("quest2").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                boolean anyRewardReceived = false; // 보상을 받은 경우를 나타내는 플래그
+                boolean anyRewardReceived = false;
+                boolean isButtonVisible = false;
 
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     int threshold = Integer.parseInt(snapshot.getKey());
                     boolean rewardGiven = snapshot.getValue(Boolean.class);
 
-                    // 버튼을 보여줄지 여부 결정
                     if (!rewardGiven && currentProgress >= threshold) {
-                        quest1Button.setVisibility(View.VISIBLE);
-
-                        // 버튼 클릭 리스너 추가
-                        quest1Button.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                // 버튼을 클릭했을 때의 동작 처리
-                                giveExpAndHideButton(context, quest1Button, "quest2", threshold, mAuth.getCurrentUser().getUid());
-                            }
-                        });
-
-                        return; // 버튼을 보여준 후 메소드 종료
+                        isButtonVisible = true;
+                        break;
                     }
 
-                    // 보상을 받은 경우 플래그 설정
                     if (rewardGiven) {
                         anyRewardReceived = true;
                     }
                 }
 
-                // 퀘스트가 완료된 경우 "완료됨" 버튼 표시
                 if (currentProgress > 100) {
-                    quest1Button.setText("완료됨"); // 버튼 텍스트를 "완료됨"으로 변경
-                    quest1Button.setEnabled(false); // 버튼을 비활성화
-                    quest1Button.setVisibility(View.VISIBLE); // 완료됨 버튼 표시
-                } else {
-                    // 어떤 보상도 받을 수 없는 경우 버튼 숨김
-                    if (!anyRewardReceived) {
-                        quest1Button.setVisibility(View.GONE);
-                    }
+                    quest2Button.setText("완료됨");
+                    quest2Button.setEnabled(false);
+                    isButtonVisible = true;
+                }
+
+                quest2Button.setVisibility(isButtonVisible ? View.VISIBLE : View.GONE);
+
+                if (isButtonVisible) {
+                    quest2Button.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            giveQuest2Reward(context, currentProgress, quest2Button);
+                        }
+                    });
                 }
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 // 에러 처리
+                Log.e("updateQuest2Reward", "Firebase Database Error: " + databaseError.getMessage());
+                Toast.makeText(context, "데이터베이스에서 정보를 가져오는 도중 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
             }
         });
     }

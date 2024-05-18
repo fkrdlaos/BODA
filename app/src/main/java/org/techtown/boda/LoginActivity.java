@@ -36,8 +36,8 @@ import com.google.firebase.database.ValueEventListener;
 public class LoginActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
     private FirebaseAuth mFirebaseAuth; // 파이어베이스 인증
     private DatabaseReference mDatabaseRef; // 실시간 데이터베이스
-    private EditText mEtEnail, mEtPwd; // 로그인 입력 필드
-    private SignInButton btn_google;
+    private EditText mEtEmail, mEtPwd; // 로그인 입력 필드
+    private SignInButton btnGoogle;
     private FirebaseAuth auth;
     private GoogleApiClient googleApiClient;
     private static final int REO_SIGN_GOOGLE = 100;
@@ -64,8 +64,8 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 .build();
 
         auth = FirebaseAuth.getInstance();
-        btn_google = findViewById(R.id.btn_google);
-        btn_google.setOnClickListener(new View.OnClickListener() {
+        btnGoogle = findViewById(R.id.btn_google);
+        btnGoogle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
@@ -75,14 +75,14 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
         mFirebaseAuth = FirebaseAuth.getInstance();
         mDatabaseRef = FirebaseDatabase.getInstance().getReference("BODA");
-        mEtEnail = findViewById(R.id.et_email);
+        mEtEmail = findViewById(R.id.et_email);
         mEtPwd = findViewById(R.id.et_pwd);
 
-        Button btn_login = findViewById(R.id.btn_login);
-        btn_login.setOnClickListener(new View.OnClickListener() {
+        Button btnLogin = findViewById(R.id.btn_login);
+        btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String strEmail = mEtEnail.getText().toString();
+                String strEmail = mEtEmail.getText().toString();
                 String strPwd = mEtPwd.getText().toString();
                 mFirebaseAuth.signInWithEmailAndPassword(strEmail, strPwd).addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -134,8 +134,8 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             }
         });
 
-        Button btn_register = findViewById(R.id.btn_register);
-        btn_register.setOnClickListener(new View.OnClickListener() {
+        Button btnRegister = findViewById(R.id.btn_register);
+        btnRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
@@ -186,59 +186,36 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     }
 
     private void saveUserToFirebase(String email, String nickname) {
-        // Firebase 실시간 데이터베이스에서 'UserAccounts'라는 노드에 사용자 정보 저장
         DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("BODA").child("UserAccount");
-        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid(); // 현재 사용자의 UID 가져오기
+        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-        // UserAccount 객체 생성
-        UserAccount userAccount = new UserAccount();
-        userAccount.setIdToken(userId);
-        userAccount.setEmailId(email);
-        userAccount.setNickname(nickname);
-
-        // 'UserAccounts' 노드에 사용자 정보 저장
-        DatabaseReference currentUserRef = userRef.child(userId);
-        currentUserRef.setValue(userAccount)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            // 사용자 정보 저장 성공
-                            Toast.makeText(LoginActivity.this, "사용자 정보가 저장되었습니다.", Toast.LENGTH_SHORT).show();
-
-                            // exp 및 lv 필드가 없으면 기본값으로 설정
-                            checkAndSetField(currentUserRef, "exp", 0);
-                            checkAndSetField(currentUserRef, "lv", 1);
-
-                            // 미션이 없으면 미션 정보를 추가
-                            DatabaseReference missionRef = currentUserRef.child("mission");
-                            checkAndSetField(missionRef, "challenges", 0);
-                            checkAndSetField(missionRef, "words", 0);
-                        } else {
-                            // 사용자 정보 저장 실패
-                            Toast.makeText(LoginActivity.this, "사용자 정보 저장에 실패했습니다.", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
-    }
-
-    private void checkAndSetField(DatabaseReference ref, String fieldName, Object defaultValue) {
-        ref.child(fieldName).addListenerForSingleValueEvent(new ValueEventListener() {
+        userRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (!snapshot.exists()) {
-                    // 필드가 존재하지 않으면 기본값으로 설정
-                    ref.child(fieldName).setValue(defaultValue);
+                    // UserAccount 객체 생성 (기본값 포함)
+                    UserAccount userAccount = new UserAccount(userId, email, nickname, 0, 1, new Mission(0, 0));
+                    userRef.child(userId).setValue(userAccount).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                Toast.makeText(LoginActivity.this, "사용자 정보가 저장되었습니다.", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(LoginActivity.this, "사용자 정보 저장에 실패했습니다.", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                } else {
+                    Toast.makeText(LoginActivity.this, "기존 사용자 정보가 있습니다.", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Log.e("LoginActivity", "Firebase onDataChange: " + error.getMessage());
+                Toast.makeText(LoginActivity.this, "데이터베이스 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
             }
         });
     }
-
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
