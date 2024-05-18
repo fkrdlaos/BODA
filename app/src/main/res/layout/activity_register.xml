@@ -1,63 +1,112 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
+    android:id="@+id/some_id"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/be3"
+    android:clipToOutline="true"
     tools:context=".RegisterActivity">
 
     <EditText
         android:id="@+id/et_email"
-        android:layout_width="280dp"
-        android:layout_height="70dp"
-        android:layout_marginTop="224dp"
-        android:ems="10"
-        android:hint="아이디를 입력해주세요"
+        android:layout_width="840px"
+        android:layout_height="150px"
+        android:layout_below="@+id/title_rg"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="150px"
+        android:background="@drawable/activity_register_edittext"
+        android:hint="이메일"
         android:inputType="textEmailAddress"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.496"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:paddingStart="54px"
+        android:textColorHint="#FFFFFF" />
 
     <EditText
         android:id="@+id/et_pwd"
-        android:layout_width="280dp"
-        android:layout_height="70dp"
-        android:layout_marginTop="120dp"
-        android:ems="10"
-        android:hint="비밀번호를 입력해주세요"
-        android:inputType="textPassword"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.503"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/et_email" />
+        android:layout_width="840px"
+        android:layout_height="150px"
+        android:layout_below="@+id/et_email"
+        android:layout_marginTop="75px"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/activity_register_edittext"
+        android:hint="비밀번호"
+        android:paddingStart="54px"
+        android:textColorHint="#FFFFFF"
+        android:inputType="textPassword" />
+
+    <EditText
+        android:id="@+id/et_nickname"
+        android:layout_width="840px"
+        android:layout_height="150px"
+        android:layout_below="@+id/et_confirm_pwd"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="75px"
+        android:background="@drawable/activity_register_edittext"
+        android:hint="닉네임"
+        android:paddingStart="54px"
+        android:textColorHint="#FFFFFF"
+        android:inputType="textPassword" />
+
+    <EditText
+        android:id="@+id/et_confirm_pwd"
+        android:layout_width="840px"
+        android:layout_height="150px"
+        android:layout_below="@+id/et_pwd"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="75px"
+        android:background="@drawable/activity_register_edittext"
+        android:hint="비밀번호 확인"
+        android:paddingStart="54px"
+        android:textColorHint="#FFFFFF"
+        android:inputType="textPassword" />
 
     <Button
         android:id="@+id/btn_check"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="중복체크"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.793"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/et_email" />
+        android:layout_width="200px"
+        android:layout_height="150px"
+        android:layout_alignTop="@+id/et_email"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="0px"
+        android:layout_marginEnd="125px"
+        android:background="@drawable/activity_register_check"
+        android:text="중복확인"
+        android:textColor="#FF6F0F"
+        android:textSize="12sp"
+        android:textStyle="bold" />
 
     <Button
         android:id="@+id/btn_register"
-        android:layout_width="0dp"
-        android:layout_height="54dp"
-        android:text="가입완료"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        android:layout_width="840px"
+        android:layout_height="150px"
+        android:layout_below="@+id/et_nickname"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="120px"
+        android:background="@drawable/activity_register_check"
+        android:text="가입하기"
+        android:textColor="#FF6F0F"
+        android:textSize="17dp"
+        android:textStyle="bold" />
 
     <Button
         android:id="@+id/button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:background="#E8C591"
         android:text="뒤로가기"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <ImageView
+        android:id="@+id/title_rg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="337px"
+        android:layout_centerHorizontal="true"
+        app:srcCompat="@drawable/ti1" />
+
+
+</RelativeLayout>

@@ -1,65 +1,183 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:clipToOutline="true"
+    android:background="@color/white"
     tools:context=".StudyActivity">
 
     <TextView
         android:id="@+id/tv_word"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="100dp"
-        android:text="Word"
-        android:textSize="24sp"
+        android:text="TextView"
         android:visibility="gone" />
 
-    <EditText
-        android:id="@+id/et_input"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/progress"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/tv_word"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="50dp"
-        android:hint="스펠링을 입력하세요"
-        android:textSize="20sp" />
+        android:orientation="horizontal">
 
-    <Button
-        android:id="@+id/btn_check"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/et_input"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="50dp"
-        android:text="확인" />
+        <Button
+            android:id="@+id/button4"
+            android:layout_width="150px"
+            android:layout_height="150px"
+            android:layout_marginTop="150px"
+            android:background="@drawable/back_gray"
+            android:contentDescription="button4"/>
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="750px"
+            android:layout_height="45px"
+            android:layout_marginTop="210px"
+            android:layout_centerHorizontal="true"
+            android:indeterminateDrawable="@drawable/progress_bar_exp"
+            android:max="100"
+            android:progressDrawable="@drawable/progress_bar_exp"
+            tools:progress="0" />
 
-    <Button
-        android:id="@+id/btn_next"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/btn_check"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        android:text="다음" />
+        <TextView
+            android:id="@+id/TextView_con"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="36px"
+            android:layout_marginTop="160px"
+            android:text="0/10"
+            android:textSize="16sp" />
 
-    <Button
-        android:id="@+id/button4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/btn_next"
+    </LinearLayout>
+
+
+    <ImageView
+        android:id="@+id/imageView7"
+        android:layout_width="265dp"
+        android:layout_height="24dp"
+        android:layout_below="@+id/progress"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        android:text="홈" />
+        android:layout_marginTop="120px"
+        app:srcCompat="@drawable/t3" />
 
     <Button
         android:id="@+id/btn_listen"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/button4"
+        android:layout_below="@+id/imageView7"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        android:text="다시 듣기" />
+        android:layout_marginTop="180px"
+        android:background="@drawable/listen"
+        android:contentDescription="btn_listen"/>
+
+    <!-- 4지선다 유형 -->
+
+    <LinearLayout
+        android:id="@+id/multiple_choice_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/btn_listen"
+        android:layout_marginTop="210px"
+        android:orientation="vertical"
+        android:visibility="invisible">
+
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:columnCount="2"
+            android:rowCount="2">
+
+            <Button
+                android:id="@+id/btn_choice1"
+                android:layout_width="450px"
+                android:layout_height="300px"
+                android:layout_marginLeft="66px"
+                android:layout_marginRight="24px"
+                android:layout_weight="1"
+                android:background="@drawable/activity_study_choice"
+                android:contentDescription="btn_choice1"
+                android:minHeight="144px"
+                android:text=""
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/btn_choice2"
+                android:layout_width="450px"
+                android:layout_height="300px"
+                android:layout_marginLeft="24px"
+                android:layout_marginRight="90px"
+                android:layout_weight="1"
+                android:background="@drawable/activity_study_choice"
+                android:contentDescription="btn_choice2"
+                android:minHeight="144px"
+                android:text=""
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/btn_choice3"
+                android:layout_width="450px"
+                android:layout_height="300px"
+                android:layout_marginLeft="66px"
+                android:layout_marginTop="45px"
+                android:layout_marginRight="24px"
+                android:layout_weight="1"
+                android:background="@drawable/activity_study_choice"
+                android:contentDescription="btn_choice3"
+                android:minHeight="144px"
+                android:text=""
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/btn_choice4"
+                android:layout_width="450px"
+                android:layout_height="300px"
+                android:layout_marginLeft="24px"
+                android:layout_marginTop="45px"
+                android:layout_marginRight="90px"
+                android:layout_weight="1"
+                android:background="@drawable/activity_study_choice"
+                android:contentDescription="btn_choice4"
+                android:minHeight="144px"
+                android:text=""
+                android:textStyle="bold" />
+        </GridLayout>
+    </LinearLayout>
+
+    <!-- 받아쓰기 유형 -->
+
+
+    <LinearLayout
+        android:id="@+id/spelling_layout"
+        android:layout_width="match_parent"
+        android:layout_height="376dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="0dp"
+        android:layout_marginBottom="0dp"
+        android:orientation="vertical">
+
+        <EditText
+            android:id="@+id/et_input"
+            android:layout_width="780px"
+            android:layout_height="150px"
+            android:layout_gravity="center"
+            android:layout_marginTop="0px"
+            android:hint="정답을 입력하세요"
+            android:textSize="18sp" />
+
+        <Button
+            android:id="@+id/btn_check"
+            android:layout_width="900px"
+            android:layout_height="150px"
+            android:layout_gravity="center"
+            android:layout_marginTop="500px"
+            android:background="@drawable/activity_study_button_gray"
+            android:text="다음으로"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold" />
+    </LinearLayout>
+
 
 </RelativeLayout>
-

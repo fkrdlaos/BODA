@@ -1,29 +1,89 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp"
     tools:context=".StudyResultActivity">
 
+    <ImageView
+        android:id="@+id/imageView8"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="132dp"
+        app:srcCompat="@drawable/t4" />
+
     <TextView
         android:id="@+id/tv_result"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/circularProgress"
+        android:layout_toStartOf="@+id/tv_result2"
+        android:layout_marginTop="105dp"
+        android:layout_marginEnd="3dp"
+        android:textSize="60sp"
+        android:textColor="#FF6F0F"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tv_result2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/circularProgress"
+        android:layout_alignEnd="@+id/circularProgress"
+        android:layout_marginEnd="130dp"
+        android:layout_marginTop="117dp"
+        android:text="/"
+        android:textSize="50sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tv_result3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/circularProgress"
+        android:layout_alignStart="@+id/tv_result2"
+        android:layout_marginTop="135dp"
+        android:layout_marginStart="15dp"
+        android:textSize="35sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tv_eva"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/circularProgress"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="32dp"
-        android:textSize="18sp"
+        android:layout_marginTop="30dp"
+        android:textSize="20sp"
         android:textStyle="bold" />
 
     <Button
         android:id="@+id/btn_home"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/tv_result"
+        android:layout_width="300dp"
+        android:layout_height="50dp"
+        android:layout_below="@+id/tv_result"
+        android:layout_marginTop="250dp"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/activity_login_button"
+        android:textColor="#FFFFFF"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:text="홈으로" />
+
+    <ProgressBar
+        android:id="@+id/circularProgress"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:layout_below="@+id/imageView8"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="32dp"
-        android:text="홈으로 가기" />
+        style="?android:attr/progressBarStyleHorizontal"
+        android:progressDrawable="@drawable/activity_study_circular"
+        android:background="@drawable/activity_study_circleshape"
+        android:progress="75" />
 
 </RelativeLayout>
-
-

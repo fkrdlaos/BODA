@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/some_id"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/be1"
+    android:clipToOutline="true"
+    tools:context=".StartActivity">
+
+    <TextView
+        android:id="@+id/explanation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="90px"
+        android:layout_marginTop="339px"
+        android:text="다보와 함께 모험을!"
+        android:textAppearance="@style/explanation" />
+
+    <TextView
+        android:id="@+id/explanationadd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="90px"
+        android:layout_marginTop="537px"
+        android:text="언제, 어디서든, 찰칵"
+        android:textAppearance="@style/explanationadd" />
+
+    <TextView
+        android:id="@+id/explanationadd1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="90px"
+        android:layout_marginTop="636px"
+        android:text="모험가가 되어 새로운 단어를 수집해요"
+        android:textAppearance="@style/explanationadd" />
+
+    <Button
+        android:id="@+id/button5"
+        android:layout_width="930px"
+        android:layout_height="165px"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="240px"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/activity_start_button"
+        android:text="시작하기"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold"
+        android:textSize="22sp" />
+</RelativeLayout>

@@ -1,6 +1,7 @@
 package org.techtown.boda;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -26,21 +27,22 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class LoginActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
-
-    private FirebaseAuth mFirebaseAuth; //파이어베이스 인증
-    private DatabaseReference mDatabaseRef; //실시간 데이터베이스
-    private EditText mEtEnail, mEtPwd; //로그인 입력필요
-
-    private SignInButton btn_google;
+    private FirebaseAuth mFirebaseAuth; // 파이어베이스 인증
+    private DatabaseReference mDatabaseRef; // 실시간 데이터베이스
+    private EditText mEtEmail, mEtPwd; // 로그인 입력 필드
+    private SignInButton btnGoogle;
     private FirebaseAuth auth;
-
     private GoogleApiClient googleApiClient;
+    private static final int REO_SIGN_GOOGLE = 100;
+    private SharedPreferences sharedPreferences;
 
-    private  static final int REO_SIGN_GOOGLE = 100;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,17 +58,14 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
-
         googleApiClient = new GoogleApiClient.Builder(this)
-                .addApi(Auth.GOOGLE_SIGN_IN_API, googleSignInOptions) // 수정된 부분
-                .addOnConnectionFailedListener(this) // 수정된 부분
-                .build(); // 수정된 부분
+                .addApi(Auth.GOOGLE_SIGN_IN_API, googleSignInOptions)
+                .addOnConnectionFailedListener(this)
+                .build();
 
-
-        auth =FirebaseAuth.getInstance(); //파이어베이스 인증 객체 초기화.
-
-        btn_google = findViewById(R.id.btn_google);
-        btn_google.setOnClickListener(new View.OnClickListener() {
+        auth = FirebaseAuth.getInstance();
+        btnGoogle = findViewById(R.id.btn_google);
+        btnGoogle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
@@ -74,62 +73,90 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             }
         });
 
-
-
         mFirebaseAuth = FirebaseAuth.getInstance();
         mDatabaseRef = FirebaseDatabase.getInstance().getReference("BODA");
-
-        mEtEnail = findViewById(R.id.et_email);
+        mEtEmail = findViewById(R.id.et_email);
         mEtPwd = findViewById(R.id.et_pwd);
 
-        Button btn_login = findViewById(R.id.btn_login);
-        btn_login.setOnClickListener(new View.OnClickListener() {
+        Button btnLogin = findViewById(R.id.btn_login);
+        btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //로그인 요청
-                String strEmail = mEtEnail.getText().toString();
+                String strEmail = mEtEmail.getText().toString();
                 String strPwd = mEtPwd.getText().toString();
-
-                mFirebaseAuth.signInWithEmailAndPassword(strEmail,strPwd).addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
+                mFirebaseAuth.signInWithEmailAndPassword(strEmail, strPwd).addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                        if(task.isSuccessful()){
-                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                            startActivity(intent);
-                            finish(); //현재 액티비티 파괴
-                        }else {
-                            Toast.makeText(LoginActivity.this, "로그인 실패..!", Toast.LENGTH_SHORT).show();
+                        if (task.isSuccessful()) {
+                            // 로그인 성공 시 SharedPreferences에 닉네임 저장
+                            mDatabaseRef.child("UserAccount").orderByChild("emailId").equalTo(strEmail)
+                                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                            for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                                                UserAccount userAccount = snapshot.getValue(UserAccount.class);
+                                                String nickname = userAccount.getNickname();
+                                                SharedPreferences.Editor editor = sharedPreferences.edit();
+                                                editor.putString("nickname", nickname);
+                                                editor.apply();
+                                                Toast.makeText(LoginActivity.this, "닉네임: " + nickname, Toast.LENGTH_SHORT).show();
 
+                                                // 만약 exp 및 lv 필드가 존재하지 않으면 기본값으로 설정
+                                                if (!snapshot.child("exp").exists()) {
+                                                    snapshot.getRef().child("exp").setValue(0);
+                                                }
+                                                if (!snapshot.child("lv").exists()) {
+                                                    snapshot.getRef().child("lv").setValue(1);
+                                                }
+
+                                                // 미션이 없으면 미션 정보를 추가
+                                                if (!snapshot.child("mission").exists()) {
+                                                    snapshot.getRef().child("mission").child("challenges").setValue(0);
+                                                    snapshot.getRef().child("mission").child("words").setValue(0);
+                                                }
+
+                                                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                                startActivity(intent);
+                                                finish();
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                                            Toast.makeText(LoginActivity.this, "데이터베이스 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+                        } else {
+                            Toast.makeText(LoginActivity.this, "로그인 실패..!", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
             }
         });
 
-        Button btn_register = findViewById(R.id.btn_register);
-        btn_register.setOnClickListener(new View.OnClickListener() {
+        Button btnRegister = findViewById(R.id.btn_register);
+        btnRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //회원가입 화면으로 이동
                 Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
                 startActivity(intent);
             }
         });
+
+        sharedPreferences = getSharedPreferences("MY_PREFS", MODE_PRIVATE);
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) { //구글 로그인 인증을 요청 했을 때 결과 값을 되돌려 받는 곳.
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
-        if(requestCode == REO_SIGN_GOOGLE){
+        if (requestCode == REO_SIGN_GOOGLE) {
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
-            if(result.isSuccess()){ //인증 결과가 성공적이면...
-                GoogleSignInAccount account = result.getSignInAccount(); //account 라는 데이터는 구글 로그인 정보를 담고 있습니다. (닉네임, 프로필 사진URL, 이메일 주소...등)
-                resultLogin(account); //로그인 결과 값 출력 수행하라는 메소드
+            if (result.isSuccess()) {
+                GoogleSignInAccount account = result.getSignInAccount();
+                resultLogin(account);
             }
         }
     }
-
 
     private void resultLogin(GoogleSignInAccount account) {
         AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
@@ -137,27 +164,61 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                        if(task.isSuccessful()){ //로그인이 성공했으면....
+                        if (task.isSuccessful()) {
+                            String nickname = account.getDisplayName();
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            editor.putString("nickname", nickname);
+                            editor.apply();
+
+                            // Firebase 실시간 데이터베이스에 사용자 정보 저장
+                            saveUserToFirebase(account.getEmail(), nickname);
+
                             Toast.makeText(LoginActivity.this, "로그인 성공", Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                            intent.putExtra("nickName",account.getDisplayName());
-                            intent.putExtra("photUrl",String.valueOf(account.getPhotoUrl())); //String.valueOf() 특정 자료형을 String 형태로 변환
-                            startActivity(intent); // MainActivity 시작
-                            finish(); // LoginActivity 종료
-                        }else{
+                            startActivity(intent);
+                            finish();
+                        } else {
                             Toast.makeText(LoginActivity.this, "로그인 실패", Toast.LENGTH_SHORT).show();
-                            Log.e("LoginActivity", "signInWithCredential:failure", task.getException()); // 수정된 부분: 에러 로그 추가
+                            Log.e("LoginActivity", "signInWithCredential:failure", task.getException());
                         }
                     }
                 });
     }
 
+    private void saveUserToFirebase(String email, String nickname) {
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("BODA").child("UserAccount");
+        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+        userRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (!snapshot.exists()) {
+                    // UserAccount 객체 생성 (기본값 포함)
+                    UserAccount userAccount = new UserAccount(userId, email, nickname, 0, 1, new Mission(0, 0));
+                    userRef.child(userId).setValue(userAccount).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                Toast.makeText(LoginActivity.this, "사용자 정보가 저장되었습니다.", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(LoginActivity.this, "사용자 정보 저장에 실패했습니다.", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                } else {
+                    Toast.makeText(LoginActivity.this, "기존 사용자 정보가 있습니다.", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(LoginActivity.this, "데이터베이스 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
-        Log.e("LoginActivity", "Google API Client connection failed:" + connectionResult.getErrorMessage()); // 수정된 부분: 에러 로그 추가
+        Log.e("LoginActivity", "Google API Client connection failed:" + connectionResult.getErrorMessage());
     }
 }
-
-

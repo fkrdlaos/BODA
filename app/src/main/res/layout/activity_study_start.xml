@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/some_id"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF"
+    android:clipToOutline="true"
+    tools:context=".StudyStartActivity" >
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="900px"
+        android:layout_height="360px"
+        android:layout_below="@+id/imageView3"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="13dp"
+        app:srcCompat="@drawable/u" />
+
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/imageView4"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30px"
+        app:srcCompat="@drawable/s" />
+
+    <ImageView
+        android:id="@+id/imageView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/imageView5"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="45px"
+        app:srcCompat="@drawable/s1" />
+
+    <ImageView
+        android:id="@+id/imageView5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/imageView6"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="120px"
+        app:srcCompat="@drawable/t1" />
+
+    <ImageView
+        android:id="@+id/imageView6"
+        android:layout_width="600px"
+        android:layout_height="600px"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="360px"
+        app:srcCompat="@drawable/f" />
+
+    <Button
+        android:id="@+id/start_button"
+        android:layout_width="900px"
+        android:layout_height="150px"
+        android:layout_below="@+id/imageView2"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="1dp"
+        android:background="@drawable/activity_study_button"
+        android:text="시작하기"
+        android:textColor="#FFFFFF"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+</RelativeLayout>
