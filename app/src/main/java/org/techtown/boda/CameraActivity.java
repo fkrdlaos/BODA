@@ -203,7 +203,6 @@ public class CameraActivity extends AppCompatActivity {
 
 
     // saveDataToFirebase() 메서드 내부 수정
-    // SaveDataToFirebase 메서드 내부 수정
     private void saveDataToFirebase() {
         // 현재 사용자의 ID 가져오기
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
@@ -236,6 +235,7 @@ public class CameraActivity extends AppCompatActivity {
                     for (String word : newData.keySet()) {
                         if (!existingData.containsKey(word)) {
                             filteredData.put(word, newData.get(word));
+                            newWordsCount++; // 새로운 단어가 추가될 때마다 newWordsCount 증가
                         }
                     }
 
@@ -249,6 +249,9 @@ public class CameraActivity extends AppCompatActivity {
                                         try {
                                             updateExp(newWordsCount, userId);
                                             MissionManager.updateWordMission(CameraActivity.this, userId, newWordsCount);
+
+                                            // 저장된 단어의 수 메시지 표시
+                                            Toast.makeText(CameraActivity.this, "저장된 단어의 수: " + newWordsCount, Toast.LENGTH_SHORT).show();
                                         } catch (Exception e) {
                                             Log.i("update exp, mission", e.toString());
                                         }
@@ -271,8 +274,11 @@ public class CameraActivity extends AppCompatActivity {
                                 public void onSuccess(Void aVoid) {
                                     // 데이터베이스에 추가 성공한 후 exp 값을 업데이트
                                     try {
-                                        updateExp(newWordsCount, userId);
-                                        MissionManager.updateWordMission(CameraActivity.this, userId, newWordsCount);
+                                        updateExp(newData.size(), userId);
+                                        MissionManager.updateWordMission(CameraActivity.this, userId, newData.size());
+
+                                        // 저장된 단어의 수 메시지 표시
+                                        Toast.makeText(CameraActivity.this, "저장된 단어의 수: " + newData.size(), Toast.LENGTH_SHORT).show();
                                     } catch (Exception e) {
                                         Log.i("update Exp, mission", e.toString());
                                     }
@@ -293,6 +299,8 @@ public class CameraActivity extends AppCompatActivity {
             }
         });
     }
+
+
 
     // 새로운 단어의 수에 따라 exp 값을 업데이트하는 메서드
     private void updateExp(int newWordsCount, String userId) {
@@ -342,16 +350,6 @@ public class CameraActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (textToSpeech != null && !textToSpeech.isSpeaking()) {
                     textToSpeech.speak(word, TextToSpeech.QUEUE_FLUSH, null, null);
-                }
-            }
-        });
-
-        // Set click listener to speak the meaning
-        meaningTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (textToSpeech != null && !textToSpeech.isSpeaking()) {
-                    textToSpeech.speak(meaning, TextToSpeech.QUEUE_FLUSH, null, null);
                 }
             }
         });

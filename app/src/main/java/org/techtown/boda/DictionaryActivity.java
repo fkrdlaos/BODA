@@ -1,4 +1,3 @@
-// DictionaryActivity.java
 package org.techtown.boda;
 
 import android.content.Intent;
@@ -36,6 +35,9 @@ public class DictionaryActivity extends AppCompatActivity {
     private ImgWordsFragment imgWordsInstance;
 
     private TextView wordCountTextView; // 발견한 단어 갯수를 표시할 TextView
+
+    private int allWordsCount = 0; // 전체 단어 개수
+    private int imgWordsCount = 0; // 그림 도감 단어 개수
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,7 +81,6 @@ public class DictionaryActivity extends AppCompatActivity {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     List<WordData> wordDataList = new ArrayList<>();
-                    int wordCount = 0; // 발견한 단어의 개수를 세기 위한 변수
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                         String word = snapshot.getKey();
                         String meaning = snapshot.child("meanings").getValue(String.class);
@@ -87,16 +88,19 @@ public class DictionaryActivity extends AppCompatActivity {
                         String dateTime = snapshot.child("date_time").getValue(String.class);
                         WordData wordData = new WordData(word, meaning, sentence, dateTime);
                         wordDataList.add(wordData);
-                        wordCount++; // 단어를 추가할 때마다 개수를 증가시킴
                     }
                     List<WordData> imgWordList = getImgWords(wordDataList);
+
+                    allWordsCount = wordDataList.size(); // 전체 단어 개수 설정
+                    imgWordsCount = imgWordList.size(); // 그림 도감 단어 개수 설정
 
                     // fragment1에 데이터 전달
                     allWordsInstance.updateData(wordDataList);
                     imgWordsInstance.updateData(imgWordList);
 
-                    // 발견한 단어의 개수를 TextView에 설정
-                    wordCountTextView.setText("발견한 단어 갯수 : " + wordCount);
+                    // 현재 선택된 탭에 따라 단어 개수를 TextView에 설정
+                    int currentTabPosition = tabLayout.getSelectedTabPosition();
+                    updateWordCount(currentTabPosition);
                 }
 
                 @Override
@@ -116,21 +120,43 @@ public class DictionaryActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable editable) {
-                allWordsInstance.filter(editable.toString());
+                String query = editable.toString();
+                allWordsInstance.filter(query);
+                imgWordsInstance.filter(query);
             }
+        });
+
+        // 탭 선택 리스너 추가
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                updateWordCount(tab.getPosition());
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {}
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {}
         });
     }
 
+    // 각 탭에 따른 단어 개수를 업데이트하는 메서드
+    private void updateWordCount(int tabPosition) {
+        if (tabPosition == 0) {
+            wordCountTextView.setText("발견한 단어 갯수 : " + allWordsCount);
+        } else if (tabPosition == 1) {
+            wordCountTextView.setText("발견한 단어 갯수 : " + imgWordsCount);
+        }
+    }
 
-    private List<WordData> getImgWords(List<WordData> wordList){
+    private List<WordData> getImgWords(List<WordData> wordList) {
         List<WordData> imgWords = new ArrayList<WordData>();
-        for(WordData word : wordList){
-            if(LabelList.hasLabel(word.getWord())){
+        for (WordData word : wordList) {
+            if (LabelList.hasLabel(word.getWord())) {
                 imgWords.add(word);
             }
         }
-
         return imgWords;
     }
 }
-

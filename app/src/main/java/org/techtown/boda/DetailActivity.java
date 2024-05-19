@@ -91,15 +91,18 @@ public class DetailActivity extends AppCompatActivity {
 
             // "사진 추가하기" 버튼 클릭 이벤트 처리
             Button addPhotoButton = findViewById(R.id.addPhotoButton);
-            addPhotoButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    // 카메라로 사진 찍기 또는 갤러리에서 사진 선택하기
-                    //showImageSourceDialog();
-                    Intent intent = new Intent(DetailActivity.this, CatchActivity.class);
-                    startActivity(intent);
-                }
-            });
+            if (LabelList.hasLabel(word)) {
+                addPhotoButton.setVisibility(View.VISIBLE);
+                addPhotoButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // 카메라로 사진 찍기 또는 갤러리에서 사진 선택하기
+                        showImageSourceDialog();
+                    }
+                });
+            } else {
+                addPhotoButton.setVisibility(View.GONE);
+            }
         } else {
             Toast.makeText(this, "단어 데이터를 가져오지 못했습니다.", Toast.LENGTH_SHORT).show();
             finish();

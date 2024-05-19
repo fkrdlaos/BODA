@@ -11,9 +11,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseError;
@@ -28,6 +34,7 @@ public class SettingsActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private DatabaseReference userRef;
     private AlertDialog alertDialog;
+    private GoogleSignInClient mGoogleSignInClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +54,13 @@ public class SettingsActivity extends AppCompatActivity {
         sharedPreferences = getSharedPreferences("MY_PREFS", MODE_PRIVATE);
         String nickname = sharedPreferences.getString("nickname", "");
 
+        // GoogleSignInOptions 설정
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build();
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+
         buttonNickname.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -57,13 +71,7 @@ public class SettingsActivity extends AppCompatActivity {
         buttonLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Sign out from Firebase Auth
-                mAuth.signOut();
-
-                // Move back to LoginActivity
-                Intent intent = new Intent(SettingsActivity.this, LoginActivity.class);
-                startActivity(intent);
-                finish();
+                logout();
             }
         });
 
@@ -84,101 +92,50 @@ public class SettingsActivity extends AppCompatActivity {
         });
     }
 
-    // 팝업창을 띄우는 함수
-    private void showChangeNicknameDialog(String nickname) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        LayoutInflater inflater = getLayoutInflater();
-        View dialogView = inflater.inflate(R.layout.popup_change_nickname, null);
-        builder.setView(dialogView);
+    private void logout() {
+        FirebaseUser user = mAuth.getCurrentUser();
+        if (user != null) {
+            // SharedPreferences 초기화
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.clear();
+            editor.apply();
 
-        EditText editTextNewNickname = dialogView.findViewById(R.id.editTextNewNickname);
-        Button buttonCancel = dialogView.findViewById(R.id.buttonCancel);
-        Button buttonConfirm = dialogView.findViewById(R.id.buttonConfirm);
-        TextView textViewCharCount = dialogView.findViewById(R.id.textViewCharCount);
-        // 기존 닉네임 설정
-        editTextNewNickname.setText(nickname);
+            // 구글 로그인 여부 확인
+            boolean isGoogleLogin = sharedPreferences.getBoolean("isGoogleLogin", false);
+            if (isGoogleLogin) {
+                // 구글 로그아웃
+                mGoogleSignInClient.signOut().addOnCompleteListener(this, task -> {
+                    if (task.isSuccessful()) {
+                        // Firebase Auth에서 로그아웃
+                        mAuth.signOut();
+                        // LoginActivity로 이동
+                        Toast.makeText(SettingsActivity.this, "구글 로그아웃 되었습니다.", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(SettingsActivity.this, LoginActivity.class);
+                        intent.putExtra("signOut", true); // 로그인 화면에서 다시 로그인할 수 있도록 플래그 설정
+                        startActivity(intent);
+                        finish();
+                    } else {
+                        Toast.makeText(SettingsActivity.this, "구글 로그아웃 실패", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            } else {
+                // 일반 로그인 로그아웃
+                mAuth.signOut();
 
-        // 글자 수 세기
-        editTextNewNickname.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                // No need to implement
+                Toast.makeText(SettingsActivity.this, "로그아웃 되었습니다.", Toast.LENGTH_SHORT).show();
+                // LoginActivity로 이동
+                Intent intent = new Intent(SettingsActivity.this, LoginActivity.class);
+                intent.putExtra("signOut", true); // 로그인 화면에서 다시 로그인할 수 있도록 플래그 설정
+                startActivity(intent);
+                finish();
             }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                // 글자 수 표시
-                textViewCharCount.setText(String.valueOf(s.length()));
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                // No need to implement
-            }
-        });
-
-        // "취소" 버튼 클릭 시
-        buttonCancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // 팝업창만 닫기
-                alertDialog.dismiss();
-            }
-        });
-
-        // "확인" 버튼 클릭 시
-        buttonConfirm.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // 새로운 닉네임 가져오기
-                String newNickname = editTextNewNickname.getText().toString().trim();
-                if (!newNickname.isEmpty() && newNickname.length() <= 20) {
-                    // 팝업창 닫기
-                    alertDialog.dismiss();
-                    // 닉네임 변경 작업 수행
-                    changeNickname(newNickname);
-                } else if (newNickname.isEmpty()) {
-                    // 닉네임이 비어있는 경우 사용자에게 메시지 표시
-                    Toast.makeText(SettingsActivity.this, "새로운 닉네임을 입력하세요.", Toast.LENGTH_SHORT).show();
-                } else {
-                    // 최대 길이 초과 시 메시지 표시
-                    Toast.makeText(SettingsActivity.this, "닉네임은 20자 이하여야 합니다.", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-
-        // AlertDialog 생성 및 표시
-        alertDialog = builder.create();
-        alertDialog.show();
+        } else {
+            Toast.makeText(SettingsActivity.this, "이미 로그아웃되었습니다.", Toast.LENGTH_SHORT).show();
+        }
     }
 
-    // 닉네임 변경 메서드
-    private void changeNickname(String newNickname) {
-        // SharedPreferences에 저장
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("nickname", newNickname);
-        editor.apply();
 
-        // Firebase 실시간 데이터베이스에 업데이트
-        userRef.child("nickname").setValue(newNickname, new DatabaseReference.CompletionListener() {
-            @Override
-            public void onComplete(@NonNull DatabaseError error, @NonNull DatabaseReference ref) {
-                if (error != null) {
-                    // 업데이트 실패 처리
-                    Toast.makeText(SettingsActivity.this, "닉네임 변경에 실패 했습니다.: " + error.getMessage(), Toast.LENGTH_SHORT).show();
-                } else {
-                    // 업데이트 성공 처리
-                    Toast.makeText(SettingsActivity.this, "닉네임 변경에 성공 했습니다.", Toast.LENGTH_SHORT).show();
-                    // MainActivity로 이동
-                    Intent intent = new Intent(SettingsActivity.this, MainActivity.class);
-                    startActivity(intent);
-                    finish();
-                }
-            }
-        });
-    }
 
-    // 탈퇴 팝업창을 띄우는 함수
     private void showDeleteAccountDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         LayoutInflater inflater = getLayoutInflater();
@@ -191,7 +148,6 @@ public class SettingsActivity extends AppCompatActivity {
         buttonCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // 팝업창만 닫기
                 alertDialog.dismiss();
             }
         });
@@ -208,19 +164,20 @@ public class SettingsActivity extends AppCompatActivity {
         alertDialog.show();
     }
 
-    // 계정 삭제 메서드
     private void deleteAccount() {
         FirebaseUser user = mAuth.getCurrentUser();
         if (user != null) {
-            // 파이어베이스 실시간 데이터베이스에서 사용자 데이터 삭제
             userRef.removeValue().addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
-                    // Firebase Auth에서 사용자 삭제
                     user.delete().addOnCompleteListener(task1 -> {
                         if (task1.isSuccessful()) {
                             Toast.makeText(SettingsActivity.this, "계정이 삭제되었습니다.", Toast.LENGTH_SHORT).show();
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            editor.putBoolean("auto_login", false);
+                            editor.apply();
                             // LoginActivity로 이동
                             Intent intent = new Intent(SettingsActivity.this, LoginActivity.class);
+                            intent.putExtra("signOut", true); // 로그인 화면에서 다시 로그인할 수 있도록 플래그 설정
                             startActivity(intent);
                             finish();
                         } else {
@@ -232,5 +189,79 @@ public class SettingsActivity extends AppCompatActivity {
                 }
             });
         }
+    }
+
+    private void showChangeNicknameDialog(String nickname) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.popup_change_nickname, null);
+        builder.setView(dialogView);
+
+        EditText editTextNewNickname = dialogView.findViewById(R.id.editTextNewNickname);
+        Button buttonCancel = dialogView.findViewById(R.id.buttonCancel);
+        Button buttonConfirm = dialogView.findViewById(R.id.buttonConfirm);
+        TextView textViewCharCount = dialogView.findViewById(R.id.textViewCharCount);
+
+        editTextNewNickname.setText(nickname);
+
+        editTextNewNickname.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                textViewCharCount.setText(String.valueOf(s.length()));
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+
+        buttonCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertDialog.dismiss();
+            }
+        });
+
+        buttonConfirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String newNickname = editTextNewNickname.getText().toString().trim();
+                if (!newNickname.isEmpty() && newNickname.length() <= 20) {
+                    alertDialog.dismiss();
+                    changeNickname(newNickname);
+                } else if (newNickname.isEmpty()) {
+                    Toast.makeText(SettingsActivity.this, "새로운 닉네임을 입력하세요.", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(SettingsActivity.this, "닉네임은 20자 이하여야 합니다.", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        alertDialog = builder.create();
+        alertDialog.show();
+    }
+
+    private void changeNickname(String newNickname) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("nickname", newNickname);
+        editor.apply();
+
+        userRef.child("nickname").setValue(newNickname, new DatabaseReference.CompletionListener() {
+            @Override
+            public void onComplete(@NonNull DatabaseError error, @NonNull DatabaseReference ref) {
+                if (error != null) {
+                    Toast.makeText(SettingsActivity.this, "닉네임 변경에 실패 했습니다.: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(SettingsActivity.this, "닉네임 변경에 성공 했습니다.", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(SettingsActivity.this, MainActivity.class);
+                    startActivity(intent);
+                    finish();
+                }
+            }
+        });
     }
 }

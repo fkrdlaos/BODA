@@ -34,7 +34,6 @@ public class StudyActivity extends AppCompatActivity {
 
     private ProgressBar progressBar;
     private TextView textViewCon;
-
     private TextView tv_word;
     private EditText et_input;
     private Button btn_check;
@@ -52,7 +51,9 @@ public class StudyActivity extends AppCompatActivity {
     private boolean isMultipleChoice = false;
     private List<Integer> randomIndexes;
     private int maxProgress = 10;
-    private int correctCount = 0; // 새로 추가된 변수
+    private int correctCount = 0;
+
+    private boolean isQuitDialogShowing = false; // 팝업 창이 열려있는지 여부를 저장하는 변수
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,10 +78,10 @@ public class StudyActivity extends AppCompatActivity {
                 }
                 if (!words.isEmpty()) {
                     setRandomIndex();
-                    speakFirstWord(); // 수정: 데이터를 받은 후에 TTS로 첫 번째 단어 발음
+                    speakFirstWord();
                     showNextWord();
                 } else {
-                    tv_word.setText("학습할 단어가 없습니다. 단어를 추가하세요.");
+                    showNoWordsDialog();  // 단어가 없을 때 팝업 창 표시
                 }
             }
 
@@ -113,8 +114,6 @@ public class StudyActivity extends AppCompatActivity {
                 }
             }
         });
-        // 수정: 페이지에 들어가자마자 첫 번째 단어 발음
-        speakFirstWord();
 
         btn_check.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -130,6 +129,7 @@ public class StudyActivity extends AppCompatActivity {
             }
         });
 
+
         btn_listen.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -138,12 +138,9 @@ public class StudyActivity extends AppCompatActivity {
         });
     }
 
-    // onStart 메서드에서 TextToSpeech 객체 초기화
     @Override
     protected void onStart() {
         super.onStart();
-
-        // TTS 객체 생성 및 초기화
         textToSpeech = new TextToSpeech(StudyActivity.this, new TextToSpeech.OnInitListener() {
             @Override
             public void onInit(int status) {
@@ -152,7 +149,6 @@ public class StudyActivity extends AppCompatActivity {
                     if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
                         tv_word.setText("이 언어는 지원하지 않습니다.");
                     } else {
-                        // TTS 초기화가 완료된 경우에는 첫 번째 단어 발음
                         speakFirstWord();
                     }
                 } else {
@@ -162,7 +158,6 @@ public class StudyActivity extends AppCompatActivity {
         });
     }
 
-    // onDestroy 메서드에서 TextToSpeech 객체 정리
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -172,12 +167,21 @@ public class StudyActivity extends AppCompatActivity {
         }
     }
 
-    // 처음 단어를 말하기 위한 메서드
+    @Override
+    public void onBackPressed() {
+        if (isQuitDialogShowing) { // 팝업 창이 열려있을 때
+            super.onBackPressed(); // 뒤로 가기 처리를 팝업 창에서 진행하도록 함
+            isQuitDialogShowing = false; // 팝업 창 닫음
+        } else {
+            // 뒤로 가기를 눌렀을 때 Quit 다이얼로그를 표시
+            showQuitDialog();
+        }
+    }
+
     private void speakFirstWord() {
         if (!words.isEmpty()) {
             String word = getRandomWord();
             if (textToSpeech != null) {
-                // TTS 초기화가 완료된 경우에만 발음 실행
                 if (textToSpeech.getLanguage() != null) {
                     textToSpeech.speak(word, TextToSpeech.QUEUE_FLUSH, null);
                 } else {
@@ -186,7 +190,6 @@ public class StudyActivity extends AppCompatActivity {
             }
         }
     }
-
 
     private void showNextWord() {
         if (currentIndex < maxProgress && currentIndex < words.size()) {
@@ -276,8 +279,7 @@ public class StudyActivity extends AppCompatActivity {
         wordAnswerMap.put(correctAnswer, isCorrect);
 
         if (isCorrect) {
-            correctCount++; // 맞춘 문제 수 증가
-
+            correctCount++;
         }
 
         if (currentIndex < words.size() - 1) {
@@ -290,8 +292,7 @@ public class StudyActivity extends AppCompatActivity {
 
     private void checkSpelling() {
         if (et_input.getText().toString().equalsIgnoreCase(words.get(randomIndexes.get(currentIndex)))) {
-            correctCount++; // 맞춘 문제 수 증가
-
+            correctCount++;
         }
         wordAnswerMap.put(words.get(randomIndexes.get(currentIndex)), et_input.getText().toString().equalsIgnoreCase(words.get(randomIndexes.get(currentIndex))));
         if (currentIndex < words.size() - 1) {
@@ -334,6 +335,7 @@ public class StudyActivity extends AppCompatActivity {
         builder.setView(dialogView);
 
         AlertDialog dialog = builder.create();
+        isQuitDialogShowing = true; // 팝업 창이 열려있음을 표시
 
         Button btnCancel = dialogView.findViewById(R.id.buttonCancel);
         Button btnConfirm = dialogView.findViewById(R.id.buttonConfirm);
@@ -342,6 +344,7 @@ public class StudyActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
+                isQuitDialogShowing = false; // 팝업 창을 닫음
             }
         });
 
@@ -352,9 +355,30 @@ public class StudyActivity extends AppCompatActivity {
                 startActivity(intent);
                 finish();
                 dialog.dismiss();
+                isQuitDialogShowing = false; // 팝업 창을 닫음
             }
         });
 
         dialog.show();
     }
+
+    // 단어가 없을 때 팝업 창을 표시하는 메서드
+    private void showNoWordsDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("단어 없음");
+        builder.setMessage("학습할 단어가 없습니다.");
+        builder.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Intent intent = new Intent(StudyActivity.this, MainActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+        builder.setCancelable(false);
+        builder.show();
+    }
+
+
+
 }

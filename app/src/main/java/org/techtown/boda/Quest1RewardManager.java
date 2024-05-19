@@ -9,6 +9,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -24,24 +25,33 @@ public class Quest1RewardManager {
 
     public static void initFirebase() {
         mAuth = FirebaseAuth.getInstance();
-        mDatabaseRef = FirebaseDatabase.getInstance().getReference().child("BODA").child("UserAccount").child(mAuth.getCurrentUser().getUid());
+        FirebaseUser currentUser = mAuth.getCurrentUser();
 
-        mDatabaseRef.child("rewards").child("quest1").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (!dataSnapshot.exists()) {
-                    for (int threshold : QUEST_THRESHOLDS) {
-                        mDatabaseRef.child("rewards").child("quest1").child(String.valueOf(threshold)).setValue(false);
+        if (currentUser != null) {
+            mDatabaseRef = FirebaseDatabase.getInstance().getReference().child("BODA").child("UserAccount").child(currentUser.getUid());
+
+            mDatabaseRef.child("rewards").child("quest1").addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if (!dataSnapshot.exists()) {
+                        for (int threshold : QUEST_THRESHOLDS) {
+                            mDatabaseRef.child("rewards").child("quest1").child(String.valueOf(threshold)).setValue(false);
+                        }
                     }
                 }
-            }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                // Error handling
-            }
-        });
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    // 에러 처리
+                    Log.e("initFirebase", "Firebase Database Error: " + databaseError.getMessage());
+                }
+            });
+        } else {
+            // FirebaseUser가 null인 경우 처리
+            Log.e("initFirebase", "FirebaseUser is null");
+        }
     }
+
 
     public static void giveQuest1Reward(final Context context, final int currentProgress, final Button quest1Button) {
         mDatabaseRef.child("rewards").child("quest1").addListenerForSingleValueEvent(new ValueEventListener() {
@@ -66,7 +76,9 @@ public class Quest1RewardManager {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                // Error handling
+                // 에러 처리
+                Log.e("giveQuest1Reward", "Firebase Database Error: " + databaseError.getMessage());
+                Toast.makeText(context, "데이터베이스에서 정보를 가져오는 도중 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -101,27 +113,19 @@ public class Quest1RewardManager {
     }
 
     public static void updateQuest1RewardButtonVisibility(Context context, final int currentProgress, final Button quest1Button) {
-        mDatabaseRef.child("rewards").child("quest1").addListenerForSingleValueEvent(new ValueEventListener() {
+        mDatabaseRef.child("rewards").child("quest1").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 boolean anyRewardReceived = false;
+                boolean isButtonVisible = false;
 
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     int threshold = Integer.parseInt(snapshot.getKey());
                     boolean rewardGiven = snapshot.getValue(Boolean.class);
 
                     if (!rewardGiven && currentProgress >= threshold) {
-                        quest1Button.setVisibility(View.VISIBLE);
-
-                        quest1Button.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                giveExpAndHideButton(context, quest1Button, "quest1", threshold, mAuth.getCurrentUser().getUid());
-
-                            }
-                        });
-
-                        return;
+                        isButtonVisible = true;
+                        break;
                     }
 
                     if (rewardGiven) {
@@ -132,17 +136,26 @@ public class Quest1RewardManager {
                 if (currentProgress > 100) {
                     quest1Button.setText("완료됨");
                     quest1Button.setEnabled(false);
-                    quest1Button.setVisibility(View.VISIBLE);
-                } else {
-                    if (!anyRewardReceived) {
-                        quest1Button.setVisibility(View.GONE);
-                    }
+                    isButtonVisible = true;
+                }
+
+                quest1Button.setVisibility(isButtonVisible ? View.VISIBLE : View.GONE);
+
+                if (isButtonVisible) {
+                    quest1Button.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            giveQuest1Reward(context, currentProgress, quest1Button);
+                        }
+                    });
                 }
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                // Error handling
+                // 에러 처리
+                Log.e("updateQuest1Reward", "Firebase Database Error: " + databaseError.getMessage());
+                Toast.makeText(context, "데이터베이스에서 정보를 가져오는 도중 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
             }
         });
     }
