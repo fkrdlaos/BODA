@@ -175,7 +175,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
                 startActivity(intent);
-
+                finish();
             }
         });
 
@@ -322,7 +322,7 @@ public class MainActivity extends AppCompatActivity {
     private void levelUp() {
         lv++; // 레벨 증가
         exp -= maxExp; // 현재 경험치에서 최대 경험치를 뺌
-        maxExp *= 1.2; // 최대 경험치 1.2배 증가
+        maxExp += 50 ; // 최대 경험치 50 증가
 
         // 레벨 및 경험치 업데이트
         updateExpAndLevelViews();

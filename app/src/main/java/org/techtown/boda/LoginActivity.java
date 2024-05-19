@@ -14,11 +14,13 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.SignInButton;
+import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -43,10 +45,19 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     private static final int REO_SIGN_GOOGLE = 100;
     private SharedPreferences sharedPreferences;
 
+    private GoogleSignInClient mGoogleSignInClient;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        // GoogleSignInOptions 및 GoogleSignInClient 초기화
+        GoogleSignInOptions googleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build();
+        mGoogleSignInClient = GoogleSignIn.getClient(this, googleSignInOptions);
 
         sharedPreferences = getSharedPreferences("MY_PREFS", MODE_PRIVATE);
         boolean autoLogin = sharedPreferences.getBoolean("auto_login", false);
@@ -56,13 +67,14 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             finish();
         }
 
-        GoogleSignInOptions googleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+        // GoogleApiClient 초기화
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
         googleApiClient = new GoogleApiClient.Builder(this)
-                .addApi(Auth.GOOGLE_SIGN_IN_API, googleSignInOptions)
-                .addOnConnectionFailedListener(this)
+                .enableAutoManage(this, this)
+                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
 
         auth = FirebaseAuth.getInstance();
@@ -70,8 +82,9 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         btnGoogle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient);
-                startActivityForResult(intent, REO_SIGN_GOOGLE);
+                // GoogleSignInClient를 사용하여 로그인 인텐트 가져오기
+                Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+                startActivityForResult(signInIntent, REO_SIGN_GOOGLE);
             }
         });
 
@@ -146,17 +159,41 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             }
         });
 
-        sharedPreferences = getSharedPreferences("MY_PREFS", MODE_PRIVATE);
+        // 이전 액티비티에서 전달된 인텐트 확인
+        Intent intent = getIntent();
+        boolean signOut = intent.getBooleanExtra("signOut", false);
+        if (signOut) {
+            // 사용자가 로그아웃한 경우 구글 클라이언트 재설정
+            mGoogleSignInClient.signOut().addOnCompleteListener(this,
+                    new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (!task.isSuccessful()) {
+                                // 로그아웃 실패 시
+                                Toast.makeText(LoginActivity.this, "로그아웃에 실패했습니다.", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+        }
+
     }
 
+        // onActivityResult 메소드 수정
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REO_SIGN_GOOGLE) {
-            GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
-            if (result.isSuccess()) {
-                GoogleSignInAccount account = result.getSignInAccount();
-                resultLogin(account);
+            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+            try {
+                // GoogleSignInAccount 가져오기
+                GoogleSignInAccount account = task.getResult(ApiException.class);
+                if (account != null) {
+                    // 로그인 성공 시 처리
+                    resultLogin(account);
+                }
+            } catch (ApiException e) {
+                // 로그인 실패 처리
+                Toast.makeText(this, "구글 로그인 실패: " + e.getStatusCode(), Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -203,12 +240,10 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                             }
                         } else {
                             Toast.makeText(LoginActivity.this, "로그인 실패", Toast.LENGTH_SHORT).show();
-                            Log.e("LoginActivity", "signInWithCredential:failure", task.getException());
                         }
                     }
                 });
     }
-
 
     private void saveUserToFirebase(String email, String nickname) {
         DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("BODA").child("UserAccount");
@@ -220,7 +255,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()) {
-                    Toast.makeText(LoginActivity.this, "사용자 정보가 저장되었습니다.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LoginActivity.this, "구글 로그인 버튼을 한번 더 눌러주세요 ", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(LoginActivity.this, "사용자 정보 저장에 실패했습니다.", Toast.LENGTH_SHORT).show();
                 }
@@ -228,9 +263,21 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         });
     }
 
-
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        Log.e("LoginActivity", "Google API Client connection failed:" + connectionResult.getErrorMessage());
+        Toast.makeText(this, "Google Play Services Error", Toast.LENGTH_SHORT).show();
     }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        googleApiClient.connect(); // 구글 API 클라이언트 연결
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        googleApiClient.disconnect(); // 구글 API 클라이언트 연결 해제
+    }
+
 }
