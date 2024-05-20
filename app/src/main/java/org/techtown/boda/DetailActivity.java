@@ -135,6 +135,16 @@ public class DetailActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    public void onBackPressed() {
+
+        super.onBackPressed();
+        // 뒤로가기 버튼을 눌렀을 때 DictionaryActivity로 이동
+        Intent intent = new Intent(DetailActivity.this, DictionaryActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
     // 사진을 찍을지 갤러리에서 선택할지 다이얼로그 표시
     private void showImageSourceDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);

@@ -150,7 +150,7 @@ public class RegisterActivity extends AppCompatActivity {
                                 finish(); // 현재 액티비티 파괴
 
                             } else {
-                                Toast.makeText(RegisterActivity.this, "회원가입에 실패하셨습니다.", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(RegisterActivity.this, "비밀번호를 6자리이상으로 설정해주세요.", Toast.LENGTH_SHORT).show();
                             }
                         }
                     });
@@ -159,5 +159,14 @@ public class RegisterActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        // 뒤로가기 버튼을 눌렀을 때 DictionaryActivity로 이동
+        Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
+        startActivity(intent);
+        finish();
     }
 }

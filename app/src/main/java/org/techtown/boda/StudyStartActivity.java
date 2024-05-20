@@ -27,4 +27,13 @@ public class StudyStartActivity extends AppCompatActivity {
             }
         });
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        // 뒤로가기 버튼을 눌렀을 때 DictionaryActivity로 이동
+        Intent intent = new Intent(StudyStartActivity.this, MainActivity.class);
+        startActivity(intent);
+        finish();
+    }
 }

@@ -264,4 +264,12 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
     }
+    public void onBackPressed() {
+
+        super.onBackPressed();
+        // 뒤로가기 버튼을 눌렀을 때 DictionaryActivity로 이동
+        Intent intent = new Intent(SettingsActivity.this, MainActivity.class);
+        startActivity(intent);
+        finish();
+    }
 }

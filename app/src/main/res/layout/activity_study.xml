@@ -173,7 +173,7 @@
             android:layout_height="150px"
             android:layout_gravity="center"
             android:layout_marginTop="500px"
-            android:background="@drawable/activity_study_button_gray"
+            android:background="@drawable/activity_study_button"
             android:text="다음으로"
             android:textColor="#FFFFFF"
             android:textStyle="bold" />

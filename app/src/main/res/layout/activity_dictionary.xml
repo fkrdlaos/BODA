@@ -15,6 +15,7 @@
         android:layout_height="24dp"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
+        android:layout_centerHorizontal="true"
         android:layout_marginTop="70dp"
         android:layout_marginEnd="142dp"
         android:layout_marginBottom="70dp"
@@ -25,11 +26,11 @@
         android:id="@+id/wordCount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="발견한 단어 갯수 : "
-        android:textColor="@android:color/white"
-        android:textSize="20sp"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="120dp"/>
+        android:layout_marginTop="120dp"
+        android:text="발견한 단어 개수 : "
+        android:textColor="@android:color/white"
+        android:textSize="20sp" />
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabs"
@@ -86,6 +87,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
         android:layout_marginStart="72dp"
         android:layout_marginTop="167dp"
         android:ems="10"

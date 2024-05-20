@@ -144,9 +144,9 @@ public class DictionaryActivity extends AppCompatActivity {
     // 각 탭에 따른 단어 개수를 업데이트하는 메서드
     private void updateWordCount(int tabPosition) {
         if (tabPosition == 0) {
-            wordCountTextView.setText("발견한 단어 갯수 : " + allWordsCount);
+            wordCountTextView.setText("발견한 단어 개수 : " + allWordsCount);
         } else if (tabPosition == 1) {
-            wordCountTextView.setText("발견한 단어 갯수 : " + imgWordsCount);
+            wordCountTextView.setText("발견한 단어 개수 : " + imgWordsCount);
         }
     }
 
@@ -158,5 +158,14 @@ public class DictionaryActivity extends AppCompatActivity {
             }
         }
         return imgWords;
+    }
+
+    public void onBackPressed() {
+
+        super.onBackPressed();
+        // 뒤로가기 버튼을 눌렀을 때 DictionaryActivity로 이동
+        Intent intent = new Intent(DictionaryActivity.this, MainActivity.class);
+        startActivity(intent);
+        finish();
     }
 }

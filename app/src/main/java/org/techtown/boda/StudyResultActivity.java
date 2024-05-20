@@ -64,4 +64,12 @@ public class StudyResultActivity extends AppCompatActivity {
             }
         });
     }
+    public void onBackPressed() {
+
+        super.onBackPressed();
+        // 뒤로가기 버튼을 눌렀을 때
+        Intent intent = new Intent(StudyResultActivity.this, MainActivity.class);
+        startActivity(intent);
+        finish();
+    }
 }

@@ -275,26 +275,31 @@ public class MainActivity extends AppCompatActivity {
 
     // 퀘스트 진행 상황을 UI에 업데이트합니다.
     private void updateQuestProgress(int wordsProgress, int challengesProgress) {
-        // quest1_progress, quest2_progress 텍스트뷰 업데이트
-        quest1ProgressText.setText("(" + wordsProgress + "/100)");
-        quest2ProgressText.setText("(" + challengesProgress + "/100)");
+        int wordsNextTarget = getNextTarget(wordsProgress);
+        int challengesNextTarget = getNextTarget(challengesProgress);
 
-        // quest1_medal, quest2_medal 이미지뷰 업데이트
-        Quest1RewardManager.updateQuestProgress(wordsProgress, quest1ProgressText, quest1MedalImage);
-        Quest2RewardManager.updateQuestProgress(challengesProgress, quest2ProgressText, quest2MedalImage);
+        quest1ProgressText.setText("(" + wordsProgress + "/" + wordsNextTarget + ")");
+        quest2ProgressText.setText("(" + challengesProgress + "/" + challengesNextTarget + ")");
 
-        // quest1_button, quest2_button 업데이트
-        // MainActivity에서 호출하는 부분
+        Quest1RewardManager.updateQuestProgress(wordsProgress, wordsNextTarget, quest1ProgressText, quest1MedalImage);
+        Quest2RewardManager.updateQuestProgress(challengesProgress, challengesNextTarget, quest2ProgressText, quest2MedalImage);
+
         Quest1RewardManager.updateQuest1RewardButtonVisibility(this, wordsProgress, quest1Button);
         Quest2RewardManager.updateQuest2RewardButtonVisibility(this, challengesProgress, quest2Button);
-
-
-
-
 
         // 경험치 및 레벨 업데이트
         updateExpAndLevelViews();
     }
+
+    private int getNextTarget(int currentProgress) {
+        if (currentProgress < 10) return 10;
+        else if (currentProgress < 30) return 30;
+        else if (currentProgress < 50) return 50;
+        else if (currentProgress < 80) return 80;
+        else return 100;
+    }
+
+
 
 
 
@@ -447,5 +452,14 @@ public class MainActivity extends AppCompatActivity {
         if (progressDialog != null && progressDialog.isShowing()) {
             progressDialog.dismiss();
         }
+    }
+    @Override
+    public void onBackPressed() {
+        // 앱을 종료합니다.
+        super.onBackPressed();
+        // 현재 액티비티와 연관된 모든 액티비티를 종료하고 앱을 종료합니다.
+        finishAffinity();
+        // 프로세스를 완전히 종료하여 백그라운드에서 동작하지 않도록 합니다.
+        android.os.Process.killProcess(android.os.Process.myPid());
     }
 }

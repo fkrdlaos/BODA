@@ -280,4 +280,14 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         googleApiClient.disconnect(); // 구글 API 클라이언트 연결 해제
     }
 
+    @Override
+    public void onBackPressed() {
+        // 앱을 종료합니다.
+        super.onBackPressed();
+        // 현재 액티비티와 연관된 모든 액티비티를 종료하고 앱을 종료합니다.
+        finishAffinity();
+        // 프로세스를 완전히 종료하여 백그라운드에서 동작하지 않도록 합니다.
+        android.os.Process.killProcess(android.os.Process.myPid());
+    }
+
 }
