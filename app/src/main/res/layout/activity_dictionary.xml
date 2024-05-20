@@ -39,13 +39,15 @@
             android:layout_height="48dp"
             android:layout_below="@id/wordCount"
             android:layout_marginTop="20dp"
-            android:ems="10"
-            android:paddingStart="45px"
-            android:hint="단어를 입력하세요"
             android:background="@drawable/activity_dictionary_edittext"
+            android:drawableRight="@drawable/activity_dictionary_searchicon"
+            android:ems="10"
+            android:hint="단어를 입력하세요"
             android:inputType="text"
-            android:textColor="#D9D9D9"
+            android:paddingStart="45px"
+            android:textColor="#C9C9C9"
             android:textSize="15sp" />
+
     </LinearLayout>
 
 
