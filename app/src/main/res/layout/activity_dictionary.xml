@@ -1,98 +1,102 @@
-<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/some_id"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/be3"
+    android:background="#FFFFFF"
     android:clipToOutline="true"
     tools:context=".DictionaryActivity">
 
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="134dp"
-        android:layout_height="24dp"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="70dp"
-        android:layout_marginEnd="142dp"
-        android:layout_marginBottom="70dp"
-        app:srcCompat="@drawable/t" />
+    <LinearLayout
+        android:id="@+id/layout_study_dictionary"
+        android:layout_width="match_parent"
+        android:background="#FF6F0F"
+        android:layout_height="200dp"
+        android:gravity="center"
+        android:orientation="vertical">
 
-    <!-- 등급과 단어 개수를 표시할 텍스트뷰 추가 -->
-    <TextView
-        android:id="@+id/wordCount"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="120dp"
-        android:text="발견한 단어 개수 : "
-        android:textColor="@android:color/white"
-        android:textSize="20sp" />
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="wrap_content"
+            android:layout_height="22dp"
+            android:layout_marginTop="50dp"
+            app:srcCompat="@drawable/t" />
 
-    <com.google.android.material.tabs.TabLayout
-        android:id="@+id/tabs"
+        <TextView
+            android:id="@+id/wordCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/imageView"
+            android:layout_marginTop="15dp"
+            android:text="발견한 단어 수 : "
+            android:textColor="@android:color/white"
+            android:textSize="18sp" />
+
+        <EditText
+            android:id="@+id/search_bar"
+            android:layout_width="230dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/wordCount"
+            android:layout_marginTop="20dp"
+            android:ems="10"
+            android:paddingStart="45px"
+            android:hint="단어를 입력하세요"
+            android:background="@drawable/activity_dictionary_edittext"
+            android:inputType="text"
+            android:textColor="#99999"
+            android:textSize="12sp" />
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/button_layout_tabs"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/search_bar"
-        android:layout_marginTop="50dp"
-        android:background="@color/white"
-        app:tabGravity="fill"
-        app:tabMode="fixed">
+        android:layout_below="@+id/layout_study_dictionary"
+        android:layout_marginTop="20dp"
+        android:orientation="horizontal"
+        android:gravity="center">
 
-        <com.google.android.material.tabs.TabItem
-            android:id="@+id/tabItem1"
-            android:layout_width="wrap_content"
+        <Button
+            android:id="@+id/button_all_words"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="전체" />
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="10dp"
+            android:layout_weight="1"
+            android:background="@drawable/activity_dictionary_button1"
+            android:text="전체"
+            android:textColor="#FFFFFF"/>
 
-        <com.google.android.material.tabs.TabItem
-            android:id="@+id/tabItem2"
-            android:layout_width="wrap_content"
+        <Button
+            android:id="@+id/button_img_words"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="그림 도감" />
-    </com.google.android.material.tabs.TabLayout>
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="20dp"
+            android:layout_weight="1"
+            android:background="@drawable/activity_dictionary_button2"
+            android:text="그림 도감"
+            android:textColor="#FFFFFF"/>
+    </LinearLayout>
 
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/view_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/button_layout"
-        android:layout_below="@id/tabs"
+        android:layout_below="@id/button_layout_tabs"
         android:contentDescription="ViewPager" />
 
 
-    <LinearLayout
-        android:id="@+id/button_layout"
-        android:layout_width="match_parent"
+    <Button
+        android:id="@+id/button3"
+        android:layout_width="48dp"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:orientation="horizontal">
+        android:layout_marginTop="25dp"
+        android:layout_marginStart="15dp"
+        android:background="@drawable/back_white"
+        android:contentDescription="back"/>
 
-
-        <Button
-            android:id="@+id/button3"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="#FF9800"
-            android:text="홈으로" />
-    </LinearLayout>
-
-    <EditText
-        android:id="@+id/search_bar"
-        android:layout_width="233dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginStart="72dp"
-        android:layout_marginTop="167dp"
-        android:ems="10"
-        android:hint="단어를 입력하세요"
-        android:inputType="text"
-        android:textSize="20sp" />
 
 </RelativeLayout>
