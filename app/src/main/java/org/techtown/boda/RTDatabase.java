@@ -14,7 +14,7 @@ import java.util.Map;
 public class RTDatabase {
     private static Map<String, RTDatabase> instances = new HashMap<>();
     private FirebaseDatabase database;
-    private DatabaseReference dbRef;
+    private static DatabaseReference dbRef;
     private Map<String,Object> wordMap;
 
     private RTDatabase(String userId) {
@@ -62,5 +62,9 @@ public class RTDatabase {
 
     public Map<String,Object> getWords(){
         return wordMap;
+    }
+
+    public static void addCatchImgPath(String word, String path){
+        dbRef.child("collection/"+word+"/path").setValue(path);
     }
 }

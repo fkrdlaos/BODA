@@ -18,7 +18,16 @@ class CatchActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         activityCatchBinding = ActivityCatchBinding.inflate(layoutInflater)
         setContentView(activityCatchBinding.root)
-
+        val word = intent.getStringExtra("word")
+        if (savedInstanceState == null) {
+            val fragment = CatchFragment()
+            val bundle = Bundle()
+            bundle.putString("word", word)
+            fragment.arguments = bundle
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, fragment)
+                .commit()
+        }
     }
 
     override fun onBackPressed() {

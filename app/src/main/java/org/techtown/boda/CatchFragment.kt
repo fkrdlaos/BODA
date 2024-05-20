@@ -3,6 +3,7 @@ import android.annotation.SuppressLint
 import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.Matrix
+import android.graphics.Path
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -25,7 +26,7 @@ import java.util.concurrent.Executors
 class CatchFragment : Fragment(), ObjectDetectorHelper.DetectorListener {
 
     private val TAG = "ObjectDetection"
-
+    private lateinit var word: String
     private var _fragmentCatchBinding: FragmentCatchBinding? = null
     private val fragmentCatchBinding get() = _fragmentCatchBinding!!
 
@@ -40,6 +41,14 @@ class CatchFragment : Fragment(), ObjectDetectorHelper.DetectorListener {
 
     private var captureImageFlag = false
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        // 전달된 word 값을 받음
+        arguments?.let {
+            word = it.getString("word").toString()
+        }
+    }
     override fun onResume() {
         super.onResume()
         Log.i("onResume", "Camera resume")
@@ -82,7 +91,6 @@ class CatchFragment : Fragment(), ObjectDetectorHelper.DetectorListener {
         }
 
     }
-
 
     private fun updateControlsUi() {
         objectDetectorHelper.clearObjectDetector()
@@ -163,10 +171,9 @@ class CatchFragment : Fragment(), ObjectDetectorHelper.DetectorListener {
             // Check if the capture flag is set
             if (captureImageFlag && results != null) {
                 captureImageFlag = false // Reset the flag
-
                 // Process results and save the desired object
                 results.forEach { detection ->
-                    if (detection.categories[0].label == "person") { // Replace "desired_label" with your label
+                    if (detection.categories[0].label == word) { // Replace "desired_label" with your label
                         val boundingBox = detection.boundingBox
 
                         // Ensure the bounding box is within the bitmap boundaries
@@ -176,8 +183,6 @@ class CatchFragment : Fragment(), ObjectDetectorHelper.DetectorListener {
                         val bottom = boundingBox.bottom.toInt().coerceAtMost(bitmapBuffer.height)
                         val width = right - left
                         val height = bottom - top
-                        Log.i("BOUNDINGBOXXXXXXXX", boundingBox.toString())
-                        Log.i("converttttttttttt", ""+left+""+top+""+width+""+height)
                         if (width > 0 && height > 0) {
                             // Rotate the image back to the correct orientation
                             val matrix = Matrix()
@@ -206,8 +211,12 @@ class CatchFragment : Fragment(), ObjectDetectorHelper.DetectorListener {
         }
 
         Toast.makeText(context, "Image saved: ${file.absolutePath}", Toast.LENGTH_SHORT).show()
+        saveImgtoRTDB(file.absolutePath)
     }
 
+    private fun saveImgtoRTDB(path: String) {
+        RTDatabase.addCatchImgPath(word, path)
+    }
     override fun onError(error: String) {
         activity?.runOnUiThread {
             Toast.makeText(requireContext(), error, Toast.LENGTH_SHORT).show()

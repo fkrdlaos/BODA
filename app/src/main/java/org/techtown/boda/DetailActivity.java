@@ -97,7 +97,7 @@ public class DetailActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         // 카메라로 사진 찍기 또는 갤러리에서 사진 선택하기
-                        showImageSourceDialog();
+                        showImageSourceDialog(word);
                     }
                 });
             } else {
@@ -146,7 +146,7 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     // 사진을 찍을지 갤러리에서 선택할지 다이얼로그 표시
-    private void showImageSourceDialog() {
+    private void showImageSourceDialog(String word){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("사진 추가하기");
         builder.setItems(new CharSequence[]{"카메라로 사진 찍기", "갤러리에서 사진 선택하기"}, new DialogInterface.OnClickListener() {
@@ -157,6 +157,7 @@ public class DetailActivity extends AppCompatActivity {
                         // 카메라 권한이 있는지 확인
                         if (ContextCompat.checkSelfPermission(DetailActivity.this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
                             Intent intent = new Intent(DetailActivity.this, CatchActivity.class);
+                            intent.putExtra("word", word);
                             startActivity(intent);
                         } else {
                             // 권한 요청
