@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -44,10 +45,9 @@ public class DictionaryActivity extends AppCompatActivity {
         setContentView(R.layout.activity_dictionary);
 
         ViewPager viewPager = findViewById(R.id.view_pager);
+        TabLayout tabLayout = findViewById(R.id.tabs);
         EditText searchBar = findViewById(R.id.search_bar);
         Button homeButton = findViewById(R.id.button3);
-        Button allWordsButton = findViewById(R.id.button_all_words);
-        Button imgWordsButton = findViewById(R.id.button_img_words);
         wordCountTextView = findViewById(R.id.wordCount); // TextView 연결
 
         // Adapter 설정
@@ -55,6 +55,7 @@ public class DictionaryActivity extends AppCompatActivity {
         vpAdapter.addFragment(new AllWordsFragment(), "전체");
         vpAdapter.addFragment(new ImgWordsFragment(), "그림 도감");
         viewPager.setAdapter(vpAdapter);
+        tabLayout.setupWithViewPager(viewPager);
 
         // 각 도감 fragment 인스턴스 가져오기
         allWordsInstance = (AllWordsFragment) vpAdapter.getItem(0);
@@ -67,23 +68,6 @@ public class DictionaryActivity extends AppCompatActivity {
                 Intent intent = new Intent(DictionaryActivity.this, MainActivity.class);
                 startActivity(intent);
                 finish();
-            }
-        });
-
-        // 각 버튼 클릭 시 해당 fragment로 전환
-        allWordsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                viewPager.setCurrentItem(0);
-                updateWordCount(0);
-            }
-        });
-
-        imgWordsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                viewPager.setCurrentItem(1);
-                updateWordCount(1);
             }
         });
 
@@ -115,7 +99,7 @@ public class DictionaryActivity extends AppCompatActivity {
                     imgWordsInstance.updateData(imgWordList);
 
                     // 현재 선택된 탭에 따라 단어 개수를 TextView에 설정
-                    int currentTabPosition = viewPager.getCurrentItem();
+                    int currentTabPosition = tabLayout.getSelectedTabPosition();
                     updateWordCount(currentTabPosition);
                 }
 
@@ -141,6 +125,20 @@ public class DictionaryActivity extends AppCompatActivity {
                 imgWordsInstance.filter(query);
             }
         });
+
+        // 탭 선택 리스너 추가
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                updateWordCount(tab.getPosition());
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {}
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {}
+        });
     }
 
     // 각 탭에 따른 단어 개수를 업데이트하는 메서드
@@ -153,7 +151,7 @@ public class DictionaryActivity extends AppCompatActivity {
     }
 
     private List<WordData> getImgWords(List<WordData> wordList) {
-        List<WordData> imgWords = new ArrayList<>();
+        List<WordData> imgWords = new ArrayList<WordData>();
         for (WordData word : wordList) {
             if (LabelList.hasLabel(word.getWord())) {
                 imgWords.add(word);
@@ -162,8 +160,8 @@ public class DictionaryActivity extends AppCompatActivity {
         return imgWords;
     }
 
-    @Override
     public void onBackPressed() {
+
         super.onBackPressed();
         // 뒤로가기 버튼을 눌렀을 때 DictionaryActivity로 이동
         Intent intent = new Intent(DictionaryActivity.this, MainActivity.class);
