@@ -134,8 +134,6 @@ public class SettingsActivity extends AppCompatActivity {
         }
     }
 
-
-
     private void showDeleteAccountDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         LayoutInflater inflater = getLayoutInflater();
@@ -230,19 +228,30 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String newNickname = editTextNewNickname.getText().toString().trim();
-                if (!newNickname.isEmpty() && newNickname.length() <= 20) {
+                if (!newNickname.isEmpty() && isValidNickname(newNickname)) {
                     alertDialog.dismiss();
                     changeNickname(newNickname);
                 } else if (newNickname.isEmpty()) {
                     Toast.makeText(SettingsActivity.this, "새로운 닉네임을 입력하세요.", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(SettingsActivity.this, "닉네임은 20자 이하여야 합니다.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(SettingsActivity.this, "닉네임은 한글 8자, 영어 15자 이하로 입력하세요.", Toast.LENGTH_SHORT).show();
                 }
             }
         });
 
         alertDialog = builder.create();
         alertDialog.show();
+    }
+
+    private boolean isValidNickname(String nickname) {
+        int length = nickname.length();
+        boolean isEnglish = nickname.matches("^[a-zA-Z]*$");
+
+        if (isEnglish) {
+            return length <= 15;
+        } else {
+            return length <= 8;
+        }
     }
 
     private void changeNickname(String newNickname) {
@@ -264,10 +273,10 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
     }
-    public void onBackPressed() {
 
+    public void onBackPressed() {
         super.onBackPressed();
-        // 뒤로가기 버튼을 눌렀을 때 DictionaryActivity로 이동
+        // 뒤로가기 버튼을 눌렀을 때 MainActivity로 이동
         Intent intent = new Intent(SettingsActivity.this, MainActivity.class);
         startActivity(intent);
         finish();
