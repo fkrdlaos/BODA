@@ -27,7 +27,7 @@
 
         <EditText
             android:id="@+id/editTextNewNickname"
-            android:layout_width="750px"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:hint="새로운 닉네임을 입력하세요."
             android:maxLength="15"
@@ -35,9 +35,9 @@
 
         <TextView
             android:id="@+id/textViewCharCount"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="0/15"
+            android:text="0/10"
             android:textSize="16sp" />
 
     </LinearLayout>

@@ -114,6 +114,11 @@ public class RegisterActivity extends AppCompatActivity {
                     return;
                 }
 
+                if (!isValidNickname(nickname)) {
+                    Toast.makeText(RegisterActivity.this, "닉네임은 한글 8자, 영어 15자 이하로 입력하세요.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putString("nickname", nickname); // SharedPreferences에 닉네임 저장
                 editor.apply();
@@ -159,6 +164,17 @@ public class RegisterActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private boolean isValidNickname(String nickname) {
+        int length = nickname.length();
+        boolean isEnglish = nickname.matches("^[a-zA-Z]*$");
+
+        if (isEnglish) {
+            return length <= 15;
+        } else {
+            return length <= 8;
+        }
     }
 
     @Override
