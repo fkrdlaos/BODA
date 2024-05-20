@@ -170,4 +170,5 @@ public class DictionaryActivity extends AppCompatActivity {
         startActivity(intent);
         finish();
     }
+
 }
