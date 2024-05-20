@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -32,37 +31,38 @@
         android:textColor="@android:color/white"
         android:textSize="20sp" />
 
-    <com.google.android.material.tabs.TabLayout
-        android:id="@+id/tabs"
+    <!-- Replace TabLayout with Buttons -->
+    <LinearLayout
+        android:id="@+id/button_layout_tabs"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/search_bar"
         android:layout_marginTop="50dp"
-        android:background="@color/white"
-        app:tabGravity="fill"
-        app:tabMode="fixed">
+        android:orientation="horizontal"
+        android:gravity="center">
 
-        <com.google.android.material.tabs.TabItem
-            android:id="@+id/tabItem1"
-            android:layout_width="wrap_content"
+        <Button
+            android:id="@+id/button_all_words"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:text="전체" />
 
-        <com.google.android.material.tabs.TabItem
-            android:id="@+id/tabItem2"
-            android:layout_width="wrap_content"
+        <Button
+            android:id="@+id/button_img_words"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:text="그림 도감" />
-    </com.google.android.material.tabs.TabLayout>
+    </LinearLayout>
 
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/view_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/button_layout"
-        android:layout_below="@id/tabs"
+        android:layout_below="@id/button_layout_tabs"
         android:contentDescription="ViewPager" />
-
 
     <LinearLayout
         android:id="@+id/button_layout"
@@ -70,7 +70,6 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:orientation="horizontal">
-
 
         <Button
             android:id="@+id/button3"
@@ -96,3 +95,4 @@
         android:textSize="20sp" />
 
 </RelativeLayout>
+
