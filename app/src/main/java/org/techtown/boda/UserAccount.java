@@ -1,11 +1,5 @@
 package org.techtown.boda;
 
-import android.widget.Toast;
-
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-
 /**
  * 사용자 계정 정보 모델 클래스
  */
@@ -19,8 +13,24 @@ public class UserAccount {
     private int exp; // 경험치
     private int lv; // 레벨
 
+    // 기본 생성자
     public UserAccount() {
+        this.exp = 0;
+        this.lv = 1;
+        this.mission = new Mission();
     }
+
+    // 모든 필드를 초기화하는 생성자
+    public UserAccount(String idToken, String emailId, String nickname, int exp, int lv, Mission mission) {
+        this.idToken = idToken;
+        this.emailId = emailId;
+        this.nickname = nickname;
+        this.exp = exp;
+        this.lv = lv;
+        this.mission = mission;
+    }
+
+    // Getter와 Setter 메소드
 
     public String getIdToken() {
         return idToken;
@@ -84,8 +94,17 @@ class Mission {
     private int words; // 단어 수
 
     public Mission() {
+        this.challenges = 0;
+        this.words = 0;
     }
 
+    // 모든 필드를 초기화하는 생성자
+    public Mission(int challenges, int words) {
+        this.challenges = challenges;
+        this.words = words;
+    }
+
+    // Getter와 Setter 메소드
     public int getChallenges() {
         return challenges;
     }
