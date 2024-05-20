@@ -76,6 +76,9 @@ public class DictionaryActivity extends AppCompatActivity {
             public void onClick(View v) {
                 viewPager.setCurrentItem(0);
                 updateWordCount(0);
+                // 버튼 배경 변경
+                allWordsButton.setBackgroundResource(R.drawable.activity_dictionary_button1);
+                imgWordsButton.setBackgroundResource(R.drawable.activity_dictionary_button2);
             }
         });
 
@@ -84,6 +87,9 @@ public class DictionaryActivity extends AppCompatActivity {
             public void onClick(View v) {
                 viewPager.setCurrentItem(1);
                 updateWordCount(1);
+                // 버튼 배경 변경
+                allWordsButton.setBackgroundResource(R.drawable.activity_dictionary_button2);
+                imgWordsButton.setBackgroundResource(R.drawable.activity_dictionary_button1);
             }
         });
 
