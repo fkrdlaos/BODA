@@ -146,7 +146,8 @@ public class DetailActivity extends AppCompatActivity {
                     case 0:
                         // 카메라 권한이 있는지 확인
                         if (ContextCompat.checkSelfPermission(DetailActivity.this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
-                            takePhotoFromCamera();
+                            Intent intent = new Intent(DetailActivity.this, CatchActivity.class);
+                            startActivity(intent);
                         } else {
                             // 권한 요청
                             requestPermissions(new String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA_PERMISSION);

@@ -21,8 +21,13 @@ public class ExpManager {
                     if (dataSnapshot.exists()) {
                         int currentExp = dataSnapshot.getValue(Integer.class);
                         int addedExp = count * 10;
+                        Log.i("EXPEXP", "currentEXP"+currentExp);
+                        Log.i("EXPEXP", "addedExp"+currentExp);
+
                         currentExp += addedExp;
                         userDbRef.child("exp").setValue(currentExp);
+
+
                     }
                 }
 
