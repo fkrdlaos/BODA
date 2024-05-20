@@ -4,7 +4,7 @@
     android:id="@+id/some_id"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF"
+    android:background="#F5F5F5"
     android:clipToOutline="true"
     tools:context=".DictionaryActivity">
 
@@ -12,7 +12,7 @@
         android:id="@+id/layout_study_dictionary"
         android:layout_width="match_parent"
         android:background="#FF6F0F"
-        android:layout_height="200dp"
+        android:layout_height="210dp"
         android:gravity="center"
         android:orientation="vertical">
 
@@ -35,8 +35,8 @@
 
         <EditText
             android:id="@+id/search_bar"
-            android:layout_width="230dp"
-            android:layout_height="wrap_content"
+            android:layout_width="300dp"
+            android:layout_height="48dp"
             android:layout_below="@id/wordCount"
             android:layout_marginTop="20dp"
             android:ems="10"
@@ -44,8 +44,8 @@
             android:hint="단어를 입력하세요"
             android:background="@drawable/activity_dictionary_edittext"
             android:inputType="text"
-            android:textColor="#99999"
-            android:textSize="12sp" />
+            android:textColor="#D9D9D9"
+            android:textSize="15sp" />
     </LinearLayout>
 
 
