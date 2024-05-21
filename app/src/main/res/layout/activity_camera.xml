@@ -20,7 +20,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="30px"
         android:layout_marginTop="60px"
-        android:textSize="14sp"
+        android:textSize="18sp"
         android:textStyle="bold"
         android:textColor="#FF6F0F"
         android:text="어떤 상황일까요?" />
@@ -38,7 +38,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="30px"
         android:layout_marginTop="60px"
-        android:textSize="14sp"
+        android:textSize="18sp"
         android:textStyle="bold"
         android:textColor="#FF6F0F"
         android:text="발견한 단어" />
@@ -58,6 +58,7 @@
                 android:id="@+id/wordLayout2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_weight="3"
                 android:orientation="vertical"
                 android:paddingTop="16dp"></LinearLayout>
 
@@ -65,6 +66,7 @@
                 android:id="@+id/wordLayout3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_weight="2"
                 android:orientation="vertical"
                 android:paddingTop="16dp"></LinearLayout>
         </LinearLayout>
@@ -74,7 +76,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:layout_marginBottom="25dp"
+        android:layout_marginBottom="30dp"
         android:orientation="horizontal">
 
         <Button
@@ -95,7 +97,7 @@
             android:layout_height="150px"
             android:layout_weight="1"
             android:background="@drawable/popup_button2"
-            android:text="확인"
+            android:text="저장"
             android:textColor="#FFFFFF"
             android:textSize="18sp"
             android:textStyle="bold" />
