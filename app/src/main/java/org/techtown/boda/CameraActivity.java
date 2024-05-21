@@ -355,6 +355,8 @@ public class CameraActivity extends AppCompatActivity {
         // Display the sentence
         TextView sentenceTextView = new TextView(this);
         sentenceTextView.setText(" " + sentence);
+        sentenceTextView.setTextSize(15);
+        sentenceTextView.setTypeface(null, Typeface.BOLD);
         wordLayout1.addView(sentenceTextView);
 
         // Add spacing after displaying the sentence
@@ -374,8 +376,8 @@ public class CameraActivity extends AppCompatActivity {
     private void displayWordAndMeaning(String word, String meaning) {
         // Display a word and its meaning
         TextView wordTextView = new TextView(this);
-        wordTextView.setText("단어: " + word);
-        wordTextView.setTextSize(18);
+        wordTextView.setText(" " + word);
+        wordTextView.setTextSize(15);
         wordTextView.setTypeface(null, Typeface.BOLD);
         wordLayout2.addView(wordTextView);
 
@@ -383,9 +385,9 @@ public class CameraActivity extends AppCompatActivity {
         addSpacing(wordLayout2);
 
         TextView meaningTextView = new TextView(this);
-        meaningTextView.setText("뜻: " + meaning);
-        wordTextView.setTextSize(18);
-        wordTextView.setTypeface(null, Typeface.BOLD);
+        meaningTextView.setText("   " + meaning);
+        meaningTextView.setTextSize(15);
+        meaningTextView.setTypeface(null, Typeface.BOLD);
         wordLayout3.addView(meaningTextView);
 
         // Add spacing after displaying the meaning
