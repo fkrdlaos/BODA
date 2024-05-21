@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -59,6 +60,31 @@ public class DictionaryActivity extends AppCompatActivity {
         // 각 도감 fragment 인스턴스 가져오기
         allWordsInstance = (AllWordsFragment) vpAdapter.getItem(0);
         imgWordsInstance = (ImgWordsFragment) vpAdapter.getItem(1);
+
+        // ViewPager의 페이지 전환 리스너 설정
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                // 무시
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                updateWordCount(position);
+                if (position == 0) {
+                    allWordsButton.setBackgroundResource(R.drawable.activity_dictionary_button1);
+                    imgWordsButton.setBackgroundResource(R.drawable.activity_dictionary_button2);
+                } else if (position == 1) {
+                    allWordsButton.setBackgroundResource(R.drawable.activity_dictionary_button2);
+                    imgWordsButton.setBackgroundResource(R.drawable.activity_dictionary_button1);
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+                // 무시
+            }
+        });
 
         // 홈 버튼 클릭 시 MainActivity로 이동
         homeButton.setOnClickListener(new View.OnClickListener() {
