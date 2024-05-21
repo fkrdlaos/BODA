@@ -139,7 +139,7 @@ public class CameraActivity extends AppCompatActivity {
         if (intent != null && intent.hasExtra("imagePath")) {
             String imagePath = intent.getStringExtra("imagePath");
             // Load image from file path with reduced size
-            Bitmap imageBitmap = decodeSampledBitmapFromFile(imagePath, 500, 500); // Adjust the width and height as needed
+            Bitmap imageBitmap = decodeSampledBitmapFromFile(imagePath, 200, 200); // Adjust the width and height as needed
             if (imageBitmap != null) {
                 // Display the image
                 displayImage(imageBitmap);

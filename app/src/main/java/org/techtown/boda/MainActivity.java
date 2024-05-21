@@ -306,6 +306,9 @@ public class MainActivity extends AppCompatActivity {
     private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            // 이미지 품질 및 해상도 설정
+            takePictureIntent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1); // 이미지 품질 설정
+            takePictureIntent.putExtra(MediaStore.EXTRA_SIZE_LIMIT, 1024 * 1024); // 이미지 해상도 설정
             startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
         } else {
             Toast.makeText(this, "카메라 앱을 찾을 수 없습니다.", Toast.LENGTH_SHORT).show();
