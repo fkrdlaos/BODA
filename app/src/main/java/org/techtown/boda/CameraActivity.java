@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.graphics.Typeface;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -374,6 +375,8 @@ public class CameraActivity extends AppCompatActivity {
         // Display a word and its meaning
         TextView wordTextView = new TextView(this);
         wordTextView.setText("단어: " + word);
+        wordTextView.setTextSize(18);
+        wordTextView.setTypeface(null, Typeface.BOLD);
         wordLayout2.addView(wordTextView);
 
         // Add spacing after displaying the word
@@ -381,6 +384,8 @@ public class CameraActivity extends AppCompatActivity {
 
         TextView meaningTextView = new TextView(this);
         meaningTextView.setText("뜻: " + meaning);
+        wordTextView.setTextSize(18);
+        wordTextView.setTypeface(null, Typeface.BOLD);
         wordLayout3.addView(meaningTextView);
 
         // Add spacing after displaying the meaning
