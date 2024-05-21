@@ -4,37 +4,50 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16px"
+    android:padding="16dp"
     tools:context=".CameraActivity">
-
-    <Button
-        android:id="@+id/button2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="16px"
-        android:background="#FF9800"
-        android:text="홈으로 가기" />
-
-    <Button
-        android:id="@+id/saveButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="16px"
-        android:background="#FF9800"
-        android:text="저장" />
 
     <ImageView
         android:id="@+id/imageViewNext"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="1200px"
         android:adjustViewBounds="true"
-        android:scaleType="centerCrop" />
+        android:scaleType="centerCrop"
+        android:layout_marginTop="60dp" />
+    <TextView
+        android:id="@+id/sen1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30px"
+        android:layout_marginTop="60px"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:textColor="#FF6F0F"
+        android:text="어떤 상황일까요?" />
+    <LinearLayout
+        android:id="@+id/wordLayout1"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_marginStart="30px"
+        android:orientation="vertical"
+        android:paddingTop="5dp" >
+    </LinearLayout>
+    <TextView
+        android:id="@+id/sen2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30px"
+        android:layout_marginTop="60px"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:textColor="#FF6F0F"
+        android:text="발견한 단어" />
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginStart="30px"
+        android:layout_weight="1"
         android:contentDescription="sv_123">
 
         <LinearLayout
@@ -42,10 +55,39 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingTop="16px" >
-
+            android:paddingTop="16dp" >
         </LinearLayout>
     </ScrollView>
 
-</LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="60dp"
+        android:orientation="horizontal">
 
+        <Button
+            android:id="@+id/button2"
+            android:layout_width="450px"
+            android:layout_height="150px"
+            android:layout_weight="1"
+            android:layout_marginEnd="30dp"
+            android:background="@drawable/popup_button1"
+            android:text="취소"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/saveButton"
+            android:layout_width="450px"
+            android:layout_height="150px"
+            android:layout_weight="1"
+            android:background="@drawable/popup_button2"
+            android:text="확인"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+</LinearLayout>
