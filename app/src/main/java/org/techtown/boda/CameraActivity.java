@@ -43,6 +43,7 @@ public class CameraActivity extends AppCompatActivity {
     private TextToSpeech textToSpeech;
     private LinearLayout wordLayout1;
     private LinearLayout wordLayout2;
+    private LinearLayout wordLayout3;
     private ProgressDialog progressDialog;
     private DatabaseReference mDatabase;
 
@@ -113,6 +114,7 @@ public class CameraActivity extends AppCompatActivity {
 
         wordLayout1 = findViewById(R.id.wordLayout1);
         wordLayout2 = findViewById(R.id.wordLayout2);
+        wordLayout3 = findViewById(R.id.wordLayout3);
 
         // Display progress dialog
         progressDialog = new ProgressDialog(this);
@@ -379,10 +381,10 @@ public class CameraActivity extends AppCompatActivity {
 
         TextView meaningTextView = new TextView(this);
         meaningTextView.setText("뜻: " + meaning);
-        wordLayout2.addView(meaningTextView);
+        wordLayout3.addView(meaningTextView);
 
         // Add spacing after displaying the meaning
-        addSpacing(wordLayout2);
+        addSpacing(wordLayout3);
 
         // Set click listener to speak the word
         wordTextView.setOnClickListener(new View.OnClickListener() {

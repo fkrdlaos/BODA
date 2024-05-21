@@ -10,10 +10,10 @@
     <ImageView
         android:id="@+id/imageViewNext"
         android:layout_width="match_parent"
-        android:layout_height="1200px"
+        android:layout_height="1100px"
         android:adjustViewBounds="true"
         android:scaleType="centerCrop"
-        android:layout_marginTop="60dp" />
+        android:layout_marginTop="40dp" />
     <TextView
         android:id="@+id/sen1"
         android:layout_width="wrap_content"
@@ -45,33 +45,44 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="99dp"
         android:layout_marginStart="30px"
         android:layout_weight="1"
         android:contentDescription="sv_123">
-
         <LinearLayout
-            android:id="@+id/wordLayout2"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingTop="16dp" >
+            android:layout_centerHorizontal="true"
+            android:orientation="horizontal">
+            <LinearLayout
+                android:id="@+id/wordLayout2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingTop="16dp"></LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/wordLayout3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingTop="16dp"></LinearLayout>
         </LinearLayout>
     </ScrollView>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="60dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="25dp"
         android:orientation="horizontal">
 
         <Button
             android:id="@+id/button2"
             android:layout_width="450px"
             android:layout_height="150px"
-            android:layout_weight="1"
             android:layout_marginEnd="30dp"
+            android:layout_weight="1"
             android:background="@drawable/popup_button1"
             android:text="취소"
             android:textColor="#FFFFFF"
