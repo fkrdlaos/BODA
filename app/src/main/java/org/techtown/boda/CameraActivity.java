@@ -385,7 +385,7 @@ public class CameraActivity extends AppCompatActivity {
         addSpacing(wordLayout2);
 
         TextView meaningTextView = new TextView(this);
-        meaningTextView.setText("   " + meaning);
+        meaningTextView.setText("          " + meaning);
         meaningTextView.setTextSize(15);
         meaningTextView.setTypeface(null, Typeface.BOLD);
         wordLayout3.addView(meaningTextView);
