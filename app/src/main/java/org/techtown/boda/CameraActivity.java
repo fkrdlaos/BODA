@@ -41,7 +41,8 @@ import java.util.Map;
 public class CameraActivity extends AppCompatActivity {
 
     private TextToSpeech textToSpeech;
-    private LinearLayout wordLayout;
+    private LinearLayout wordLayout1;
+    private LinearLayout wordLayout2;
     private ProgressDialog progressDialog;
     private DatabaseReference mDatabase;
 
@@ -110,7 +111,8 @@ public class CameraActivity extends AppCompatActivity {
             finish();
         }
 
-        wordLayout = findViewById(R.id.wordLayout);
+        wordLayout1 = findViewById(R.id.wordLayout1);
+        wordLayout2 = findViewById(R.id.wordLayout2);
 
         // Display progress dialog
         progressDialog = new ProgressDialog(this);
@@ -349,11 +351,11 @@ public class CameraActivity extends AppCompatActivity {
     private void displaySentence(String sentence) {
         // Display the sentence
         TextView sentenceTextView = new TextView(this);
-        sentenceTextView.setText("문장: " + sentence);
-        wordLayout.addView(sentenceTextView);
+        sentenceTextView.setText(" " + sentence);
+        wordLayout1.addView(sentenceTextView);
 
         // Add spacing after displaying the sentence
-        addSpacing(wordLayout);
+        addSpacing(wordLayout1);
 
         // Set click listener to speak the sentence
         sentenceTextView.setOnClickListener(new View.OnClickListener() {
@@ -370,17 +372,17 @@ public class CameraActivity extends AppCompatActivity {
         // Display a word and its meaning
         TextView wordTextView = new TextView(this);
         wordTextView.setText("단어: " + word);
-        wordLayout.addView(wordTextView);
+        wordLayout2.addView(wordTextView);
 
         // Add spacing after displaying the word
-        addSpacing(wordLayout);
+        addSpacing(wordLayout2);
 
         TextView meaningTextView = new TextView(this);
         meaningTextView.setText("뜻: " + meaning);
-        wordLayout.addView(meaningTextView);
+        wordLayout2.addView(meaningTextView);
 
         // Add spacing after displaying the meaning
-        addSpacing(wordLayout);
+        addSpacing(wordLayout2);
 
         // Set click listener to speak the word
         wordTextView.setOnClickListener(new View.OnClickListener() {
