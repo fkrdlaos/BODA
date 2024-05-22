@@ -180,6 +180,15 @@ public class SettingsActivity extends AppCompatActivity {
                             finish();
                         } else {
                             Toast.makeText(SettingsActivity.this, "계정 삭제에 실패했습니다.", Toast.LENGTH_SHORT).show();
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            editor.putBoolean("auto_login", false);
+                            editor.apply();
+                            // LoginActivity로 이동
+                            Intent intent = new Intent(SettingsActivity.this, LoginActivity.class);
+                            intent.putExtra("signOut", true); // 로그인 화면에서 다시 로그인할 수 있도록 플래그 설정
+                            startActivity(intent);
+                            finish();
+
                         }
                     });
                 } else {
@@ -234,7 +243,7 @@ public class SettingsActivity extends AppCompatActivity {
                 } else if (newNickname.isEmpty()) {
                     Toast.makeText(SettingsActivity.this, "새로운 닉네임을 입력하세요.", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(SettingsActivity.this, "닉네임은 한글 8자, 영어 15자 이하로 입력하세요.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(SettingsActivity.this, "닉네임은 한글 8자, 영어 15자, 혼합 8자 이하로 입력하세요.", Toast.LENGTH_SHORT).show();
                 }
             }
         });
