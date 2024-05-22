@@ -4,10 +4,11 @@
     <color name="white">#FFFFFFFF</color>
     <color name="correct_background">#00FF00</color> <!-- Green -->
     <color name="incorrect_background">#FF0000</color> <!-- Red -->
+    <color name="main_color">#FF6F0F</color>
 
 
     <!-- TF Branding Orange -->
-    <color name="bounding_box_color">#FF6F00</color>
+    <color name="bounding_box_color">#FF6F0F</color>
     <color name="toolbar_background">#EEEEEE</color>
     <color name="ic_launcher_background">#FFFFFF</color>
     <color name="bottom_sheet_background">#EEEEEE</color>

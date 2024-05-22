@@ -176,6 +176,7 @@ public class CameraActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 saveDataToFirebase();
+
             }
         });
     }
@@ -292,9 +293,14 @@ public class CameraActivity extends AppCompatActivity {
                                         try {
                                             updateExp(newWordsCount, userId);
                                             MissionManager.updateWordMission(CameraActivity.this, userId, newWordsCount);
-
+                                            new NoticeDialog.Builder(CameraActivity.this)
+                                                    .setTitle("경험치 획득")
+                                                    .setLeftMessage("새로운 단어 획득")
+                                                    .setRightMessage("+"+newWordsCount*10+"EXP")
+                                                    .build()
+                                                    .showDialog();
                                             // 저장된 단어의 수 메시지 표시
-                                            Toast.makeText(CameraActivity.this, "저장된 단어의 수: " + newWordsCount, Toast.LENGTH_SHORT).show();
+                                            //Toast.makeText(CameraActivity.this, "저장된 단어의 수: " + newWordsCount, Toast.LENGTH_SHORT).show();
                                         } catch (Exception e) {
                                             Log.i("update exp, mission", e.toString());
                                         }
@@ -319,9 +325,14 @@ public class CameraActivity extends AppCompatActivity {
                                     try {
                                         updateExp(newData.size(), userId);
                                         MissionManager.updateWordMission(CameraActivity.this, userId, newData.size());
-
+                                        new NoticeDialog.Builder(CameraActivity.this)
+                                                .setTitle("경험치 획득")
+                                                .setLeftMessage("새로운 단어 획득")
+                                                .setRightMessage("+"+newWordsCount*10+"EXP")
+                                                .build()
+                                                .showDialog();
                                         // 저장된 단어의 수 메시지 표시
-                                        Toast.makeText(CameraActivity.this, "저장된 단어의 수: " + newData.size(), Toast.LENGTH_SHORT).show();
+                                        //Toast.makeText(CameraActivity.this, "저장된 단어의 수: " + newData.size(), Toast.LENGTH_SHORT).show();
                                     } catch (Exception e) {
                                         Log.i("update Exp, mission", e.toString());
                                     }
