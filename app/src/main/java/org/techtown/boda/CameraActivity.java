@@ -296,6 +296,7 @@ public class CameraActivity extends AppCompatActivity {
                                             new NoticeDialog.Builder(CameraActivity.this)
                                                     .setTitle("경험치 획득")
                                                     .setLeftMessage("새로운 단어 획득")
+                                                    .setCenterMessage("")
                                                     .setRightMessage("+"+newWordsCount*10+"EXP")
                                                     .build()
                                                     .showDialog();
@@ -328,6 +329,7 @@ public class CameraActivity extends AppCompatActivity {
                                         new NoticeDialog.Builder(CameraActivity.this)
                                                 .setTitle("경험치 획득")
                                                 .setLeftMessage("새로운 단어 획득")
+                                                .setCenterMessage("")
                                                 .setRightMessage("+"+newWordsCount*10+"EXP")
                                                 .build()
                                                 .showDialog();

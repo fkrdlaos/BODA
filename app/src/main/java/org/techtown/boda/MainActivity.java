@@ -339,7 +339,25 @@ public class MainActivity extends AppCompatActivity {
         mDatabaseRef.child("lv").setValue(lv);
         mDatabaseRef.child("maxExp").setValue(maxExp);
 
-        Toast.makeText(this, "레벨 업!", Toast.LENGTH_SHORT).show();
+        if(lv%10==0 && lv<=30){
+            new NoticeDialog.Builder(MainActivity.this)
+                    .setTitle("Evolution")
+                    .setLeftMessage("")
+                    .setCenterMessage("!!!진화했어!!!")
+                    .setRightMessage("")
+                    .build()
+                    .showDialog();
+        }else {
+            new NoticeDialog.Builder(MainActivity.this)
+                    .setTitle("레벨업")
+                    .setLeftMessage("Lv. "+(lv-1))
+                    .setRightMessage("Lv. "+(lv))
+                    .setCenterImage(R.drawable.lv_up_img)  // 가운데 이미지 설정
+                    .build()
+                    .showDialog();
+        }
+
+        //Toast.makeText(this, "레벨 업!", Toast.LENGTH_SHORT).show();
     }
 
     // 다음 메서드는 이미지 파일을 저장하고 해당 파일 경로를 반환하는 데 사용됩니다.

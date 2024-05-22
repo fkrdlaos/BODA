@@ -14,6 +14,8 @@ public class NoticeDialog {
     private final Context context;
     private String title;
     private String leftMessage;
+    private String centerMessage;
+
     private String rightMessage;
     private Integer leftImageResId;
     private Integer centerImageResId;
@@ -23,6 +25,8 @@ public class NoticeDialog {
         this.context = builder.context;
         this.title = builder.title;
         this.leftMessage = builder.leftMessage;
+        this.centerMessage = builder.centerMessage;
+
         this.rightMessage = builder.rightMessage;
         this.leftImageResId = builder.leftImageResId;
         this.centerImageResId = builder.centerImageResId;
@@ -33,6 +37,8 @@ public class NoticeDialog {
         private final Context context;
         private String title;
         private String leftMessage;
+        private String centerMessage;
+
         private String rightMessage;
         private Integer leftImageResId;
         private Integer centerImageResId;
@@ -49,6 +55,10 @@ public class NoticeDialog {
 
         public Builder setLeftMessage(String leftMessage) {
             this.leftMessage = leftMessage;
+            return this;
+        }
+        public Builder setCenterMessage(String centerMessage) {
+            this.centerMessage = centerMessage;
             return this;
         }
 
@@ -88,6 +98,7 @@ public class NoticeDialog {
         // Set the title and messages
         TextView titleView = dialogView.findViewById(R.id.titleView);
         TextView leftMessageView = dialogView.findViewById(R.id.leftMessageView);
+        TextView centerMessageView = dialogView.findViewById(R.id.centerMessageView);
         TextView rightMessageView = dialogView.findViewById(R.id.rightMessageView);
         ImageView leftImageView = dialogView.findViewById(R.id.leftImageView);
         ImageView centerImageView = dialogView.findViewById(R.id.centerImageView);
@@ -99,6 +110,10 @@ public class NoticeDialog {
         if (leftMessage != null) {
             leftMessageView.setText(leftMessage);
             leftMessageView.setVisibility(View.VISIBLE);
+        }
+        if (centerMessage != null) {
+            centerMessageView.setText(centerMessage);
+            centerMessageView.setVisibility(View.VISIBLE);
         }
 
         if (rightMessage != null) {
