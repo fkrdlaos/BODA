@@ -115,7 +115,7 @@ public class RegisterActivity extends AppCompatActivity {
                 }
 
                 if (!isValidNickname(nickname)) {
-                    Toast.makeText(RegisterActivity.this, "닉네임은 한글 8자, 영어 15자 이하로 입력하세요.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(RegisterActivity.this, "닉네임은 한글 8자, 영어 15자, 혼합 8자 이하로 입력하세요.", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
