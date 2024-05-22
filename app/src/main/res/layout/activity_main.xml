@@ -75,7 +75,8 @@
         android:text="보상받기"
         android:textColor="#FFFFFF"
         android:textSize="12sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:visibility="invisible" />
 
     <Button
         android:id="@+id/quest2_button"
@@ -89,7 +90,8 @@
         android:text="보상받기"
         android:textColor="#FFFFFF"
         android:textSize="12sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:visibility="invisible" />
 
 
     <LinearLayout
@@ -237,7 +239,7 @@
         android:layout_alignTop="@+id/quest1"
         android:layout_marginStart="30px"
         android:layout_marginTop="30px"
-        app:srcCompat="@drawable/medal4" />
+        app:srcCompat="@drawable/medal1" />
 
     <ImageView
         android:id="@+id/quest2_medal"
