@@ -3,6 +3,7 @@ package org.techtown.boda
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import org.techtown.boda.databinding.ActivityCatchBinding
 
@@ -28,6 +29,7 @@ class CatchActivity : AppCompatActivity() {
                 .replace(R.id.fragment_container, fragment)
                 .commit()
         }
+
     }
 
     override fun onBackPressed() {

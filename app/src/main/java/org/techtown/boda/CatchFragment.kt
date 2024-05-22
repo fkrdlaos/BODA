@@ -90,6 +90,7 @@ class CatchFragment : Fragment(), ObjectDetectorHelper.DetectorListener {
             captureImageFlag = true
         }
 
+
     }
 
     private fun updateControlsUi() {
