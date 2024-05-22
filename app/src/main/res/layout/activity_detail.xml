@@ -4,127 +4,165 @@
     android:id="@+id/some_id"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/be"
+    android:background="#FFFFFF"
     android:clipToOutline="true"
     tools:context=".DetailActivity">
 
-    <!-- 스크롤 가능한 레이아웃을 감싸기 위한 ScrollView 추가 -->
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
 
-            <!-- 이미지를 보여줄 ImageView -->
-            <ImageView
-                android:id="@+id/photoImageView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16px"
+
+
+
+            <View
+                android:id="@+id/detailView"
+                android:layout_width="280dp"
+                android:layout_height="300dp"
                 android:layout_centerHorizontal="true"
-                android:adjustViewBounds="true"
-                android:scaleType="fitCenter"
-                android:visibility="gone" />
-
-
-            <LinearLayout
-                android:id="@+id/detailLinearLayout"
-                android:layout_width="300dp"
-                android:layout_height="250dp"
-                android:layout_below="@id/photoImageView"
-                android:layout_centerHorizontal="true"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="100dp"
-                android:layout_marginEnd="16dp"
+                android:layout_alignParentTop="true"
+                android:layout_marginTop="120dp"
                 android:background="@drawable/shape_drawable"
                 android:orientation="vertical"
-                android:padding="16dp">
+                android:padding="16dp"/>
+
+                <ImageView
+                    android:id="@+id/photoImageView"
+                    android:layout_width="120dp"
+                    android:layout_height="140dp"
+                    android:layout_alignTop="@+id/detailView"
+                    android:layout_alignStart="@+id/detailView"
+                    android:layout_marginStart="25dp"
+                    android:layout_marginTop="25dp"
+                    android:adjustViewBounds="true"
+                    android:scaleType="fitCenter" />
 
                 <TextView
                     android:id="@+id/wordTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginEnd="16dp"
-                    android:background="@drawable/shape_drawable"
-                    android:textSize="30sp" />
+                    android:layout_toEndOf="@+id/photoImageView"
+                    android:layout_alignTop="@+id/detailView"
+                    android:layout_alignEnd="@+id/detailView"
+                    android:layout_marginTop="40dp"
+                    android:gravity="center"
+                    android:textSize="30sp"
+                    android:textStyle="bold"/>
 
                 <TextView
                     android:id="@+id/meaningTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/wordTextView"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="16dp"
-                    android:text="뜻:"
-                    android:textSize="18sp" />
+                    android:layout_below="@+id/wordTextView"
+                    android:layout_toEndOf="@+id/photoImageView"
+                    android:layout_alignEnd="@id/detailView"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginStart="10dp"
+                    android:textSize="22sp" />
 
-                <TextView
-                    android:id="@+id/exampleTextView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/meaningTextView"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="16dp"
-                    android:text="예문:"
-                    android:textSize="18sp" />
 
-                <TextView
-                    android:id="@+id/dateTextView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/meaningTextView"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="16dp"
-                    android:text="날짜:"
-                    android:textSize="18sp" />
-            </LinearLayout>
+    <TextView
+        android:id="@+id/exampleTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/photoImageView"
+        android:layout_alignStart="@+id/detailView"
+        android:layout_alignBottom="@+id/detailView"
+        android:layout_alignEnd="@+id/detailView"
+        android:layout_marginTop="40dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="20dp"
+        android:layout_centerHorizontal="true"
+        android:gravity="center_horizontal"
+        android:textSize="18sp" />
 
-            <!-- 사진 추가하기 버튼 -->
-            <Button
-                android:id="@+id/addPhotoButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/detailLinearLayout"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="16dp"
-                android:text="사진 추가하기" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/exampleTextView"
+        android:layout_alignTop="@+id/exampleTextView"
+        android:layout_marginTop="-25dp"
+        android:layout_marginStart="5dp"
+        android:text="예문"
+        android:textStyle="bold"
+        android:textColor="#FF6F0F"
+        android:textSize="20sp" />
 
-            <!-- 사진 회전 버튼 -->
 
-            <LinearLayout
-                android:id="@+id/button_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/addPhotoButton"
-                android:layout_alignParentBottom="true"
-                android:orientation="horizontal">
+    <LinearLayout
+        android:id="@+id/layout2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/detailView"
+        android:layout_marginTop="40dp"
+        android:gravity="center"
+        android:orientation="horizontal">
 
-                <Button
-                    android:id="@+id/ttsButton"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="#FF9800"
-                    android:text="발음 듣기" />
+        <Button
+            android:id="@+id/ttsButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/detailView"
+            android:layout_marginRight="5dp"
+            android:layout_alignEnd="@+id/detailView"
+            android:background="@drawable/listen_pro"
+            android:contentDescription="sound_button"/>
 
-                <Button
-                    android:id="@+id/backButton"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="#FF9800"
-                    android:text="이전" />
-            </LinearLayout>
+        <Button
+            android:id="@+id/addPhotoButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_below="@id/detailView"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/add_pic"
+            android:contentDescription="photo_button"/>
 
-        </RelativeLayout>
-    </ScrollView>
+    </LinearLayout>
+
+
+    <Button
+        android:id="@+id/select"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:layout_alignStart="@+id/detailView"
+        android:layout_alignEnd="@+id/detailView"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/dateTextView"
+        android:layout_marginTop="40dp"
+        android:background="@drawable/activity_main_button1"
+        android:textColor="#FFFFFF"
+        android:textSize="18sp"
+        android:text="확인" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/layout2"
+        android:layout_alignStart="@+id/detailView"
+        android:layout_marginTop="40dp"
+        android:layout_marginLeft="10dp"
+        android:text="수집한 날짜"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/dateTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/layout2"
+        android:layout_alignEnd="@+id/detailView"
+        android:layout_marginTop="40dp"
+        android:layout_marginRight="10dp"
+        android:textSize="16sp" />
+
+    <Button
+        android:id="@+id/backButton"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="65dp"
+        android:layout_marginStart="20dp"
+        android:background="@drawable/back_gray"
+        android:contentDescription="back_button"/>
+
 </RelativeLayout>
+
+
