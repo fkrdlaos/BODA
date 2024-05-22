@@ -90,6 +90,9 @@ class CatchFragment : Fragment(), ObjectDetectorHelper.DetectorListener {
             captureImageFlag = true
         }
 
+        fragmentCatchBinding.backButton.setOnClickListener {
+            requireActivity().finish()
+        }
 
     }
 
