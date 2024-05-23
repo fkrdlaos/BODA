@@ -1,5 +1,6 @@
 package org.techtown.boda;
 
+import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -30,7 +31,7 @@ public class StudyResultActivity extends AppCompatActivity {
         double accuracy = (double) correctCount / totalWords * 100;
         int progress = (int) accuracy;
 
-        progressBar.setProgress(progress); // 프로그래스바에 정확도를 설정
+        animateProgressBar(progressBar, 0, progress); // 프로그래스바에 정확도를 애니메이션으로 설정
 
         String evaluation;
         if (accuracy >= 90) {
@@ -64,12 +65,19 @@ public class StudyResultActivity extends AppCompatActivity {
             }
         });
     }
-    public void onBackPressed() {
 
+    @Override
+    public void onBackPressed() {
         super.onBackPressed();
         // 뒤로가기 버튼을 눌렀을 때
         Intent intent = new Intent(StudyResultActivity.this, MainActivity.class);
         startActivity(intent);
         finish();
+    }
+
+    private void animateProgressBar(ProgressBar progressBar, int start, int end) {
+        ObjectAnimator animation = ObjectAnimator.ofInt(progressBar, "progress", start, end);
+        animation.setDuration(1000); // 애니메이션 지속 시간 (밀리초)
+        animation.start();
     }
 }

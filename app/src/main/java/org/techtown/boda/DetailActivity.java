@@ -44,15 +44,15 @@ public class DetailActivity extends AppCompatActivity {
             TextView exampleTextView = findViewById(R.id.exampleTextView);
             TextView dateTextView = findViewById(R.id.dateTextView);
 
-            wordTextView.setText("단어: " + word);
-            meaningTextView.setText("의미: " + meaning);
-            exampleTextView.setText("예문: " + example);
+            wordTextView.setText(word);
+            meaningTextView.setText(meaning);
+            exampleTextView.setText(example);
 
             // "date_time" 값을 올바른 형식으로 변환하여 TextView에 표시
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
             try {
                 Date date = sdf.parse(dateTime);
-                dateTextView.setText("날짜: " + sdf.format(date));
+                dateTextView.setText(sdf.format(date));
             } catch (ParseException e) {
                 e.printStackTrace();
                 Log.e("Date_Time_Debug", "Error parsing date: " + e.getMessage());

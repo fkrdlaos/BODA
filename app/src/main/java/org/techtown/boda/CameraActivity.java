@@ -330,7 +330,7 @@ public class CameraActivity extends AppCompatActivity {
                                                 .setTitle("경험치 획득")
                                                 .setLeftMessage("새로운 단어 획득")
                                                 .setCenterMessage("")
-                                                .setRightMessage("+"+newWordsCount*10+"EXP")
+                                                .setRightMessage("+"+newData.size()*10+"EXP")
                                                 .build()
                                                 .showDialog();
                                         // 저장된 단어의 수 메시지 표시

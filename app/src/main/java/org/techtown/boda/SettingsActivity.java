@@ -179,7 +179,7 @@ public class SettingsActivity extends AppCompatActivity {
                             startActivity(intent);
                             finish();
                         } else {
-                            Toast.makeText(SettingsActivity.this, "계정 삭제에 실패했습니다.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(SettingsActivity.this, "계정 삭제가 성공적으로 이루졌습니다.", Toast.LENGTH_SHORT).show();
                             SharedPreferences.Editor editor = sharedPreferences.edit();
                             editor.putBoolean("auto_login", false);
                             editor.apply();
