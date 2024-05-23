@@ -2,6 +2,7 @@ package org.techtown.boda;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.ContextWrapper;
 import android.content.DialogInterface;
@@ -67,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
 
     private int exp = 0;
     private int lv = 1;
-    private int maxExp = 0 ;
+    private int maxExp = 100;
 
     private TextView quest1ProgressText, quest2ProgressText;
     private ImageView quest1MedalImage, quest2MedalImage;
@@ -289,7 +290,7 @@ public class MainActivity extends AppCompatActivity {
                         exp = expValue;
                         Log.d("Firebase", "Current exp: " + exp);
                         // exp를 사용하여 필요한 작업을 수행합니다.
-                        if (exp >= maxExp && maxExp!=0) {
+                        if (exp >= maxExp) {
                             Log.i("LEVELUPUP", "STARTTTTTTTTTTTT");
                             levelUp();
                         }
@@ -451,75 +452,97 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == REQUEST_IMAGE_CAPTURE) {
-                // 카메라로 사진 찍은 경우
-                if (data != null && data.getExtras() != null) {
-                    // Display progress dialog
-                    progressDialog = new ProgressDialog(MainActivity.this);
-                    progressDialog.setMessage("사진에서 문장과 단어를 추출하고 있습니다...");
-                    progressDialog.setCancelable(false);
-                    progressDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "취소", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            if (progressDialog != null && progressDialog.isShowing()) {
-                                progressDialog.dismiss();
+            if (requestCode == REQUEST_IMAGE_CAPTURE || requestCode == REQUEST_PICK_IMAGE) {
+                // 로딩 화면 표시
+                final Dialog loadingDialog = new Dialog(this, android.R.style.Theme_Translucent_NoTitleBar);
+                loadingDialog.setContentView(R.layout.camera_loading);
+                loadingDialog.setCancelable(false);
+                loadingDialog.show();
+
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            if (requestCode == REQUEST_IMAGE_CAPTURE) {
+                                // 카메라로 사진 찍은 경우
+                                if (data != null && data.getExtras() != null) {
+                                    Bundle extras = data.getExtras();
+                                    Bitmap imageBitmap = (Bitmap) extras.get("data");
+                                    if (imageBitmap != null) {
+                                        // Save image to file and get file path
+                                        String imagePath = saveImageToFile(imageBitmap);
+
+                                        // Send image file path to HttpsTask class for caption extraction
+                                        new HttpsTask(MainActivity.this, imagePath).execute();
+                                    } else {
+                                        runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                loadingDialog.dismiss();
+                                                Toast.makeText(MainActivity.this, "카메라로부터 이미지를 가져오는 중 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
+                                    }
+                                } else {
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            loadingDialog.dismiss();
+                                            Toast.makeText(MainActivity.this, "카메라로부터 이미지를 가져오는 중 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+                                }
+                            } else if (requestCode == REQUEST_PICK_IMAGE) {
+                                // 갤러리에서 사진을 선택한 경우
+                                if (data != null && data.getData() != null) {
+                                    Uri selectedImageUri = data.getData();
+                                    try {
+                                        Bitmap imageBitmap = MediaStore.Images.Media.getBitmap(MainActivity.this.getContentResolver(), selectedImageUri);
+                                        if (imageBitmap != null) {
+                                            // Save image to file and get file path
+                                            String imagePath = saveImageToFile(imageBitmap);
+
+                                            // Send image file path to HttpsTask class for caption extraction
+                                            new HttpsTask(MainActivity.this, imagePath).execute();
+                                        } else {
+                                            runOnUiThread(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    loadingDialog.dismiss();
+                                                    Toast.makeText(MainActivity.this, "갤러리에서 이미지를 가져오는 중 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
+                                                }
+                                            });
+                                        }
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                        runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                loadingDialog.dismiss();
+                                                Toast.makeText(MainActivity.this, "갤러리에서 이미지를 가져오는 중 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
+                                    }
+                                } else {
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            loadingDialog.dismiss();
+                                            Toast.makeText(MainActivity.this, "갤러리에서 이미지를 가져오는 중 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+                                }
                             }
+                        } finally {
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    loadingDialog.dismiss();
+                                }
+                            });
                         }
-                    });
-                    progressDialog.show();
-
-                    Bundle extras = data.getExtras();
-                    Bitmap imageBitmap = (Bitmap) extras.get("data");
-                    if (imageBitmap != null) {
-                        // Save image to file and get file path
-                        String imagePath = saveImageToFile(imageBitmap);
-
-                        // Send image file path to HttpsTask class for caption extraction
-                        new HttpsTask(this, imagePath).execute();
-                    } else {
-                        progressDialog.dismiss();
-                        Toast.makeText(this, "카메라로부터 이미지를 가져오는 중 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
                     }
-                } else {
-                    Toast.makeText(this, "카메라로부터 이미지를 가져오는 중 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
-                }
-            } else if (requestCode == REQUEST_PICK_IMAGE) {
-                // 갤러리에서 사진을 선택한 경우
-                if (data != null && data.getData() != null) {
-                    // Display progress dialog
-                    progressDialog = new ProgressDialog(MainActivity.this);
-                    progressDialog.setMessage("사진에서 문장, 단어, 뜻을 추출하고 있습니다...");
-                    progressDialog.setCancelable(false);
-                    progressDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "취소", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            if (progressDialog != null && progressDialog.isShowing()) {
-                                progressDialog.dismiss();
-                            }
-                        }
-                    });
-                    progressDialog.show();
-
-                    Uri selectedImageUri = data.getData();
-                    try {
-                        Bitmap imageBitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImageUri);
-                        if (imageBitmap != null) {
-                            // Save image to file and get file path
-                            String imagePath = saveImageToFile(imageBitmap);
-
-                            // Send image file path to HttpsTask class for caption extraction
-                            new HttpsTask(this, imagePath).execute();
-                        } else {
-                            progressDialog.dismiss();
-                            Toast.makeText(this, "갤러리에서 이미지를 가져오는 중 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        Toast.makeText(this, "갤러리에서 이미지를 가져오는 중 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
-                    }
-                } else {
-                    Toast.makeText(this, "갤러리에서 이미지를 가져오는 중 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
-                }
+                }).start();
             }
         }
     }
