@@ -172,7 +172,7 @@
         android:id="@+id/backButton"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginTop="65dp"
+        android:layout_marginTop="45dp"
         android:layout_marginStart="20dp"
         android:background="@drawable/back_gray"
         android:contentDescription="back_button"/>
