@@ -1,6 +1,10 @@
 package org.techtown.boda;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ValueAnimator;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -8,12 +12,17 @@ import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.graphics.Typeface;
+import android.app.AlertDialog;
+import android.os.Handler;
+
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -293,15 +302,7 @@ public class CameraActivity extends AppCompatActivity {
                                         try {
                                             updateExp(newWordsCount, userId);
                                             MissionManager.updateWordMission(CameraActivity.this, userId, newWordsCount);
-                                            new NoticeDialog.Builder(CameraActivity.this)
-                                                    .setTitle("경험치 획득")
-                                                    .setLeftMessage("새로운 단어 획득")
-                                                    .setCenterMessage("")
-                                                    .setRightMessage("+"+newWordsCount*10+"EXP")
-                                                    .build()
-                                                    .showDialog();
-                                            // 저장된 단어의 수 메시지 표시
-                                            //Toast.makeText(CameraActivity.this, "저장된 단어의 수: " + newWordsCount, Toast.LENGTH_SHORT).show();
+                                            showAnimatedPopup("경험치 획득", "+" + newWordsCount * 10 + "EXP");
                                         } catch (Exception e) {
                                             Log.i("update exp, mission", e.toString());
                                         }
@@ -326,15 +327,7 @@ public class CameraActivity extends AppCompatActivity {
                                     try {
                                         updateExp(newData.size(), userId);
                                         MissionManager.updateWordMission(CameraActivity.this, userId, newData.size());
-                                        new NoticeDialog.Builder(CameraActivity.this)
-                                                .setTitle("경험치 획득")
-                                                .setLeftMessage("새로운 단어 획득")
-                                                .setCenterMessage("")
-                                                .setRightMessage("+"+newData.size()*10+"EXP")
-                                                .build()
-                                                .showDialog();
-                                        // 저장된 단어의 수 메시지 표시
-                                        //Toast.makeText(CameraActivity.this, "저장된 단어의 수: " + newData.size(), Toast.LENGTH_SHORT).show();
+                                        showAnimatedPopup("경험치 획득", "+" + newData.size() * 10 + "EXP");
                                     } catch (Exception e) {
                                         Log.i("update Exp, mission", e.toString());
                                     }
@@ -355,6 +348,76 @@ public class CameraActivity extends AppCompatActivity {
             }
         });
     }
+
+
+
+    private void showAnimatedPopup(String title, String message) {
+        // Create AlertDialog with custom animation
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setTitle(title)
+                .setMessage(message)
+                .setCancelable(true)
+                .create();
+
+        dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
+        dialog.show();
+
+        // Fade in animation
+        fadeIn(dialog);
+    }
+
+    private void fadeIn(final AlertDialog dialog) {
+        final Window window = dialog.getWindow();
+        if (window != null) {
+            final View view = window.getDecorView();
+            ValueAnimator animator = ValueAnimator.ofFloat(0f, 1f);
+            animator.setDuration(500); // Animation duration (milliseconds)
+            animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    float alpha = (float) animation.getAnimatedValue();
+                    view.setAlpha(alpha);
+                }
+            });
+            animator.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    // Start fade-out animation after 2 seconds
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            fadeOutAndDismiss(dialog);
+                        }
+                    }, 2000); // 2 seconds delay before fade-out animation starts
+                }
+            });
+            animator.start();
+        }
+    }
+
+    private void fadeOutAndDismiss(final AlertDialog dialog) {
+        final Window window = dialog.getWindow();
+        if (window != null) {
+            final View view = window.getDecorView();
+            ValueAnimator animator = ValueAnimator.ofFloat(1f, 0f);
+            animator.setDuration(500); // Animation duration (milliseconds)
+            animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    float alpha = (float) animation.getAnimatedValue();
+                    view.setAlpha(alpha);
+                }
+            });
+            animator.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    dialog.dismiss(); // Dismiss the dialog after fade-out animation
+                }
+            });
+            animator.start();
+        }
+    }
+
 
 
 
