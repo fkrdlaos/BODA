@@ -30,7 +30,6 @@ public class DetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
-        // Get WordData object from Intent
         WordData wordData = (WordData) getIntent().getSerializableExtra("wordData");
 
         if (wordData != null && wordData.getDateTime() != null) {
@@ -53,7 +52,7 @@ public class DetailActivity extends AppCompatActivity {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
             try {
                 Date date = sdf.parse(dateTime);
-                dateTextView.setText("날짜: " + sdf.format(date));
+                dateTextView.setText(sdf.format(date));
             } catch (ParseException e) {
                 e.printStackTrace();
                 Log.e("Date_Time_Debug", "Error parsing date: " + e.getMessage());
