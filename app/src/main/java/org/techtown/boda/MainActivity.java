@@ -289,7 +289,7 @@ public class MainActivity extends AppCompatActivity {
                         exp = expValue;
                         Log.d("Firebase", "Current exp: " + exp);
                         // exp를 사용하여 필요한 작업을 수행합니다.
-                        if (exp >= maxExp && maxEddxp!=0) {
+                        if (exp >= maxExp && maxExp!=0) {
                             Log.i("LEVELUPUP", "STARTTTTTTTTTTTT");
                             levelUp();
                         }
