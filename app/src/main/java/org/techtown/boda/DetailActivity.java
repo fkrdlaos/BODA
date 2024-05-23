@@ -38,6 +38,7 @@ public class DetailActivity extends AppCompatActivity {
             String meaning = wordData.getMeaning();
             String example = wordData.getExample();
             String dateTime = wordData.getDateTime();
+            int imageId = wordData.getImageResId();
 
             TextView wordTextView = findViewById(R.id.wordTextView);
             TextView meaningTextView = findViewById(R.id.meaningTextView);
@@ -75,9 +76,10 @@ public class DetailActivity extends AppCompatActivity {
             photoImageView = findViewById(R.id.photoImageView);
             Button addPhotoButton = findViewById(R.id.addPhotoButton);
 
-            if (photoImageView == null) {
+            if (imageId == 0) {
                 photoImageView.setVisibility(View.GONE);
             }else{
+                photoImageView.setImageResource(imageId);
                 addPhotoButton.setVisibility(View.VISIBLE);
             }
 
