@@ -3,6 +3,7 @@ package org.techtown.boda;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
@@ -12,8 +13,18 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -21,6 +32,8 @@ import java.util.Date;
 import java.util.Locale;
 
 public class DetailActivity extends AppCompatActivity {
+
+    private static final int REQUEST_READ_EXTERNAL_STORAGE = 1001;
     private TextToSpeech textToSpeech;
     private ImageView photoImageView;
     private static final int REQUEST_CAMERA_PERMISSION = 1001; // 카메라 권한 요청 코드
@@ -76,12 +89,23 @@ public class DetailActivity extends AppCompatActivity {
             photoImageView = findViewById(R.id.photoImageView);
             Button addPhotoButton = findViewById(R.id.addPhotoButton);
 
-            if (imageId == 0) {
-                photoImageView.setVisibility(View.GONE);
-            }else{
-                photoImageView.setImageResource(imageId);
-                addPhotoButton.setVisibility(View.VISIBLE);
+            FirebaseAuth mFirebaseAuth = FirebaseAuth.getInstance();
+            FirebaseUser user = mFirebaseAuth.getCurrentUser();
+            String userId = "";
+            if (user != null) {
+                userId = user.getUid();
             }
+            DatabaseReference wordDB = FirebaseDatabase.getInstance().getReference().child("BODA").child("UserAccount").child(userId).child("collection").child(word);
+
+            // 권한 확인 및 요청
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_READ_EXTERNAL_STORAGE);
+            } else {
+                // 권한이 이미 허용된 경우 이미지 표시
+                fetchImagePathAndDisplay(wordDB);
+            }
+
+
 
             // "사진 추가하기" 버튼 클릭 이벤트 처리
             if (LabelList.hasLabel(word)) {
@@ -146,7 +170,41 @@ public class DetailActivity extends AppCompatActivity {
             }
         });
     }
+    private void fetchImagePathAndDisplay(DatabaseReference wordDB) {
+        wordDB.child("path").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    String imagePath = dataSnapshot.getValue(String.class);
+                    if (imagePath != null) {
+                        // 이미지 경로가 있을 경우 이미지 표시
+                        Log.i("URI", imagePath);
 
+                        displayImage(imagePath);
+                    } else {
+                        Toast.makeText(DetailActivity.this, "이미지 경로가 없습니다.", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(DetailActivity.this, "데이터가 존재하지 않습니다.", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Toast.makeText(DetailActivity.this, "데이터베이스 오류: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void displayImage(String imagePath) {
+        try {
+            Uri imageUri = Uri.parse(imagePath);
+            photoImageView.setImageURI(imageUri);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(this, "이미지를 불러오지 못했습니다.", Toast.LENGTH_SHORT).show();
+        }
+    }
     @Override
     public void onBackPressed() {
         super.onBackPressed();
