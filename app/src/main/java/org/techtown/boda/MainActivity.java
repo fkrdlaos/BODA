@@ -338,21 +338,19 @@ public class MainActivity extends AppCompatActivity {
         mDatabaseRef.child("exp").setValue(exp);
         mDatabaseRef.child("lv").setValue(lv);
         mDatabaseRef.child("maxExp").setValue(maxExp);
-
-        if(lv%10==0 && lv<=30){
+        new NoticeDialog.Builder(MainActivity.this)
+                .setTitle("레벨업")
+                .setLeftMessage("Lv. "+(lv-1))
+                .setRightMessage("Lv. "+(lv))
+                .setCenterImage(R.drawable.lv_up_img)  // 가운데 이미지 설정
+                .build()
+                .showDialog();
+        if(lv%10==0 && lv<=50){
             new NoticeDialog.Builder(MainActivity.this)
                     .setTitle("Evolution")
                     .setLeftMessage("")
                     .setCenterMessage("!!!진화했어!!!")
                     .setRightMessage("")
-                    .build()
-                    .showDialog();
-        }else {
-            new NoticeDialog.Builder(MainActivity.this)
-                    .setTitle("레벨업")
-                    .setLeftMessage("Lv. "+(lv-1))
-                    .setRightMessage("Lv. "+(lv))
-                    .setCenterImage(R.drawable.lv_up_img)  // 가운데 이미지 설정
                     .build()
                     .showDialog();
         }
