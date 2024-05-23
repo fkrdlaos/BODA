@@ -23,6 +23,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.animation.ObjectAnimator;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -355,10 +356,13 @@ public class MainActivity extends AppCompatActivity {
     private void updateExpAndLevelViews() {
         textViewExp.setText("EXP " + exp);
         textViewLevel.setText("Lv. " + lv); // 레벨을 표시
-        // 레벨에 따라 프로필을 변경합니다.
         ProfileManager.updateProfileByLevel(lv, iv_profile);
 
-        progressBarExp.setProgress(exp);
+        // ProgressBar 애니메이션
+        ObjectAnimator progressAnimator = ObjectAnimator.ofInt(progressBarExp, "progress", progressBarExp.getProgress(), exp);
+        progressAnimator.setDuration(500); // 애니메이션 지속 시간 (밀리초 단위)
+        progressAnimator.start();
+
         progressBarExp.setMax(maxExp);
     }
 

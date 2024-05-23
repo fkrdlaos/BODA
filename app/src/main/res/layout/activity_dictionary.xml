@@ -68,8 +68,8 @@
             android:layout_marginRight="10dp"
             android:layout_weight="1"
             android:background="@drawable/activity_dictionary_button1"
-            android:text="전체"
-            android:textColor="#FFFFFF"/>
+            android:text="단어 도감"
+            android:textColor="#FFFFFF" />
 
         <Button
             android:id="@+id/button_img_words"
