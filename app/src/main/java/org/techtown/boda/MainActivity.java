@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
 
     private int exp = 0;
     private int lv = 1;
-    private int maxExp = 100;
+    private int maxExp = 0;
 
     private TextView quest1ProgressText, quest2ProgressText;
     private ImageView quest1MedalImage, quest2MedalImage;
@@ -291,7 +291,7 @@ public class MainActivity extends AppCompatActivity {
                         exp = expValue;
                         Log.d("Firebase", "Current exp: " + exp);
                         // exp를 사용하여 필요한 작업을 수행합니다.
-                        if (exp >= maxExp) {
+                        if (exp >= maxExp && maxExp!=0) {
                             Log.i("LEVELUPUP", "STARTTTTTTTTTTTT");
                             levelUp();
                         }
