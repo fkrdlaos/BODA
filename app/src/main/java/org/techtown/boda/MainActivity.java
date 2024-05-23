@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Process;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -60,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
     private Button btnSettings;
     private FirebaseAuth mFirebaseAuth;
     private DatabaseReference mDatabaseRef;
+    private RTDatabase instance;
 
     private ProgressDialog progressDialog;
 
@@ -90,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
             userId = user.getUid();
         }
         mDatabaseRef = FirebaseDatabase.getInstance().getReference().child("BODA").child("UserAccount").child(userId);
-        RTDatabase.getInstance(userId); // DB 최초 접근 시 경로 설정 용
+        instance = RTDatabase.getInstance(userId); // DB 최초 접근 시 경로 설정 용
         Quest1RewardManager.initFirebase();
         Quest2RewardManager.initFirebase();
 
@@ -239,9 +241,11 @@ public class MainActivity extends AppCompatActivity {
                         updateExpAndLevelViews();
 
                         // 경험치가 최대값에 도달했을 경우 레벨 업 및 경험치 초기화
-                        if (exp >= maxExp) {
-                            levelUp();
-                        }
+//                        if (exp >= maxExp) {
+//                            Log.i("LEVELUPUP", "STARTTTTTTTTTTTT");
+//
+//                            levelUp();
+//                        }
                     }
                 }
             }
@@ -272,6 +276,36 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mDatabaseRef.child("exp").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    Integer expValue = dataSnapshot.getValue(Integer.class);
+                    if (expValue != null) {
+                        exp = expValue;
+                        Log.d("Firebase", "Current exp: " + exp);
+                        // exp를 사용하여 필요한 작업을 수행합니다.
+                        if (exp >= maxExp) {
+                            Log.i("LEVELUPUP", "STARTTTTTTTTTTTT");
+                            levelUp();
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Toast.makeText(MainActivity.this, "데이터베이스 오류: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+        Log.i("ONSTARTTTTT", exp+"&"+maxExp);
+
+    }
+
 
     // 퀘스트 진행 상황을 UI에 업데이트합니다.
     private void updateQuestProgress(int wordsProgress, int challengesProgress) {
@@ -384,7 +418,6 @@ public class MainActivity extends AppCompatActivity {
                     .build()
                     .showDialog();
         }
-
     }
     // 다음 메서드는 이미지 파일을 저장하고 해당 파일 경로를 반환하는 데 사용됩니다.
 
