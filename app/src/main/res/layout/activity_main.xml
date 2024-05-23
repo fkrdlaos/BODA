@@ -76,7 +76,7 @@
         android:textColor="#FFFFFF"
         android:textSize="12sp"
         android:textStyle="bold"
-        android:visibility="invisible" />
+        android:visibility="gone" />
 
     <Button
         android:id="@+id/quest2_button"
@@ -91,7 +91,7 @@
         android:textColor="#FFFFFF"
         android:textSize="12sp"
         android:textStyle="bold"
-        android:visibility="invisible" />
+        android:visibility="gone" />
 
 
     <LinearLayout
@@ -199,7 +199,7 @@
         android:layout_alignEnd="@+id/profile_car"
         android:layout_marginTop="54px"
         android:layout_marginEnd="54px"
-        app:srcCompat="@drawable/p" />
+        app:srcCompat="@drawable/gen1_profile" />
 
     <ProgressBar
         android:id="@+id/progress_bar_exp"

@@ -1,12 +1,21 @@
 package org.techtown.boda;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ValueAnimator;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
 import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -30,7 +39,7 @@ public class StudyResultActivity extends AppCompatActivity {
         double accuracy = (double) correctCount / totalWords * 100;
         int progress = (int) accuracy;
 
-        progressBar.setProgress(progress); // 프로그래스바에 정확도를 설정
+        animateProgressBar(progressBar, 0, progress); // 프로그래스바에 정확도를 애니메이션으로 설정
 
         String evaluation;
         if (accuracy >= 90) {
@@ -54,6 +63,9 @@ public class StudyResultActivity extends AppCompatActivity {
         MissionManager.updateChallegeMission(StudyResultActivity.this, userId);
         ExpManager.updateExp(StudyResultActivity.this, userId, correctCount);
 
+        // 팝업창 표시
+        showAnimatedPopup("경험치 획득", "+" + correctCount * 10 + " EXP");
+
         // 홈으로 버튼 클릭 이벤트 처리
         btnHome.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -64,12 +76,72 @@ public class StudyResultActivity extends AppCompatActivity {
             }
         });
     }
-    public void onBackPressed() {
 
+    @Override
+    public void onBackPressed() {
         super.onBackPressed();
         // 뒤로가기 버튼을 눌렀을 때
         Intent intent = new Intent(StudyResultActivity.this, MainActivity.class);
         startActivity(intent);
         finish();
     }
+
+    // 프로그래스바 애니메이션 설정
+    private void animateProgressBar(ProgressBar progressBar, int start, int end) {
+        ValueAnimator animation = ValueAnimator.ofInt(start, end);
+        animation.setDuration(1000); // 애니메이션 지속 시간 (밀리초)
+        animation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                progressBar.setProgress((int) animation.getAnimatedValue());
+            }
+        });
+        animation.start();
+    }
+
+    // 팝업창 표시 메서드
+    private void showAnimatedPopup(String title, String message) {
+        // Create AlertDialog with custom animation
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setTitle(title)
+                .setMessage(message)
+                .setCancelable(true)
+                .create();
+
+        dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
+        dialog.show();
+
+        // Fade out animation after 2 seconds
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                fadeOutAndDismiss(dialog);
+            }
+        }, 2000); // 2 seconds delay before fade-out animation starts
+    }
+
+    // Fade out animation for dismissing the dialog
+    private void fadeOutAndDismiss(final AlertDialog dialog) {
+        final Window window = dialog.getWindow();
+        if (window != null) {
+            final View view = window.getDecorView();
+            ValueAnimator animator = ValueAnimator.ofFloat(1f, 0f);
+            animator.setDuration(500); // Animation duration (milliseconds)
+            animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    float alpha = (float) animation.getAnimatedValue();
+                    view.setAlpha(alpha);
+                }
+            });
+            animator.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    dialog.dismiss(); // Dismiss the dialog after fade-out animation
+                }
+            });
+            animator.start();
+        }
+    }
 }
+
