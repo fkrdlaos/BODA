@@ -30,6 +30,7 @@
             android:layout_below="@+id/imageView"
             android:layout_marginTop="15dp"
             android:text="발견한 단어 수 : "
+            android:font="@font/pretendardvariable"
             android:textColor="@android:color/white"
             android:textSize="18sp" />
 
@@ -43,6 +44,7 @@
             android:drawableRight="@drawable/activity_dictionary_searchicon"
             android:ems="10"
             android:hint="단어를 입력하세요"
+            android:font="@font/pretendardvariable"
             android:inputType="text"
             android:paddingStart="45px"
             android:textColor="#C9C9C9"

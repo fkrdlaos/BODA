@@ -165,6 +165,7 @@
             android:layout_gravity="center"
             android:layout_marginTop="0px"
             android:hint="정답을 입력하세요"
+            android:font="@font/pretendardvariable"
             android:textSize="18sp" />
 
         <Button
@@ -175,6 +176,7 @@
             android:layout_marginTop="500px"
             android:background="@drawable/activity_study_button"
             android:text="다음으로"
+            android:font="@font/pretendardvariable"
             android:textColor="#FFFFFF"
             android:textStyle="bold" />
     </LinearLayout>
