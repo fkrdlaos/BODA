@@ -143,12 +143,14 @@
         android:layout_alignTop="@+id/profile_car"
         android:layout_marginStart="15px"
         android:layout_marginTop="105px"
+        android:fontFamily="@font/pretendard"
         android:layout_toStartOf="@+id/iv_profile"
         android:layout_toEndOf="@+id/hi"
         android:text="Nickname"
         android:textColor="#FFFFFF"
         android:textSize="26sp"
         android:textStyle="bold"
+
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
@@ -163,6 +165,7 @@
         android:layout_marginLeft="54px"
         android:layout_marginTop="105px"
         android:text="Hi,"
+        android:fontFamily="@font/pretendard"
         android:textColor="#FFFFFF"
         android:textSize="26sp"
         android:textStyle="bold"
@@ -180,6 +183,7 @@
         android:layout_marginStart="54px"
         android:layout_marginBottom="285px"
         android:text="Welcome back!"
+        android:fontFamily="@font/pretendard"
         android:textColor="#FFFFFF"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -218,6 +222,7 @@
         android:layout_marginStart="60px"
         android:layout_marginTop="21px"
         android:textSize="14sp"
+        android:fontFamily="@font/pretendard"
         android:text="LV. 1" />
 
     <TextView
@@ -229,6 +234,7 @@
         android:layout_marginEnd="60px"
         android:layout_marginTop="21px"
         android:textSize="14sp"
+        android:fontFamily="@font/pretendard"
         android:text="EXP 0 / 100" />
 
     <ImageView
@@ -253,6 +259,8 @@
 
     <TextView
         android:id="@+id/quest1_detail"
+        android:textStyle="bold"
+        android:fontFamily="@font/pretendard"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/quest1"
@@ -279,6 +287,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/quest2"
+        android:textStyle="bold"
+        android:fontFamily="@font/pretendard"
         android:layout_toEndOf="@+id/quest2_medal"
         android:layout_marginStart="30px"
         android:layout_marginTop="60px"
@@ -305,6 +315,7 @@
         android:layout_alignStart="@+id/quest1"
         android:layout_marginStart="30px"
         android:layout_marginTop="75px"
+        android:fontFamily="@font/pretendard"
         android:text="퀘스트 진행도"
         android:textSize="20sp"
         android:textStyle="bold" />
