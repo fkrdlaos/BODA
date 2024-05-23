@@ -38,15 +38,16 @@ public class DetailActivity extends AppCompatActivity {
             String meaning = wordData.getMeaning();
             String example = wordData.getExample();
             String dateTime = wordData.getDateTime();
+            int imageId = wordData.getImageResId();
 
             TextView wordTextView = findViewById(R.id.wordTextView);
             TextView meaningTextView = findViewById(R.id.meaningTextView);
             TextView exampleTextView = findViewById(R.id.exampleTextView);
             TextView dateTextView = findViewById(R.id.dateTextView);
 
-            wordTextView.setText("단어: " + word);
-            meaningTextView.setText("의미: " + meaning);
-            exampleTextView.setText("예문: " + example);
+            wordTextView.setText(word);
+            meaningTextView.setText(meaning);
+            exampleTextView.setText(example);
 
             // "date_time" 값을 올바른 형식으로 변환하여 TextView에 표시
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
@@ -73,9 +74,16 @@ public class DetailActivity extends AppCompatActivity {
 
             // 이미지뷰 초기화
             photoImageView = findViewById(R.id.photoImageView);
+            Button addPhotoButton = findViewById(R.id.addPhotoButton);
+
+            if (imageId == 0) {
+                photoImageView.setVisibility(View.GONE);
+            }else{
+                photoImageView.setImageResource(imageId);
+                addPhotoButton.setVisibility(View.VISIBLE);
+            }
 
             // "사진 추가하기" 버튼 클릭 이벤트 처리
-            Button addPhotoButton = findViewById(R.id.addPhotoButton);
             if (LabelList.hasLabel(word)) {
                 addPhotoButton.setVisibility(View.VISIBLE);
                 addPhotoButton.setOnClickListener(new View.OnClickListener() {
