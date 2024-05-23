@@ -120,6 +120,18 @@ public class DetailActivity extends AppCompatActivity {
             }
         });
 
+        Button selectButton = findViewById(R.id.select);
+        selectButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // 이전 페이지로 이동
+                Intent intent = new Intent(DetailActivity.this, DictionaryActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+
+
         textToSpeech = new TextToSpeech(DetailActivity.this, new TextToSpeech.OnInitListener() {
             @Override
             public void onInit(int status) {
