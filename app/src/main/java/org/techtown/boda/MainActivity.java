@@ -12,7 +12,9 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Process;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -20,7 +22,6 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.animation.ObjectAnimator;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -60,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
     private Button btnSettings;
     private FirebaseAuth mFirebaseAuth;
     private DatabaseReference mDatabaseRef;
+    private RTDatabase instance;
 
     private ProgressDialog progressDialog;
 
@@ -90,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
             userId = user.getUid();
         }
         mDatabaseRef = FirebaseDatabase.getInstance().getReference().child("BODA").child("UserAccount").child(userId);
-        RTDatabase.getInstance(userId); // DB 최초 접근 시 경로 설정 용
+        instance = RTDatabase.getInstance(userId); // DB 최초 접근 시 경로 설정 용
         Quest1RewardManager.initFirebase();
         Quest2RewardManager.initFirebase();
 
@@ -239,9 +241,11 @@ public class MainActivity extends AppCompatActivity {
                         updateExpAndLevelViews();
 
                         // 경험치가 최대값에 도달했을 경우 레벨 업 및 경험치 초기화
-                        if (exp >= maxExp) {
-                            levelUp();
-                        }
+//                        if (exp >= maxExp) {
+//                            Log.i("LEVELUPUP", "STARTTTTTTTTTTTT");
+//
+//                            levelUp();
+//                        }
                     }
                 }
             }
@@ -272,6 +276,36 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mDatabaseRef.child("exp").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    Integer expValue = dataSnapshot.getValue(Integer.class);
+                    if (expValue != null) {
+                        exp = expValue;
+                        Log.d("Firebase", "Current exp: " + exp);
+                        // exp를 사용하여 필요한 작업을 수행합니다.
+                        if (exp >= maxExp) {
+                            Log.i("LEVELUPUP", "STARTTTTTTTTTTTT");
+                            levelUp();
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Toast.makeText(MainActivity.this, "데이터베이스 오류: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+        Log.i("ONSTARTTTTT", exp+"&"+maxExp);
+
+    }
+
 
     // 퀘스트 진행 상황을 UI에 업데이트합니다.
     private void updateQuestProgress(int wordsProgress, int challengesProgress) {
@@ -320,13 +354,10 @@ public class MainActivity extends AppCompatActivity {
     private void updateExpAndLevelViews() {
         textViewExp.setText("EXP " + exp);
         textViewLevel.setText("Lv. " + lv); // 레벨을 표시
+        // 레벨에 따라 프로필을 변경합니다.
         ProfileManager.updateProfileByLevel(lv, iv_profile);
 
-        // ProgressBar 애니메이션
-        ObjectAnimator progressAnimator = ObjectAnimator.ofInt(progressBarExp, "progress", progressBarExp.getProgress(), exp);
-        progressAnimator.setDuration(500); // 애니메이션 지속 시간 (밀리초 단위)
-        progressAnimator.start();
-
+        progressBarExp.setProgress(exp);
         progressBarExp.setMax(maxExp);
     }
 
@@ -342,28 +373,52 @@ public class MainActivity extends AppCompatActivity {
         mDatabaseRef.child("exp").setValue(exp);
         mDatabaseRef.child("lv").setValue(lv);
         mDatabaseRef.child("maxExp").setValue(maxExp);
+        new NoticeDialog.Builder(MainActivity.this)
+                .setTitle("레벨업")
+                .setLeftMessage("Lv. "+(lv-1))
+                .setRightMessage("Lv. "+(lv))
+                .setCenterImage(R.drawable.lv_up_img)  // 가운데 이미지 설정
+                .build()
+                .showDialog();
 
+        evolution(lv);
+
+        //Toast.makeText(this, "레벨 업!", Toast.LENGTH_SHORT).show();
+    }
+
+    private void evolution(int lv){
         if(lv%10==0 && lv<=50){
+            int gen = lv/10;
+            int prev_profile;
+            int current_profile;
+            switch (gen){
+                case 1:
+                    prev_profile = R.drawable.gen1_profile;
+                    current_profile = R.drawable.gen2_profile;
+                case 2:
+                    prev_profile = R.drawable.gen2_profile;
+                    current_profile = R.drawable.gen3_profile;
+                case 3:
+                    prev_profile = R.drawable.gen3_profile;
+                    current_profile = R.drawable.gen4_profile;
+                case 4:
+                    prev_profile = R.drawable.gen4_profile;
+                    current_profile = R.drawable.gen5_profile;
+                    break;
+                default:
+                    throw new IllegalStateException("Unexpected value: " + gen);
+            }
             new NoticeDialog.Builder(MainActivity.this)
                     .setTitle("Evolution")
                     .setLeftMessage("")
                     .setCenterMessage("!!!진화했어!!!")
                     .setRightMessage("")
-                    .build()
-                    .showDialog();
-        }else {
-            new NoticeDialog.Builder(MainActivity.this)
-                    .setTitle("레벨업")
-                    .setLeftMessage("Lv. "+(lv-1))
-                    .setRightMessage("Lv. "+(lv))
-                    .setCenterImage(R.drawable.lv_up_img)  // 가운데 이미지 설정
+                    .setLeftImage(prev_profile)
+                    .setRightImage(current_profile)
                     .build()
                     .showDialog();
         }
-
-        //Toast.makeText(this, "레벨 업!", Toast.LENGTH_SHORT).show();
     }
-
     // 다음 메서드는 이미지 파일을 저장하고 해당 파일 경로를 반환하는 데 사용됩니다.
 
     private String saveImageToFile(Bitmap imageBitmap) {
@@ -484,6 +539,6 @@ public class MainActivity extends AppCompatActivity {
         // 현재 액티비티와 연관된 모든 액티비티를 종료하고 앱을 종료합니다.
         finishAffinity();
         // 프로세스를 완전히 종료하여 백그라운드에서 동작하지 않도록 합니다.
-        android.os.Process.killProcess(android.os.Process.myPid());
+        Process.killProcess(Process.myPid());
     }
 }
