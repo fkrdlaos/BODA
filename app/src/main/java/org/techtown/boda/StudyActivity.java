@@ -212,10 +212,10 @@ public class StudyActivity extends AppCompatActivity {
             if (textToSpeech != null) {
                 textToSpeech.speak(word, TextToSpeech.QUEUE_FLUSH, null);
             }
+            updateProgress();
         } else {
             showResult();
         }
-        updateProgress();
     }
 
     private void setRandomIndex() {
@@ -243,8 +243,7 @@ public class StudyActivity extends AppCompatActivity {
         int totalWords = Math.min(words.size(), maxProgress);
         String progressText = (currentIndex + 1) + "/" + totalWords;
         textViewCon.setText(progressText);
-
-        int progress = currentIndex + 1;
+        int progress = Math.min(currentIndex + 1, maxProgress);
         progressBar.setProgress(progress);
     }
 
