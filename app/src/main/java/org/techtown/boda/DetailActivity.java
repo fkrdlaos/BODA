@@ -73,9 +73,15 @@ public class DetailActivity extends AppCompatActivity {
 
             // 이미지뷰 초기화
             photoImageView = findViewById(R.id.photoImageView);
+            Button addPhotoButton = findViewById(R.id.addPhotoButton);
+
+            if (photoImageView == null) {
+                photoImageView.setVisibility(View.GONE);
+            }else{
+                addPhotoButton.setVisibility(View.VISIBLE);
+            }
 
             // "사진 추가하기" 버튼 클릭 이벤트 처리
-            Button addPhotoButton = findViewById(R.id.addPhotoButton);
             if (LabelList.hasLabel(word)) {
                 addPhotoButton.setVisibility(View.VISIBLE);
                 addPhotoButton.setOnClickListener(new View.OnClickListener() {
