@@ -199,7 +199,7 @@
         android:layout_alignEnd="@+id/profile_car"
         android:layout_marginTop="54px"
         android:layout_marginEnd="54px"
-        app:srcCompat="@drawable/gen1_profile"/>
+        app:srcCompat="@drawable/gen1_profile" />
 
     <ProgressBar
         android:id="@+id/progress_bar_exp"
@@ -222,7 +222,6 @@
         android:layout_marginStart="60px"
         android:layout_marginTop="21px"
         android:textSize="14sp"
-        android:textColor="#000000"
         android:fontFamily="@font/pretendard"
         android:text="LV. 1" />
 
@@ -235,7 +234,6 @@
         android:layout_marginEnd="60px"
         android:layout_marginTop="21px"
         android:textSize="14sp"
-        android:textColor="#000000"
         android:fontFamily="@font/pretendard"
         android:text="EXP 0 / 100" />
 
@@ -270,7 +268,6 @@
         android:layout_marginStart="30px"
         android:layout_marginTop="60px"
         android:textSize="14sp"
-        android:textColor="#000000"
         android:text="새로운 단어 발견하기" />
 
     <TextView
@@ -282,7 +279,6 @@
         android:layout_marginTop="60px"
         android:layout_toEndOf="@+id/quest1_detail"
         android:text="(0/100)"
-        android:textColor="#000000"
         android:textSize="14sp"
         android:textStyle="bold" />
 
@@ -297,7 +293,6 @@
         android:layout_marginStart="30px"
         android:layout_marginTop="60px"
         android:textSize="14sp"
-        android:textColor="#000000"
         android:text="단어 학습 도전하기" />
 
     <TextView
@@ -310,7 +305,6 @@
         android:layout_toEndOf="@+id/quest2_detail"
         android:text="(0/100)"
         android:textSize="14sp"
-        android:textColor="#000000"
         android:textStyle="bold" />
 
     <TextView
@@ -322,7 +316,6 @@
         android:layout_marginStart="30px"
         android:layout_marginTop="75px"
         android:fontFamily="@font/pretendard"
-        android:textColor="#000000"
         android:text="퀘스트 진행도"
         android:textSize="20sp"
         android:textStyle="bold" />

@@ -32,6 +32,7 @@ public class ImgWordsFragment extends Fragment {
             @Override
             public void onItemClick(int position) {
                 WordData clickedWord = wordDataList.get(position);
+
                 Intent intent = new Intent(getActivity(), DetailActivity.class);
                 intent.putExtra("wordData", clickedWord);
                 startActivity(intent);

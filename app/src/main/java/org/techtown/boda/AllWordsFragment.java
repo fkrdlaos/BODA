@@ -39,6 +39,7 @@ public class AllWordsFragment extends Fragment {
             WordData clickedWord = wordDataList.get(position);
             Intent intent = new Intent(getActivity(), DetailActivity.class);
             intent.putExtra("wordData", clickedWord);
+
             startActivity(intent);
         });
         recyclerView.setAdapter(adapter);
