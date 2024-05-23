@@ -12,6 +12,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Process;
 import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
@@ -345,19 +346,46 @@ public class MainActivity extends AppCompatActivity {
                 .setCenterImage(R.drawable.lv_up_img)  // 가운데 이미지 설정
                 .build()
                 .showDialog();
+
+        evolution(lv);
+
+        //Toast.makeText(this, "레벨 업!", Toast.LENGTH_SHORT).show();
+    }
+
+    private void evolution(int lv){
         if(lv%10==0 && lv<=50){
+            int gen = lv/10;
+            int prev_profile;
+            int current_profile;
+            switch (gen){
+                case 1:
+                    prev_profile = R.drawable.gen1_profile;
+                    current_profile = R.drawable.gen2_profile;
+                case 2:
+                    prev_profile = R.drawable.gen2_profile;
+                    current_profile = R.drawable.gen3_profile;
+                case 3:
+                    prev_profile = R.drawable.gen3_profile;
+                    current_profile = R.drawable.gen4_profile;
+                case 4:
+                    prev_profile = R.drawable.gen4_profile;
+                    current_profile = R.drawable.gen5_profile;
+                    break;
+                default:
+                    throw new IllegalStateException("Unexpected value: " + gen);
+            }
             new NoticeDialog.Builder(MainActivity.this)
                     .setTitle("Evolution")
                     .setLeftMessage("")
                     .setCenterMessage("!!!진화했어!!!")
                     .setRightMessage("")
+                    .setLeftImage(prev_profile)
+                    .setRightImage(current_profile)
                     .build()
                     .showDialog();
         }
 
-        //Toast.makeText(this, "레벨 업!", Toast.LENGTH_SHORT).show();
     }
-
     // 다음 메서드는 이미지 파일을 저장하고 해당 파일 경로를 반환하는 데 사용됩니다.
 
     private String saveImageToFile(Bitmap imageBitmap) {
@@ -478,6 +506,6 @@ public class MainActivity extends AppCompatActivity {
         // 현재 액티비티와 연관된 모든 액티비티를 종료하고 앱을 종료합니다.
         finishAffinity();
         // 프로세스를 완전히 종료하여 백그라운드에서 동작하지 않도록 합니다.
-        android.os.Process.killProcess(android.os.Process.myPid());
+        Process.killProcess(Process.myPid());
     }
 }
