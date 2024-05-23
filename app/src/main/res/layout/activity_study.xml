@@ -81,7 +81,7 @@
         android:layout_below="@+id/btn_listen"
         android:layout_marginTop="210px"
         android:orientation="vertical"
-        android:visibility="invisible">
+        android:visibility="gone">
 
         <GridLayout
             android:layout_width="match_parent"

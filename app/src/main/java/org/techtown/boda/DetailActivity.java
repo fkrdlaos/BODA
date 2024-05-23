@@ -45,9 +45,9 @@ public class DetailActivity extends AppCompatActivity {
             TextView exampleTextView = findViewById(R.id.exampleTextView);
             TextView dateTextView = findViewById(R.id.dateTextView);
 
-            wordTextView.setText(word);
-            meaningTextView.setText(meaning);
-            exampleTextView.setText(example);
+            wordTextView.setText("단어: " + word);
+            meaningTextView.setText("의미: " + meaning);
+            exampleTextView.setText("예문: " + example);
 
             // "date_time" 값을 올바른 형식으로 변환하여 TextView에 표시
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
