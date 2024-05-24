@@ -3,7 +3,8 @@ package org.techtown.boda;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.net.Uri;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
@@ -26,12 +27,13 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-public class DetailActivity extends AppCompatActivity {
+public class DetailActivity extends BaseActivity {
 
     private static final int REQUEST_READ_EXTERNAL_STORAGE = 1001;
     private TextToSpeech textToSpeech;
@@ -88,6 +90,8 @@ public class DetailActivity extends AppCompatActivity {
             // 이미지뷰 초기화
             photoImageView = findViewById(R.id.photoImageView);
             Button addPhotoButton = findViewById(R.id.addPhotoButton);
+            photoImageView.setVisibility(View.GONE);
+
 
             FirebaseAuth mFirebaseAuth = FirebaseAuth.getInstance();
             FirebaseUser user = mFirebaseAuth.getCurrentUser();
@@ -97,12 +101,15 @@ public class DetailActivity extends AppCompatActivity {
             }
             DatabaseReference wordDB = FirebaseDatabase.getInstance().getReference().child("BODA").child("UserAccount").child(userId).child("collection").child(word);
 
+
             // 권한 확인 및 요청
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_READ_EXTERNAL_STORAGE);
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_MEDIA_IMAGES}, REQUEST_READ_EXTERNAL_STORAGE);
             } else {
                 // 권한이 이미 허용된 경우 이미지 표시
-                fetchImagePathAndDisplay(wordDB);
+                if(LabelList.hasLabel(word)){
+                    fetchImagePathAndDisplay(wordDB);
+                }
             }
 
 
@@ -178,8 +185,8 @@ public class DetailActivity extends AppCompatActivity {
                     String imagePath = dataSnapshot.getValue(String.class);
                     if (imagePath != null) {
                         // 이미지 경로가 있을 경우 이미지 표시
+                        photoImageView.setVisibility(View.VISIBLE);
                         Log.i("URI", imagePath);
-
                         displayImage(imagePath);
                     } else {
                         Toast.makeText(DetailActivity.this, "이미지 경로가 없습니다.", Toast.LENGTH_SHORT).show();
@@ -197,9 +204,11 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     private void displayImage(String imagePath) {
+        File files = new File(imagePath);
         try {
-            Uri imageUri = Uri.parse(imagePath);
-            photoImageView.setImageURI(imageUri);
+            //Uri imageUri = Uri.parse(imagePath);
+            Bitmap myBitmap = BitmapFactory.decodeFile(files.getAbsolutePath());
+            photoImageView.setImageBitmap(myBitmap);
         } catch (Exception e) {
             e.printStackTrace();
             Toast.makeText(this, "이미지를 불러오지 못했습니다.", Toast.LENGTH_SHORT).show();

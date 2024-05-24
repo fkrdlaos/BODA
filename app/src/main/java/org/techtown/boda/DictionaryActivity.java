@@ -27,17 +27,15 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DictionaryActivity extends AppCompatActivity {
+// DictionaryActivity
+public class DictionaryActivity extends BaseActivity {
 
     private DatabaseReference databaseRef;
-
     private AllWordsFragment allWordsInstance;
     private ImgWordsFragment imgWordsInstance;
-
-    private TextView wordCountTextView; // 발견한 단어 갯수를 표시할 TextView
-
-    private int allWordsCount = 0; // 전체 단어 개수
-    private int imgWordsCount = 0; // 그림 도감 단어 개수
+    private TextView wordCountTextView;
+    private int allWordsCount = 0;
+    private int imgWordsCount = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,24 +47,19 @@ public class DictionaryActivity extends AppCompatActivity {
         Button homeButton = findViewById(R.id.button3);
         Button allWordsButton = findViewById(R.id.button_all_words);
         Button imgWordsButton = findViewById(R.id.button_img_words);
-        wordCountTextView = findViewById(R.id.wordCount); // TextView 연결
+        wordCountTextView = findViewById(R.id.wordCount);
 
-        // Adapter 설정
         VPAdapter vpAdapter = new VPAdapter(getSupportFragmentManager(), FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
         vpAdapter.addFragment(new AllWordsFragment(), "전체");
         vpAdapter.addFragment(new ImgWordsFragment(), "그림 도감");
         viewPager.setAdapter(vpAdapter);
 
-        // 각 도감 fragment 인스턴스 가져오기
         allWordsInstance = (AllWordsFragment) vpAdapter.getItem(0);
         imgWordsInstance = (ImgWordsFragment) vpAdapter.getItem(1);
 
-        // ViewPager의 페이지 전환 리스너 설정
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                // 무시
-            }
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
 
             @Override
             public void onPageSelected(int position) {
@@ -81,12 +74,9 @@ public class DictionaryActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onPageScrollStateChanged(int state) {
-                // 무시
-            }
+            public void onPageScrollStateChanged(int state) {}
         });
 
-        // 홈 버튼 클릭 시 MainActivity로 이동
         homeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -96,13 +86,11 @@ public class DictionaryActivity extends AppCompatActivity {
             }
         });
 
-        // 각 버튼 클릭 시 해당 fragment로 전환
         allWordsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 viewPager.setCurrentItem(0);
                 updateWordCount(0);
-                // 버튼 배경 변경
                 allWordsButton.setBackgroundResource(R.drawable.activity_dictionary_button1);
                 imgWordsButton.setBackgroundResource(R.drawable.activity_dictionary_button2);
             }
@@ -113,7 +101,6 @@ public class DictionaryActivity extends AppCompatActivity {
             public void onClick(View v) {
                 viewPager.setCurrentItem(1);
                 updateWordCount(1);
-                // 버튼 배경 변경
                 allWordsButton.setBackgroundResource(R.drawable.activity_dictionary_button2);
                 imgWordsButton.setBackgroundResource(R.drawable.activity_dictionary_button1);
             }
@@ -137,16 +124,17 @@ public class DictionaryActivity extends AppCompatActivity {
                         WordData wordData = new WordData(word, meaning, sentence, dateTime);
                         wordDataList.add(wordData);
                     }
+
+                    // LabelList에 해당하는 단어들과 해당하지 않는 단어들을 필터링하여 전달
                     List<WordData> imgWordList = getImgWords(wordDataList);
+                    List<WordData> nonImgWordList = getNonImgWords(wordDataList);
 
-                    allWordsCount = wordDataList.size(); // 전체 단어 개수 설정
-                    imgWordsCount = imgWordList.size(); // 그림 도감 단어 개수 설정
+                    allWordsCount = nonImgWordList.size();
+                    imgWordsCount = imgWordList.size();
 
-                    // fragment1에 데이터 전달
-                    allWordsInstance.updateData(wordDataList);
-                    imgWordsInstance.updateData(imgWordList);
+                    allWordsInstance.updateData(nonImgWordList); // LabelList에 해당하지 않는 단어 전달
+                    imgWordsInstance.updateData(imgWordList); // LabelList에 해당하는 단어 전달
 
-                    // 현재 선택된 탭에 따라 단어 개수를 TextView에 설정
                     int currentTabPosition = viewPager.getCurrentItem();
                     updateWordCount(currentTabPosition);
                 }
@@ -158,7 +146,6 @@ public class DictionaryActivity extends AppCompatActivity {
             });
         }
 
-        // 검색 기능 구현
         searchBar.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
@@ -175,7 +162,6 @@ public class DictionaryActivity extends AppCompatActivity {
         });
     }
 
-    // 각 탭에 따른 단어 개수를 업데이트하는 메서드
     private void updateWordCount(int tabPosition) {
         if (tabPosition == 0) {
             wordCountTextView.setText("발견한 단어 개수 : " + allWordsCount);
@@ -194,10 +180,19 @@ public class DictionaryActivity extends AppCompatActivity {
         return imgWords;
     }
 
+    private List<WordData> getNonImgWords(List<WordData> wordList) { // 새로 추가된 메서드
+        List<WordData> nonImgWords = new ArrayList<>();
+        for (WordData word : wordList) {
+            if (!LabelList.hasLabel(word.getWord())) {
+                nonImgWords.add(word);
+            }
+        }
+        return nonImgWords;
+    }
+
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        // 뒤로가기 버튼을 눌렀을 때 DictionaryActivity로 이동
         Intent intent = new Intent(DictionaryActivity.this, MainActivity.class);
         startActivity(intent);
         finish();

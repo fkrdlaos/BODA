@@ -2,6 +2,7 @@ package org.techtown.boda;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.ContextWrapper;
 import android.content.DialogInterface;
@@ -9,6 +10,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkCapabilities;
+import android.net.NetworkRequest;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -22,6 +27,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.animation.ObjectAnimator;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -44,7 +50,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
 
     private static final int REQUEST_IMAGE_CAPTURE = 101;
     private static final int REQUEST_PICK_IMAGE = 102;
@@ -65,9 +71,12 @@ public class MainActivity extends AppCompatActivity {
 
     private ProgressDialog progressDialog;
 
+    private ConnectivityManager connectivityManager;
+    private ConnectivityManager.NetworkCallback networkCallback;
+
     private int exp = 0;
     private int lv = 1;
-    private int maxExp = 0 ;
+    private int maxExp = 0;
 
     private TextView quest1ProgressText, quest2ProgressText;
     private ImageView quest1MedalImage, quest2MedalImage;
@@ -83,6 +92,23 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
+        // 네트워크 상태 감지 설정
+        connectivityManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
+        networkCallback = new ConnectivityManager.NetworkCallback() {
+            @Override
+            public void onLost(Network network) {
+                runOnUiThread(() -> showNetworkDialog());
+            }
+        };
+
+        NetworkRequest networkRequest = new NetworkRequest.Builder()
+                .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+                .build();
+
+        connectivityManager.registerNetworkCallback(networkRequest, networkCallback);
+
 
         // Initialize Firebase Auth
         mFirebaseAuth = FirebaseAuth.getInstance();
@@ -354,10 +380,13 @@ public class MainActivity extends AppCompatActivity {
     private void updateExpAndLevelViews() {
         textViewExp.setText("EXP " + exp);
         textViewLevel.setText("Lv. " + lv); // 레벨을 표시
-        // 레벨에 따라 프로필을 변경합니다.
         ProfileManager.updateProfileByLevel(lv, iv_profile);
 
-        progressBarExp.setProgress(exp);
+        // ProgressBar 애니메이션
+        ObjectAnimator progressAnimator = ObjectAnimator.ofInt(progressBarExp, "progress", progressBarExp.getProgress(), exp);
+        progressAnimator.setDuration(500); // 애니메이션 지속 시간 (밀리초 단위)
+        progressAnimator.start();
+
         progressBarExp.setMax(maxExp);
     }
 
@@ -395,12 +424,17 @@ public class MainActivity extends AppCompatActivity {
                 case 1:
                     prev_profile = R.drawable.gen1_profile;
                     current_profile = R.drawable.gen2_profile;
+                    break;
                 case 2:
                     prev_profile = R.drawable.gen2_profile;
                     current_profile = R.drawable.gen3_profile;
+                    break;
+
                 case 3:
                     prev_profile = R.drawable.gen3_profile;
                     current_profile = R.drawable.gen4_profile;
+                    break;
+
                 case 4:
                     prev_profile = R.drawable.gen4_profile;
                     current_profile = R.drawable.gen5_profile;
@@ -451,78 +485,102 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == REQUEST_IMAGE_CAPTURE) {
-                // 카메라로 사진 찍은 경우
-                if (data != null && data.getExtras() != null) {
-                    // Display progress dialog
-                    progressDialog = new ProgressDialog(MainActivity.this);
-                    progressDialog.setMessage("사진에서 문장과 단어를 추출하고 있습니다...");
-                    progressDialog.setCancelable(false);
-                    progressDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "취소", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            if (progressDialog != null && progressDialog.isShowing()) {
-                                progressDialog.dismiss();
+            if (requestCode == REQUEST_IMAGE_CAPTURE || requestCode == REQUEST_PICK_IMAGE) {
+                // 로딩 화면 표시
+                final Dialog loadingDialog = new Dialog(this, android.R.style.Theme_Translucent_NoTitleBar);
+                loadingDialog.setContentView(R.layout.camera_loading);
+                loadingDialog.setCancelable(false);
+                loadingDialog.show();
+
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            if (requestCode == REQUEST_IMAGE_CAPTURE) {
+                                // 카메라로 사진 찍은 경우
+                                if (data != null && data.getExtras() != null) {
+                                    Bundle extras = data.getExtras();
+                                    Bitmap imageBitmap = (Bitmap) extras.get("data");
+                                    if (imageBitmap != null) {
+                                        // Save image to file and get file path
+                                        String imagePath = saveImageToFile(imageBitmap);
+
+                                        // Send image file path to HttpsTask class for caption extraction
+                                        new HttpsTask(MainActivity.this, imagePath).execute();
+                                    } else {
+                                        runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                loadingDialog.dismiss();
+                                                Toast.makeText(MainActivity.this, "카메라로부터 이미지를 가져오는 중 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
+                                    }
+                                } else {
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            loadingDialog.dismiss();
+                                            Toast.makeText(MainActivity.this, "카메라로부터 이미지를 가져오는 중 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+                                }
+                            } else if (requestCode == REQUEST_PICK_IMAGE) {
+                                // 갤러리에서 사진을 선택한 경우
+                                if (data != null && data.getData() != null) {
+                                    Uri selectedImageUri = data.getData();
+                                    try {
+                                        Bitmap imageBitmap = MediaStore.Images.Media.getBitmap(MainActivity.this.getContentResolver(), selectedImageUri);
+                                        if (imageBitmap != null) {
+                                            // Save image to file and get file path
+                                            String imagePath = saveImageToFile(imageBitmap);
+
+                                            // Send image file path to HttpsTask class for caption extraction
+                                            new HttpsTask(MainActivity.this, imagePath).execute();
+                                        } else {
+                                            runOnUiThread(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    loadingDialog.dismiss();
+                                                    Toast.makeText(MainActivity.this, "갤러리에서 이미지를 가져오는 중 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
+                                                }
+                                            });
+                                        }
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                        runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                loadingDialog.dismiss();
+                                                Toast.makeText(MainActivity.this, "갤러리에서 이미지를 가져오는 중 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
+                                    }
+                                } else {
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            loadingDialog.dismiss();
+                                            Toast.makeText(MainActivity.this, "갤러리에서 이미지를 가져오는 중 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+                                }
                             }
+                        } finally {
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    loadingDialog.dismiss();
+                                }
+                            });
                         }
-                    });
-                    progressDialog.show();
-
-                    Bundle extras = data.getExtras();
-                    Bitmap imageBitmap = (Bitmap) extras.get("data");
-                    if (imageBitmap != null) {
-                        // Save image to file and get file path
-                        String imagePath = saveImageToFile(imageBitmap);
-
-                        // Send image file path to HttpsTask class for caption extraction
-                        new HttpsTask(this, imagePath).execute();
-                    } else {
-                        progressDialog.dismiss();
-                        Toast.makeText(this, "카메라로부터 이미지를 가져오는 중 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
                     }
-                } else {
-                    Toast.makeText(this, "카메라로부터 이미지를 가져오는 중 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
-                }
-            } else if (requestCode == REQUEST_PICK_IMAGE) {
-                // 갤러리에서 사진을 선택한 경우
-                if (data != null && data.getData() != null) {
-                    // Display progress dialog
-                    progressDialog = new ProgressDialog(MainActivity.this);
-                    progressDialog.setMessage("사진에서 문장, 단어, 뜻을 추출하고 있습니다...");
-                    progressDialog.setCancelable(false);
-                    progressDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "취소", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            if (progressDialog != null && progressDialog.isShowing()) {
-                                progressDialog.dismiss();
-                            }
-                        }
-                    });
-                    progressDialog.show();
-
-                    Uri selectedImageUri = data.getData();
-                    try {
-                        Bitmap imageBitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImageUri);
-                        if (imageBitmap != null) {
-                            // Save image to file and get file path
-                            String imagePath = saveImageToFile(imageBitmap);
-
-                            // Send image file path to HttpsTask class for caption extraction
-                            new HttpsTask(this, imagePath).execute();
-                        } else {
-                            progressDialog.dismiss();
-                            Toast.makeText(this, "갤러리에서 이미지를 가져오는 중 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        Toast.makeText(this, "갤러리에서 이미지를 가져오는 중 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
-                    }
-                } else {
-                    Toast.makeText(this, "갤러리에서 이미지를 가져오는 중 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
-                }
+                }).start();
             }
         }
     }
+
+
 
     @Override
     protected void onDestroy() {
@@ -531,7 +589,17 @@ public class MainActivity extends AppCompatActivity {
         if (progressDialog != null && progressDialog.isShowing()) {
             progressDialog.dismiss();
         }
+        // 네트워크 콜백 해제
+        if (connectivityManager != null && networkCallback != null) {
+            try {
+                connectivityManager.unregisterNetworkCallback(networkCallback);
+            } catch (IllegalArgumentException e) {
+                // 예외 처리: 이미 콜백이 해제된 경우
+                e.printStackTrace();
+            }
+        }
     }
+
     @Override
     public void onBackPressed() {
         // 앱을 종료합니다.

@@ -19,7 +19,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-public class StudyResultActivity extends AppCompatActivity {
+public class StudyResultActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,7 +117,7 @@ public class StudyResultActivity extends AppCompatActivity {
             public void run() {
                 fadeOutAndDismiss(dialog);
             }
-        }, 2000); // 2 seconds delay before fade-out animation starts
+        }, 1000); // 1 seconds delay before fade-out animation starts
     }
 
     // Fade out animation for dismissing the dialog
@@ -126,7 +126,7 @@ public class StudyResultActivity extends AppCompatActivity {
         if (window != null) {
             final View view = window.getDecorView();
             ValueAnimator animator = ValueAnimator.ofFloat(1f, 0f);
-            animator.setDuration(500); // Animation duration (milliseconds)
+            animator.setDuration(300); // Animation duration (milliseconds)
             animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                 @Override
                 public void onAnimationUpdate(ValueAnimator animation) {

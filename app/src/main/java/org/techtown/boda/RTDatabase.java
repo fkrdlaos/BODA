@@ -1,5 +1,7 @@
 package org.techtown.boda;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 
 import com.google.firebase.database.DataSnapshot;
@@ -65,6 +67,12 @@ public class RTDatabase {
     }
 
     public static void addCatchImgPath(String word, String path){
-        dbRef.child("collection/"+word+"/path").setValue(path);
+        if(dbRef != null){
+            dbRef.child("collection/"+word+"/path").setValue(path);
+
+        }else{
+            Log.i("NULLLLLLLL", "REference NULLLLLLL");
+
+        }
     }
 }

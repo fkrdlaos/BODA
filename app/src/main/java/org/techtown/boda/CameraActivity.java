@@ -48,7 +48,7 @@ import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 
-public class CameraActivity extends AppCompatActivity {
+public class CameraActivity extends BaseActivity {
 
     private TextToSpeech textToSpeech;
     private LinearLayout wordLayout1;
@@ -371,7 +371,7 @@ public class CameraActivity extends AppCompatActivity {
         if (window != null) {
             final View view = window.getDecorView();
             ValueAnimator animator = ValueAnimator.ofFloat(0f, 1f);
-            animator.setDuration(500); // Animation duration (milliseconds)
+            animator.setDuration(300); // Animation duration (milliseconds)
             animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                 @Override
                 public void onAnimationUpdate(ValueAnimator animation) {
@@ -388,7 +388,7 @@ public class CameraActivity extends AppCompatActivity {
                         public void run() {
                             fadeOutAndDismiss(dialog);
                         }
-                    }, 2000); // 2 seconds delay before fade-out animation starts
+                    }, 1000); // 1 seconds delay before fade-out animation starts
                 }
             });
             animator.start();
@@ -400,7 +400,7 @@ public class CameraActivity extends AppCompatActivity {
         if (window != null) {
             final View view = window.getDecorView();
             ValueAnimator animator = ValueAnimator.ofFloat(1f, 0f);
-            animator.setDuration(500); // Animation duration (milliseconds)
+            animator.setDuration(300); // Animation duration (milliseconds)
             animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                 @Override
                 public void onAnimationUpdate(ValueAnimator animation) {
@@ -412,10 +412,18 @@ public class CameraActivity extends AppCompatActivity {
                 @Override
                 public void onAnimationEnd(Animator animation) {
                     dialog.dismiss(); // Dismiss the dialog after fade-out animation
+                    // 이동 코드 추가
+                    moveToMainActivity();
                 }
             });
             animator.start();
         }
+    }
+
+    private void moveToMainActivity() {
+        Intent intent = new Intent(CameraActivity.this, MainActivity.class);
+        startActivity(intent);
+        finish(); // 현재 액티비티 종료
     }
 
 

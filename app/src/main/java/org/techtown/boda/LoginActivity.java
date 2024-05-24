@@ -1,7 +1,10 @@
 package org.techtown.boda;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -82,6 +85,11 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         btnGoogle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (!isNetworkAvailable()) {
+                    Toast.makeText(LoginActivity.this, "네트워크가 연결이 되어 있지 않습니다", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
                 // GoogleSignInClient를 사용하여 로그인 인텐트 가져오기
                 Intent signInIntent = mGoogleSignInClient.getSignInIntent();
                 startActivityForResult(signInIntent, REO_SIGN_GOOGLE);
@@ -94,9 +102,15 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         mEtPwd = findViewById(R.id.et_pwd);
 
         Button btnLogin = findViewById(R.id.btn_login);
+        ;
         btnLogin.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
+                if (!isNetworkAvailable()) {
+                    Toast.makeText(LoginActivity.this, "네트워크가 연결이 되어 있지 않습니다", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 String strEmail = mEtEmail.getText().toString();
                 String strPwd = mEtPwd.getText().toString();
                 mFirebaseAuth.signInWithEmailAndPassword(strEmail, strPwd).addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
@@ -266,6 +280,12 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         Toast.makeText(this, "Google Play Services Error", Toast.LENGTH_SHORT).show();
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
     @Override
