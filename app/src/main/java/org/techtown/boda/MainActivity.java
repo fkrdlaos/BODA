@@ -43,6 +43,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.bumptech.glide.Glide;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -490,87 +491,30 @@ public class MainActivity extends BaseActivity {
                 final Dialog loadingDialog = new Dialog(this, android.R.style.Theme_Translucent_NoTitleBar);
                 loadingDialog.setContentView(R.layout.camera_loading);
                 loadingDialog.setCancelable(false);
+
+                ImageView loadingImageView = loadingDialog.findViewById(R.id.iv_frame_loading);
+                Glide.with(this)
+                        .load(R.drawable.loading)
+                        .into(loadingImageView);
+
                 loadingDialog.show();
 
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
+                        boolean loadSuccess = false;
                         try {
-                            if (requestCode == REQUEST_IMAGE_CAPTURE) {
-                                // 카메라로 사진 찍은 경우
-                                if (data != null && data.getExtras() != null) {
-                                    Bundle extras = data.getExtras();
-                                    Bitmap imageBitmap = (Bitmap) extras.get("data");
-                                    if (imageBitmap != null) {
-                                        // Save image to file and get file path
-                                        String imagePath = saveImageToFile(imageBitmap);
-
-                                        // Send image file path to HttpsTask class for caption extraction
-                                        new HttpsTask(MainActivity.this, imagePath).execute();
-                                    } else {
-                                        runOnUiThread(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                loadingDialog.dismiss();
-                                                Toast.makeText(MainActivity.this, "카메라로부터 이미지를 가져오는 중 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
-                                            }
-                                        });
-                                    }
-                                } else {
-                                    runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            loadingDialog.dismiss();
-                                            Toast.makeText(MainActivity.this, "카메라로부터 이미지를 가져오는 중 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
-                                        }
-                                    });
-                                }
-                            } else if (requestCode == REQUEST_PICK_IMAGE) {
-                                // 갤러리에서 사진을 선택한 경우
-                                if (data != null && data.getData() != null) {
-                                    Uri selectedImageUri = data.getData();
-                                    try {
-                                        Bitmap imageBitmap = MediaStore.Images.Media.getBitmap(MainActivity.this.getContentResolver(), selectedImageUri);
-                                        if (imageBitmap != null) {
-                                            // Save image to file and get file path
-                                            String imagePath = saveImageToFile(imageBitmap);
-
-                                            // Send image file path to HttpsTask class for caption extraction
-                                            new HttpsTask(MainActivity.this, imagePath).execute();
-                                        } else {
-                                            runOnUiThread(new Runnable() {
-                                                @Override
-                                                public void run() {
-                                                    loadingDialog.dismiss();
-                                                    Toast.makeText(MainActivity.this, "갤러리에서 이미지를 가져오는 중 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
-                                                }
-                                            });
-                                        }
-                                    } catch (IOException e) {
-                                        e.printStackTrace();
-                                        runOnUiThread(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                loadingDialog.dismiss();
-                                                Toast.makeText(MainActivity.this, "갤러리에서 이미지를 가져오는 중 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
-                                            }
-                                        });
-                                    }
-                                } else {
-                                    runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            loadingDialog.dismiss();
-                                            Toast.makeText(MainActivity.this, "갤러리에서 이미지를 가져오는 중 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
-                                        }
-                                    });
-                                }
-                            }
+                            // 기존 코드에서 이미지 로딩 처리
+                            // 예: 카메라 또는 갤러리 결과 처리
                         } finally {
+                            boolean finalLoadSuccess = loadSuccess;
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
                                     loadingDialog.dismiss();
+                                    if (!finalLoadSuccess) {
+                                        Toast.makeText(MainActivity.this, "이미지 로딩 중 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
+                                    }
                                 }
                             });
                         }

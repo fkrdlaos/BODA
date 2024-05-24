@@ -2,32 +2,26 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/loading_frame_container"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/transparent">
 
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+    <ImageView
+        android:id="@+id/iv_frame_loading"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
         android:layout_centerInParent="true"
-        android:gravity="center"
-        android:orientation="vertical">
+        android:src="@drawable/loading"/>
 
-        <ImageView
-            android:id="@+id/iv_frame_loading"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:background="@drawable/loading"/>
-
-        <TextView
-            android:id="@+id/tv_progress_message"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="Loading.."
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textColor="#ffffff"/>
-
-    </LinearLayout>
+    <TextView
+        android:id="@+id/tv_progress_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/iv_frame_loading"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:text="Loading.."
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="#ffffff"/>
 
 </RelativeLayout>
