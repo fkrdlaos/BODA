@@ -38,6 +38,10 @@ public class DetailActivity extends BaseActivity {
     private static final int REQUEST_READ_EXTERNAL_STORAGE = 1001;
     private TextToSpeech textToSpeech;
     private ImageView photoImageView;
+    private TextView wordTextView;
+    private TextView meaningTextView;
+    private TextView exampleTextView;
+    private TextView dateTextView;
     private static final int REQUEST_CAMERA_PERMISSION = 1001; // 카메라 권한 요청 코드
 
     @Override
@@ -54,10 +58,10 @@ public class DetailActivity extends BaseActivity {
             String dateTime = wordData.getDateTime();
             int imageId = wordData.getImageResId();
 
-            TextView wordTextView = findViewById(R.id.wordTextView);
-            TextView meaningTextView = findViewById(R.id.meaningTextView);
-            TextView exampleTextView = findViewById(R.id.exampleTextView);
-            TextView dateTextView = findViewById(R.id.dateTextView);
+            wordTextView = findViewById(R.id.wordTextView);
+            meaningTextView = findViewById(R.id.meaningTextView);
+            exampleTextView = findViewById(R.id.exampleTextView);
+            dateTextView = findViewById(R.id.dateTextView);
 
             wordTextView.setText(word);
             meaningTextView.setText(meaning);
@@ -68,7 +72,6 @@ public class DetailActivity extends BaseActivity {
             try {
                 Date date = sdf.parse(dateTime);
                 dateTextView.setText(sdf.format(date));
-                dateTextView.setText( sdf.format(date));
             } catch (ParseException e) {
                 e.printStackTrace();
                 Log.e("Date_Time_Debug", "Error parsing date: " + e.getMessage());
@@ -186,6 +189,8 @@ public class DetailActivity extends BaseActivity {
                     if (imagePath != null) {
                         // 이미지 경로가 있을 경우 이미지 표시
                         photoImageView.setVisibility(View.VISIBLE);
+                        wordTextView.setTextSize(22);
+                        meaningTextView.setTextSize(18);
                         Log.i("URI", imagePath);
                         displayImage(imagePath);
                     } else {

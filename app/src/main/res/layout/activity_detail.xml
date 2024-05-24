@@ -33,7 +33,7 @@
         <ImageView
             android:id="@+id/photoImageView"
             android:layout_width="120dp"
-            android:layout_height="140dp"
+            android:layout_height="160dp"
             android:layout_alignTop="@+id/detailView"
             android:layout_alignStart="@+id/detailView"
             android:layout_marginTop="15dp"
@@ -44,7 +44,7 @@
             android:id="@+id/layout3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="40dp"
+            android:layout_marginTop="55dp"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
             android:gravity="center"
@@ -53,7 +53,7 @@
                 android:id="@+id/wordTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="23sp"
+                android:textSize="28sp"
                 android:textStyle="bold"/>
 
             <TextView
@@ -74,7 +74,7 @@
         android:layout_alignStart="@+id/detailView"
         android:layout_alignBottom="@+id/detailView"
         android:layout_alignEnd="@+id/detailView"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="55dp"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         android:layout_marginBottom="20dp"
