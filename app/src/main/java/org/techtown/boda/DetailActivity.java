@@ -107,7 +107,9 @@ public class DetailActivity extends AppCompatActivity {
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_MEDIA_IMAGES}, REQUEST_READ_EXTERNAL_STORAGE);
             } else {
                 // 권한이 이미 허용된 경우 이미지 표시
-                fetchImagePathAndDisplay(wordDB);
+                if(LabelList.hasLabel(word)){
+                    fetchImagePathAndDisplay(wordDB);
+                }
             }
 
 
@@ -186,10 +188,7 @@ public class DetailActivity extends AppCompatActivity {
                         photoImageView.setVisibility(View.VISIBLE);
                         Log.i("URI", imagePath);
                         displayImage(imagePath);
-
-
                     } else {
-
                         Toast.makeText(DetailActivity.this, "이미지 경로가 없습니다.", Toast.LENGTH_SHORT).show();
                     }
                 } else {
