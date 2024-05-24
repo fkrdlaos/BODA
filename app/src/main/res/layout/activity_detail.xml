@@ -38,7 +38,7 @@
             android:layout_alignStart="@+id/detailView"
             android:layout_marginTop="15dp"
             android:adjustViewBounds="true"
-            android:scaleType="fitCenter" />
+            android:scaleType="fitCenter"/>
 
         <LinearLayout
             android:id="@+id/layout3"
