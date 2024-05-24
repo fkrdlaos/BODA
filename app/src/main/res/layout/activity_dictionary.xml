@@ -4,15 +4,15 @@
     android:id="@+id/some_id"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F5F5F5"
+    android:background="@color/white"
     android:clipToOutline="true"
     tools:context=".DictionaryActivity">
 
     <LinearLayout
         android:id="@+id/layout_study_dictionary"
         android:layout_width="match_parent"
-        android:background="#FF6F0F"
         android:layout_height="210dp"
+        android:background="#FF6F0F"
         android:gravity="center"
         android:orientation="vertical">
 
@@ -57,8 +57,9 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/layout_study_dictionary"
         android:layout_marginTop="20dp"
-        android:orientation="horizontal"
-        android:gravity="center">
+        android:background="@color/white"
+        android:gravity="center"
+        android:orientation="horizontal">
 
         <Button
             android:id="@+id/button_all_words"
@@ -80,7 +81,7 @@
             android:layout_weight="1"
             android:background="@drawable/activity_dictionary_button2"
             android:text="그림 도감"
-            android:textColor="#FFFFFF"/>
+            android:textColor="#FFFFFF" />
     </LinearLayout>
 
     <androidx.viewpager.widget.ViewPager
@@ -95,10 +96,10 @@
         android:id="@+id/button3"
         android:layout_width="48dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="25dp"
         android:layout_marginStart="15dp"
+        android:layout_marginTop="25dp"
         android:background="@drawable/back_white"
-        android:contentDescription="back"/>
+        android:contentDescription="back" />
 
 
 </RelativeLayout>
