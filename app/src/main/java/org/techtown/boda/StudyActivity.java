@@ -30,7 +30,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
 
-public class StudyActivity extends AppCompatActivity {
+public class StudyActivity extends BaseActivity {
 
     private ProgressBar progressBar;
     private TextView textViewCon;

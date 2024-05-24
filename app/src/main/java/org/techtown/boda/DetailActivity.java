@@ -33,7 +33,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-public class DetailActivity extends AppCompatActivity {
+public class DetailActivity extends BaseActivity {
 
     private static final int REQUEST_READ_EXTERNAL_STORAGE = 1001;
     private TextToSpeech textToSpeech;

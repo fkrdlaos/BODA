@@ -11,7 +11,7 @@ import org.techtown.boda.databinding.ActivityCatchBinding
  * Main entry point into our app. This app follows the single-activity pattern, and all
  * functionality is implemented in the form of fragments.
  */
-class CatchActivity : AppCompatActivity() {
+class CatchActivity : BaseActivity() {
 
     private lateinit var activityCatchBinding: ActivityCatchBinding
 

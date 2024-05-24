@@ -1,7 +1,10 @@
 package org.techtown.boda;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -64,6 +67,11 @@ public class RegisterActivity extends AppCompatActivity {
         mBtnCheck.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (!isNetworkAvailable()) {
+                    Toast.makeText(RegisterActivity.this, "네트워크가 연결이 되어 있지 않습니다.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
                 final String email = mEtEmail.getText().toString().trim();
 
                 if (email.isEmpty()) {
@@ -98,6 +106,11 @@ public class RegisterActivity extends AppCompatActivity {
         mBtnRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (!isNetworkAvailable()) {
+                    Toast.makeText(RegisterActivity.this, "네트워크가 연결이 되어 있지 않습니다.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
                 final String email = mEtEmail.getText().toString().trim();
                 final String password = mEtPwd.getText().toString().trim();
                 final String nickname = mEtNickname.getText().toString().trim();
@@ -177,6 +190,12 @@ public class RegisterActivity extends AppCompatActivity {
         }
     }
 
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
     @Override
     public void onBackPressed() {
         super.onBackPressed();
@@ -186,3 +205,4 @@ public class RegisterActivity extends AppCompatActivity {
         finish();
     }
 }
+

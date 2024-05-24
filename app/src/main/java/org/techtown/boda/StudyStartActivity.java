@@ -7,7 +7,7 @@ import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-public class StudyStartActivity extends AppCompatActivity {
+public class StudyStartActivity extends BaseActivity {
     private Button btn_ss;
     @Override
     protected void onCreate(Bundle savedInstanceState) {

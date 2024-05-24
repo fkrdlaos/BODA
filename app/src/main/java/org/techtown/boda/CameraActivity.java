@@ -48,7 +48,7 @@ import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 
-public class CameraActivity extends AppCompatActivity {
+public class CameraActivity extends BaseActivity {
 
     private TextToSpeech textToSpeech;
     private LinearLayout wordLayout1;

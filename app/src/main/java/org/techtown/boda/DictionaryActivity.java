@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 // DictionaryActivity
-public class DictionaryActivity extends AppCompatActivity {
+public class DictionaryActivity extends BaseActivity {
 
     private DatabaseReference databaseRef;
     private AllWordsFragment allWordsInstance;
