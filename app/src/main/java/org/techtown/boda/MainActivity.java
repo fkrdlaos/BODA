@@ -400,12 +400,17 @@ public class MainActivity extends AppCompatActivity {
                 case 1:
                     prev_profile = R.drawable.gen1_profile;
                     current_profile = R.drawable.gen2_profile;
+                    break;
                 case 2:
                     prev_profile = R.drawable.gen2_profile;
                     current_profile = R.drawable.gen3_profile;
+                    break;
+
                 case 3:
                     prev_profile = R.drawable.gen3_profile;
                     current_profile = R.drawable.gen4_profile;
+                    break;
+
                 case 4:
                     prev_profile = R.drawable.gen4_profile;
                     current_profile = R.drawable.gen5_profile;

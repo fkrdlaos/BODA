@@ -9,10 +9,6 @@
     tools:context=".DetailActivity">
 
 
-
-
-
-
     <View
         android:id="@+id/detailView"
         android:layout_width="280dp"

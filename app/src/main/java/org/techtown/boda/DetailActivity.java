@@ -186,7 +186,6 @@ public class DetailActivity extends AppCompatActivity {
                     if (imagePath != null) {
                         // 이미지 경로가 있을 경우 이미지 표시
                         Log.i("URI", imagePath);
-
                         displayImage(imagePath);
                     } else {
                         Toast.makeText(DetailActivity.this, "이미지 경로가 없습니다.", Toast.LENGTH_SHORT).show();
@@ -206,6 +205,8 @@ public class DetailActivity extends AppCompatActivity {
     private void displayImage(String imagePath) {
         try {
             Uri imageUri = Uri.parse(imagePath);
+            photoImageView.setImageURI(null);
+
             photoImageView.setImageURI(imageUri);
         } catch (Exception e) {
             e.printStackTrace();
