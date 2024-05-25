@@ -10,17 +10,25 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
 import android.net.NetworkRequest;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Looper;
 import android.os.Process;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -50,6 +58,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class MainActivity extends BaseActivity {
 
@@ -63,6 +73,10 @@ public class MainActivity extends BaseActivity {
     private ImageView iv_profile;
 
     private SharedPreferences sharedPreferences;
+
+    private Dialog loadingDialog;
+    private HttpsTask httpsTask;
+
 
     private ImageButton btnCamera, btnDictionary, btnStudy;
     private Button btnSettings;
@@ -241,6 +255,7 @@ public class MainActivity extends BaseActivity {
 
 
 
+
         // Firebase에서 경험치, 레벨 및 최대 경험치 정보 읽어오기
         mDatabaseRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -248,11 +263,9 @@ public class MainActivity extends BaseActivity {
                 if (dataSnapshot.exists()) {
                     Integer expValue = dataSnapshot.child("exp").getValue(Integer.class);
                     Integer lvValue = dataSnapshot.child("lv").getValue(Integer.class);
-
                     if (expValue != null && lvValue != null) {
                         exp = expValue;
                         lv = lvValue;
-
                         // maxExp 값이 존재하지 않는 경우 기본값 설정
                         Integer maxExpValue = dataSnapshot.child("maxExp").getValue(Integer.class);
                         if (maxExpValue != null) {
@@ -263,10 +276,8 @@ public class MainActivity extends BaseActivity {
                             // 데이터베이스에 기본값 저장
                             mDatabaseRef.child("maxExp").setValue(maxExp);
                         }
-
                         // 경험치, 레벨 및 최대 경험치 정보 업데이트
                         updateExpAndLevelViews();
-
                         // 경험치가 최대값에 도달했을 경우 레벨 업 및 경험치 초기화
 //                        if (exp >= maxExp) {
 //                            Log.i("LEVELUPUP", "STARTTTTTTTTTTTT");
@@ -276,13 +287,11 @@ public class MainActivity extends BaseActivity {
                     }
                 }
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 Toast.makeText(MainActivity.this, "데이터베이스 오류: " + databaseError.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
-
 
         // Firebase에서 퀘스트 진행 상황을 가져오고 UI를 업데이트합니다.
         mDatabaseRef.child("mission").addValueEventListener(new ValueEventListener() {
@@ -482,49 +491,124 @@ public class MainActivity extends BaseActivity {
     }
 
     // 이미지 캡처 또는 갤러리에서 이미지를 가져온 후 호출되는 콜백 메서드입니다.
+    // onActivityResult 메서드 수정
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == REQUEST_IMAGE_CAPTURE || requestCode == REQUEST_PICK_IMAGE) {
-                // 로딩 화면 표시
-                final Dialog loadingDialog = new Dialog(this, android.R.style.Theme_Translucent_NoTitleBar);
+                // 로딩 다이얼로그 표시
+                loadingDialog = new Dialog(this, android.R.style.Theme_Translucent_NoTitleBar);
                 loadingDialog.setContentView(R.layout.camera_loading);
                 loadingDialog.setCancelable(false);
 
+                // 배경색 설정
+                loadingDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#80000000"))); // 반투명한 검정색 배경
+
+                // GIF 이미지 설정
                 ImageView loadingImageView = loadingDialog.findViewById(R.id.iv_frame_loading);
-                Glide.with(this)
-                        .load(R.drawable.loading)
-                        .into(loadingImageView);
+                Glide.with(this).load(R.drawable.loading).into(loadingImageView);
+
+                // 로딩 중 텍스트 색상 설정
+                TextView loadingTextView = loadingDialog.findViewById(R.id.tv_progress_message);
+                loadingTextView.setTextColor(Color.WHITE); // 흰색 텍스트
 
                 loadingDialog.show();
 
-                new Thread(new Runnable() {
+                final Handler handler = new Handler();
+                final Runnable runnable = new Runnable() {
+                    int count = 0;
+
                     @Override
                     public void run() {
-                        boolean loadSuccess = false;
-                        try {
-                            // 기존 코드에서 이미지 로딩 처리
-                            // 예: 카메라 또는 갤러리 결과 처리
-                        } finally {
-                            boolean finalLoadSuccess = loadSuccess;
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    loadingDialog.dismiss();
-                                    if (!finalLoadSuccess) {
-                                        Toast.makeText(MainActivity.this, "이미지 로딩 중 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
-                                    }
+                        switch (count % 4) {
+                            case 0:
+                                loadingTextView.setText("Loading");
+                                break;
+                            case 1:
+                                loadingTextView.setText("Loading.");
+                                break;
+                            case 2:
+                                loadingTextView.setText("Loading..");
+                                break;
+                            case 3:
+                                loadingTextView.setText("Loading...");
+                                break;
+                        }
+                        count++;
+                        if (count * 500 > 4000) { // 4초를 초과하면 작업 중단
+                            handler.removeCallbacks(this); // Runnable을 제거하여 반복을 중지
+                            loadingDialog.dismiss(); // 다이얼로그를 종료
+                            if (httpsTask != null && !httpsTask.isCompleted()) {
+                                httpsTask.cancelTask(); // HttpsTask도 중지시킴
+                                Toast.makeText(MainActivity.this, "로딩 시간이 초과되었습니다.", Toast.LENGTH_SHORT).show();
+                            }
+                            return;
+                        }
+                        handler.postDelayed(this, 500); // 0.5초마다 텍스트 변경
+                    }
+                };
+
+                // 처음에 한 번 실행
+                handler.post(runnable);
+
+                Thread thread = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        String imagePath = null;
+                        if (requestCode == REQUEST_IMAGE_CAPTURE) {
+                            if (data != null && data.getExtras() != null) {
+                                Bundle extras = data.getExtras();
+                                Bitmap imageBitmap = (Bitmap) extras.get("data");
+                                if (imageBitmap != null) {
+                                    imagePath = saveImageToFile(imageBitmap);
                                 }
-                            });
+                            }
+                        } else if (requestCode == REQUEST_PICK_IMAGE) {
+                            if (data != null && data.getData() != null) {
+                                Uri selectedImageUri = data.getData();
+                                try {
+                                    Bitmap imageBitmap = MediaStore.Images.Media.getBitmap(MainActivity.this.getContentResolver(), selectedImageUri);
+                                    if (imageBitmap != null) {
+                                        imagePath = saveImageToFile(imageBitmap);
+                                    }
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+
+                        final String finalImagePath = imagePath;
+                        // 핸들러를 사용하여 메인 스레드에서 UI 갱신
+                        new Handler(Looper.getMainLooper()).post(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (finalImagePath != null) {
+                                    // 이미지 추출 작업 시작
+                                    httpsTask = new HttpsTask(MainActivity.this, finalImagePath);
+                                    httpsTask.execute();
+                                } else {
+                                    Toast.makeText(MainActivity.this, "이미지를 가져오는 중 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+                    }
+                });
+
+                thread.start();
+
+                // 쓰레드가 4초를 초과하면 종료
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (httpsTask != null) {
+                            httpsTask.cancelTask(); // HttpsTask도 중지시킴
                         }
                     }
-                }).start();
+                }, 4000);
             }
         }
     }
-
-
 
     @Override
     protected void onDestroy() {
