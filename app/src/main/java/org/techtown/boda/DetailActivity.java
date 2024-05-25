@@ -15,7 +15,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
@@ -197,7 +196,7 @@ public class DetailActivity extends BaseActivity {
                         Toast.makeText(DetailActivity.this, "이미지 경로가 없습니다.", Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    Toast.makeText(DetailActivity.this, "데이터가 존재하지 않습니다.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(DetailActivity.this, "단어 그림을 수집해봐요!", Toast.LENGTH_SHORT).show();
                 }
             }
 
