@@ -4,7 +4,7 @@
 
     <dimen name="stroke_small">4dp</dimen>
     <dimen name="round_button_medium">64dp</dimen>
-    <dimen name="item_margin">16dp</dimen>
+    <dimen name="item_margin">12dp</dimen>
     <dimen name="vertical_item_margin">8dp</dimen>
     <dimen name="horizontal_item_margin">43dp</dimen>
 

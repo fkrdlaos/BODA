@@ -6,7 +6,7 @@
     android:gravity="center"
     android:orientation="vertical"
     android:layout_marginTop="15dp"
-    android:layout_marginLeft="8dp">
+    android:layout_marginLeft="4dp">
 
     <ImageView
         android:id="@+id/picture"
