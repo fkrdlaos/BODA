@@ -27,8 +27,12 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
-import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
 import android.view.animation.AnimationUtils;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.RotateAnimation;
+import android.view.animation.ScaleAnimation;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -412,25 +416,43 @@ public class MainActivity extends BaseActivity {
         mDatabaseRef.child("exp").setValue(exp);
         mDatabaseRef.child("lv").setValue(lv);
         mDatabaseRef.child("maxExp").setValue(maxExp);
-        new NoticeDialog.Builder(MainActivity.this)
+
+        // 레벨업 팝업창 생성
+        NoticeDialog dialog = new NoticeDialog.Builder(MainActivity.this)
                 .setTitle("레벨업")
-                .setLeftMessage("Lv. "+(lv-1))
-                .setRightMessage("Lv. "+(lv))
-                .setCenterImage(R.drawable.lv_up_img)  // 가운데 이미지 설정
-                .build()
-                .showDialog();
+                .setLeftMessage("Lv. " + (lv - 1))
+                .setRightMessage("Lv. " + lv)
+                .setCenterImage(R.drawable.lv_up_img)
+                .build();
+        dialog.showDialog();
+
+        // 애니메이션 설정
+        ImageView centerImageView = dialog.getCenterImageView();
+        if (centerImageView != null) {
+            ScaleAnimation scaleAnimation = new ScaleAnimation(
+                    0.5f, 1.5f, 0.5f, 1.5f,
+                    Animation.RELATIVE_TO_SELF, 0.5f,
+                    Animation.RELATIVE_TO_SELF, 0.5f);
+            scaleAnimation.setDuration(1000);
+            scaleAnimation.setRepeatCount(Animation.INFINITE);
+            scaleAnimation.setRepeatMode(Animation.REVERSE);
+            centerImageView.startAnimation(scaleAnimation);
+        }
 
         evolution(lv);
 
-        //Toast.makeText(this, "레벨 업!", Toast.LENGTH_SHORT).show();
+        // Toast.makeText(this, "레벨 업!", Toast.LENGTH_SHORT).show();
     }
 
-    private void evolution(int lv){
-        if(lv%10==0 && lv<=50){
-            int gen = lv/10;
+
+
+
+    private void evolution(int lv) {
+        if (lv % 10 == 0 && lv <= 50) {
+            int gen = lv / 10;
             int prev_profile;
             int current_profile;
-            switch (gen){
+            switch (gen) {
                 case 1:
                     prev_profile = R.drawable.gen1_profile;
                     current_profile = R.drawable.gen2_profile;
@@ -439,12 +461,10 @@ public class MainActivity extends BaseActivity {
                     prev_profile = R.drawable.gen2_profile;
                     current_profile = R.drawable.gen3_profile;
                     break;
-
                 case 3:
                     prev_profile = R.drawable.gen3_profile;
                     current_profile = R.drawable.gen4_profile;
                     break;
-
                 case 4:
                     prev_profile = R.drawable.gen4_profile;
                     current_profile = R.drawable.gen5_profile;
@@ -452,17 +472,52 @@ public class MainActivity extends BaseActivity {
                 default:
                     throw new IllegalStateException("Unexpected value: " + gen);
             }
-            new NoticeDialog.Builder(MainActivity.this)
+            NoticeDialog dialog = new NoticeDialog.Builder(MainActivity.this)
                     .setTitle("Evolution")
-                    .setLeftMessage("")
                     .setCenterMessage("!!!진화했어!!!")
-                    .setRightMessage("")
-                    .setLeftImage(prev_profile)
-                    .setRightImage(current_profile)
-                    .build()
-                    .showDialog();
+                    .setCenterImage(prev_profile)
+                    .build();
+            dialog.showDialog();
+
+            // 애니메이션 설정
+            ImageView centerImageView = dialog.getCenterImageView();
+            if (centerImageView != null) {
+                RotateAnimation rotateAnimation = new RotateAnimation(
+                        0f, 360f,
+                        Animation.RELATIVE_TO_SELF, 0.5f,
+                        Animation.RELATIVE_TO_SELF, 0.5f);
+                rotateAnimation.setDuration(1000);
+                rotateAnimation.setRepeatCount(Animation.INFINITE);
+
+                AlphaAnimation fadeOutAnimation = new AlphaAnimation(1.0f, 0.0f);
+                fadeOutAnimation.setDuration(1000);
+                fadeOutAnimation.setStartOffset(1000);
+
+                AnimationSet animationSet = new AnimationSet(true);
+                animationSet.addAnimation(rotateAnimation);
+                animationSet.addAnimation(fadeOutAnimation);
+
+                centerImageView.startAnimation(animationSet);
+
+                fadeOutAnimation.setAnimationListener(new Animation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart(Animation animation) {}
+
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+                        centerImageView.setImageResource(current_profile);
+                        AlphaAnimation fadeInAnimation = new AlphaAnimation(0.0f, 1.0f);
+                        fadeInAnimation.setDuration(1000);
+                        centerImageView.startAnimation(fadeInAnimation);
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {}
+                });
+            }
         }
     }
+
     // 다음 메서드는 이미지 파일을 저장하고 해당 파일 경로를 반환하는 데 사용됩니다.
 
     private String saveImageToFile(Bitmap imageBitmap) {
@@ -536,7 +591,7 @@ public class MainActivity extends BaseActivity {
                                 break;
                         }
                         count++;
-                        if (count * 500 > 4000) { // 4초를 초과하면 작업 중단
+                        if (count * 500 > 20000) { // 20초를 초과하면 작업 중단
                             handler.removeCallbacks(this); // Runnable을 제거하여 반복을 중지
                             loadingDialog.dismiss(); // 다이얼로그를 종료
                             if (httpsTask != null && !httpsTask.isCompleted()) {
@@ -597,18 +652,21 @@ public class MainActivity extends BaseActivity {
 
                 thread.start();
 
-                // 쓰레드가 4초를 초과하면 종료
+                // 쓰레드가 20초를 초과하면 종료
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        if (httpsTask != null) {
+                        if (httpsTask != null && !httpsTask.isCompleted()) {
                             httpsTask.cancelTask(); // HttpsTask도 중지시킴
+                            loadingDialog.dismiss(); // 다이얼로그 종료
+                            Toast.makeText(MainActivity.this, "로딩 시간이 초과되었습니다.", Toast.LENGTH_SHORT).show();
                         }
                     }
-                }, 4000);
+                }, 20000);
             }
         }
     }
+
 
     @Override
     protected void onDestroy() {

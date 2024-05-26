@@ -85,8 +85,11 @@ public class Quest2RewardManager {
         if (userDbRef != null) {
             userDbRef.child("rewards").child(quest).child(String.valueOf(threshold)).setValue(true);
 
-            int expAmount = threshold / 10;
+            int expAmount = threshold/10;
             ExpManager.updateExp(context, userId, expAmount);
+
+            // EXP 획득 팝업 표시
+            RewardPopupUtil.showExpPopup(context, rewardButton, expAmount);
 
             if (threshold == 100) {
                 rewardButton.setText("완료됨");

@@ -21,6 +21,8 @@ public class NoticeDialog {
     protected Integer centerImageResId;
     protected Integer rightImageResId;
 
+    private ImageView centerImageView;
+
     protected NoticeDialog(){
     }
     protected NoticeDialog(Builder builder) {
@@ -105,7 +107,7 @@ public class NoticeDialog {
         TextView centerMessageView = dialogView.findViewById(R.id.centerMessageView);
         TextView rightMessageView = dialogView.findViewById(R.id.rightMessageView);
         ImageView leftImageView = dialogView.findViewById(R.id.leftImageView);
-        ImageView centerImageView = dialogView.findViewById(R.id.centerImageView);
+        centerImageView = dialogView.findViewById(R.id.centerImageView);
         ImageView rightImageView = dialogView.findViewById(R.id.rightImageView);
         Button dialogButton = dialogView.findViewById(R.id.dialogButton);
 
@@ -151,5 +153,9 @@ public class NoticeDialog {
         });
 
         dialog.show();
+    }
+
+    public ImageView getCenterImageView() {
+        return centerImageView;
     }
 }

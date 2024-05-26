@@ -35,7 +35,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
-            android:visibility="gone"/>
+            android:visibility="gone" />
 
         <ImageView
             android:id="@+id/rightImageView"
@@ -60,6 +60,7 @@
             android:text="Left Message"
             android:textSize="16sp"
             android:visibility="gone"/>
+
         <TextView
             android:id="@+id/centerMessageView"
             android:layout_width="0dp"
@@ -67,7 +68,7 @@
             android:layout_weight="1"
             android:text="Center Message"
             android:textSize="16sp"
-            android:visibility="gone"/>
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/rightMessageView"

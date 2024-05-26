@@ -144,4 +144,3 @@ public class StudyResultActivity extends BaseActivity {
         }
     }
 }
-

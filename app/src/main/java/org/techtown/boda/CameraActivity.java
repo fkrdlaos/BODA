@@ -435,6 +435,7 @@ public class CameraActivity extends BaseActivity {
     }
 
 
+
     private void displaySentence(String sentence) {
         // Display the sentence
         TextView sentenceTextView = new TextView(this);
