@@ -2,6 +2,10 @@ package org.techtown.boda;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +15,15 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.io.File;
 import java.util.List;
 
 public class ImgWordDataAdapter extends RecyclerView.Adapter<ImgWordDataAdapter.ViewHolder> {
@@ -18,11 +31,22 @@ public class ImgWordDataAdapter extends RecyclerView.Adapter<ImgWordDataAdapter.
     private List<WordData> wordDataList;
     private Context context;
     private OnItemClickListener listener;
+    private FirebaseAuth mFirebaseAuth;
+    private DatabaseReference mDatabaseRef;
+    private DatabaseReference databaseReference;
 
     public ImgWordDataAdapter(Context context, List<WordData> wordDataList, OnItemClickListener listener) {
         this.context = context;
         this.wordDataList = wordDataList;
         this.listener = listener;
+        mFirebaseAuth = FirebaseAuth.getInstance();
+        FirebaseUser user = mFirebaseAuth.getCurrentUser();
+        String userId = "";
+        if (user != null) {
+            userId = user.getUid();
+        }
+        mDatabaseRef = FirebaseDatabase.getInstance().getReference().child("BODA").child("UserAccount").child(userId).child("collection");
+
     }
 
     public interface OnItemClickListener {
@@ -43,6 +67,31 @@ public class ImgWordDataAdapter extends RecyclerView.Adapter<ImgWordDataAdapter.
         holder.dateTimeTextView.setText(wordData.getDateTime()); // dateTime으로 설정
 
         holder.imageView.setImageResource(R.drawable.img); // 기본 이미지 설정
+        String word = wordData.getWord();
+        mDatabaseRef.child(word).child("path").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    String imagePath = snapshot.getValue(String.class);
+                    if (imagePath != null) {
+                        Uri imageUri = Uri.parse(imagePath);
+                        File files = new File(imagePath);
+                        Bitmap myBitmap = BitmapFactory.decodeFile(files.getAbsolutePath());
+                        holder.imageView.setImageBitmap(myBitmap);
+                    }
+                } else {
+                    // 기본 이미지 유지 또는 다른 처리
+                    holder.imageView.setImageResource(R.drawable.img);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e("ImgWordDataAdapter", "Firebase error: " + error.getMessage());
+
+            }
+
+        });
 
         // 아이템 클릭 이벤트 처리
         holder.itemView.setOnClickListener(new View.OnClickListener() {
