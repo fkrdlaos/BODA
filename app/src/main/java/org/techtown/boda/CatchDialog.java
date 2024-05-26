@@ -1,6 +1,8 @@
 package org.techtown.boda;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -9,89 +11,17 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
 
-public class NoticeDialog {
+public class CatchDialog extends NoticeDialog{
+    private DialogInterface.OnClickListener positiveButtonListener;
 
-    protected Context context;
-    protected String title;
-    protected String leftMessage;
-    protected String centerMessage;
-
-    protected String rightMessage;
-    protected Integer leftImageResId;
-    protected Integer centerImageResId;
-    protected Integer rightImageResId;
-
-    protected NoticeDialog(){
-    }
-    protected NoticeDialog(Builder builder) {
-        this.context = builder.context;
-
-        this.title = builder.title;
-        this.leftMessage = builder.leftMessage;
-        this.centerMessage = builder.centerMessage;
-
-        this.rightMessage = builder.rightMessage;
-        this.leftImageResId = builder.leftImageResId;
-        this.centerImageResId = builder.centerImageResId;
-        this.rightImageResId = builder.rightImageResId;
+    protected CatchDialog(CatchBuilder builder) {
+        super(builder);
+        this.positiveButtonListener = builder.positiveButtonListener;
     }
 
-    public static class Builder {
-        private final Context context;
-        private String title;
-        private String leftMessage;
-        private String centerMessage;
-
-        private String rightMessage;
-        private Integer leftImageResId;
-        private Integer centerImageResId;
-        private Integer rightImageResId;
-
-        public Builder(Context context) {
-            this.context = context;
-        }
-
-        public Builder setTitle(String title) {
-            this.title = title;
-            return this;
-        }
-
-        public Builder setLeftMessage(String leftMessage) {
-            this.leftMessage = leftMessage;
-            return this;
-        }
-        public Builder setCenterMessage(String centerMessage) {
-            this.centerMessage = centerMessage;
-            return this;
-        }
-
-        public Builder setRightMessage(String rightMessage) {
-            this.rightMessage = rightMessage;
-            return this;
-        }
-
-        public Builder setLeftImage(int leftImageResId) {
-            this.leftImageResId = leftImageResId;
-            return this;
-        }
-
-        public Builder setCenterImage(int centerImageResId) {
-            this.centerImageResId = centerImageResId;
-            return this;
-        }
-
-        public Builder setRightImage(int rightImageResId) {
-            this.rightImageResId = rightImageResId;
-            return this;
-        }
-
-
-        public NoticeDialog build() {
-            return new NoticeDialog(this);
-        }
-    }
-
+    @Override
     public void showDialog() {
+
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context);
 
         // Inflate the custom layout
@@ -147,9 +77,30 @@ public class NoticeDialog {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
+                if (context instanceof Activity) {
+                    ((Activity) context).finish();
+                }
             }
         });
 
         dialog.show();
+    }
+
+    public static class CatchBuilder extends Builder {
+        private DialogInterface.OnClickListener positiveButtonListener;
+
+        public CatchBuilder(Context context) {
+            super(context);
+        }
+
+        public CatchBuilder setPositiveButtonListener(DialogInterface.OnClickListener listener) {
+            this.positiveButtonListener = listener;
+            return this;
+        }
+
+        @Override
+        public CatchDialog build() {
+            return new CatchDialog(this);
+        }
     }
 }
