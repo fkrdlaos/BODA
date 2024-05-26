@@ -418,16 +418,16 @@ public class MainActivity extends BaseActivity {
         mDatabaseRef.child("maxExp").setValue(maxExp);
 
         // 레벨업 팝업창 생성
-        NoticeDialog dialog = new NoticeDialog.Builder(MainActivity.this)
+        NoticeDialog levelUpDialog = new NoticeDialog.Builder(MainActivity.this) // 수정된 부분
                 .setTitle("레벨업")
                 .setLeftMessage("Lv. " + (lv - 1))
                 .setRightMessage("Lv. " + lv)
                 .setCenterImage(R.drawable.lv_up_img)
                 .build();
-        dialog.showDialog();
+        levelUpDialog.showDialog(); // 수정된 부분
 
         // 애니메이션 설정
-        ImageView centerImageView = dialog.getCenterImageView();
+        ImageView centerImageView = levelUpDialog.getCenterImageView(); // 수정된 부분
         if (centerImageView != null) {
             ScaleAnimation scaleAnimation = new ScaleAnimation(
                     0.5f, 1.5f, 0.5f, 1.5f,
@@ -439,16 +439,14 @@ public class MainActivity extends BaseActivity {
             centerImageView.startAnimation(scaleAnimation);
         }
 
-        evolution(lv);
+        // 진화 체크
+        evolution(lv); // 수정된 부분
 
         // Toast.makeText(this, "레벨 업!", Toast.LENGTH_SHORT).show();
     }
 
-
-
-
     private void evolution(int lv) {
-        if (lv % 10 == 0 && lv <= 50) {
+        if (lv % 10 == 0 && lv <= 40) {
             int gen = lv / 10;
             int prev_profile;
             int current_profile;
@@ -472,15 +470,15 @@ public class MainActivity extends BaseActivity {
                 default:
                     throw new IllegalStateException("Unexpected value: " + gen);
             }
-            NoticeDialog dialog = new NoticeDialog.Builder(MainActivity.this)
+            NoticeDialog evolutionDialog = new NoticeDialog.Builder(MainActivity.this) // 수정된 부분
                     .setTitle("Evolution")
                     .setCenterMessage("!!!진화했어!!!")
                     .setCenterImage(prev_profile)
                     .build();
-            dialog.showDialog();
+            evolutionDialog.showDialog(); // 수정된 부분
 
             // 애니메이션 설정
-            ImageView centerImageView = dialog.getCenterImageView();
+            ImageView centerImageView = evolutionDialog.getCenterImageView(); // 수정된 부분
             if (centerImageView != null) {
                 RotateAnimation rotateAnimation = new RotateAnimation(
                         0f, 360f,
@@ -517,6 +515,7 @@ public class MainActivity extends BaseActivity {
             }
         }
     }
+
 
     // 다음 메서드는 이미지 파일을 저장하고 해당 파일 경로를 반환하는 데 사용됩니다.
 
