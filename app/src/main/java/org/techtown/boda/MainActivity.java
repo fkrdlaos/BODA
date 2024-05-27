@@ -48,6 +48,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -590,12 +591,12 @@ public class MainActivity extends BaseActivity {
                                 break;
                         }
                         count++;
-                        if (count * 500 > 20000) { // 20초를 초과하면 작업 중단
+                        if (count * 500 > 10000) { // 10초를 초과하면 작업 중단
                             handler.removeCallbacks(this); // Runnable을 제거하여 반복을 중지
                             loadingDialog.dismiss(); // 다이얼로그를 종료
                             if (httpsTask != null && !httpsTask.isCompleted()) {
                                 httpsTask.cancelTask(); // HttpsTask도 중지시킴
-                                Toast.makeText(MainActivity.this, "로딩 시간이 초과되었습니다.", Toast.LENGTH_SHORT).show();
+                                showTimeoutSnackbar(); // 팝업 창을 표시
                             }
                             return;
                         }
@@ -658,12 +659,29 @@ public class MainActivity extends BaseActivity {
                         if (httpsTask != null && !httpsTask.isCompleted()) {
                             httpsTask.cancelTask(); // HttpsTask도 중지시킴
                             loadingDialog.dismiss(); // 다이얼로그 종료
-                            Toast.makeText(MainActivity.this, "로딩 시간이 초과되었습니다.", Toast.LENGTH_SHORT).show();
+                            showTimeoutSnackbar(); // 팝업 창을 표시
                         }
                     }
-                }, 20000);
+                }, 10000);
             }
         }
+    }
+
+    // 타임아웃 팝업 창을 표시하는 메서드
+    private void showTimeoutSnackbar() {
+        Snackbar snackbar = Snackbar.make(findViewById(android.R.id.content), "로딩 시간이 초과되었습니다.", Snackbar.LENGTH_LONG);
+        snackbar.setDuration(5000); // 5초 동안 표시
+        snackbar.addCallback(new Snackbar.Callback() {
+            @Override
+            public void onDismissed(Snackbar transientBottomBar, int event) {
+                if (event == DISMISS_EVENT_TIMEOUT) {
+                    // 팝업 창이 자동으로 사라질 때 애니메이션 효과 적용
+                    transientBottomBar.getView().setAlpha(1.0f);
+                    transientBottomBar.getView().animate().alpha(0.0f).setDuration(1000).start();
+                }
+            }
+        });
+        snackbar.show();
     }
 
 
