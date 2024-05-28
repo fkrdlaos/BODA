@@ -239,10 +239,14 @@ public class StudyActivity extends BaseActivity {
         } else {
             timerDuration = getSpellingTimerDuration(word.length());
         }
+
+        timerProgressBar.setMax((int) (timerDuration / TIMER_INTERVAL));
+        timerProgressBar.setProgress((int) (timerDuration / TIMER_INTERVAL));
+
         countDownTimer = new CountDownTimer(timerDuration, TIMER_INTERVAL) {
             @Override
             public void onTick(long millisUntilFinished) {
-                int secondsLeft = (int) (millisUntilFinished / 1000);
+                int secondsLeft = (int) (millisUntilFinished / TIMER_INTERVAL);
                 textViewTime.setText(String.valueOf(secondsLeft));
                 timerProgressBar.setProgress(secondsLeft);
             }
@@ -250,6 +254,7 @@ public class StudyActivity extends BaseActivity {
             @Override
             public void onFinish() {
                 textViewTime.setText("0");
+                timerProgressBar.setProgress(0);
                 currentIndex++;
                 showNextWord();
             }
@@ -273,11 +278,13 @@ public class StudyActivity extends BaseActivity {
             countDownTimer.cancel();
         }
         if (isMultipleChoice) {
-            //textViewTime.setText("4");
+            textViewTime.setText("4");
+            timerProgressBar.setMax(4);
             timerProgressBar.setProgress(4);
         } else {
             long duration = getSpellingTimerDuration(word.length());
-            //textViewTime.setText(String.valueOf(duration / 1000));
+            textViewTime.setText(String.valueOf(duration / 1000));
+            timerProgressBar.setMax((int) (duration / 1000));
             timerProgressBar.setProgress((int) (duration / 1000));
         }
         startTimer(word);

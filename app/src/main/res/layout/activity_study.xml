@@ -56,15 +56,16 @@
         android:id="@+id/progress_bar1"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="match_parent"
-        android:layout_height="20dp"
+        android:layout_height="5dp"
         android:layout_marginTop="0dp"
+        android:indeterminateDrawable="@drawable/activity_study_timer"
         android:max="15"
         android:progress="15"
         android:progressDrawable="@drawable/activity_study_timer" />
 
     <!-- End of new timer progress bar and text view -->
 
-    <!--<TextView
+    <TextView
         android:id="@+id/TextView_Time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -73,7 +74,8 @@
         android:layout_marginTop="-1dp"
         android:layout_marginEnd="6dp"
         android:text="15"
-        android:textSize="18sp" />-->
+        android:textSize="18sp"
+        android:visibility="gone" />
 
     <ImageView
         android:id="@+id/imageView7"
