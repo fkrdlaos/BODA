@@ -26,6 +26,7 @@ import android.os.Process;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.animation.AnimationSet;
 import android.view.animation.AnimationUtils;
@@ -40,6 +41,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.animation.ObjectAnimator;
+
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -58,6 +60,13 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.bumptech.glide.Glide;
 
+//import com.plattysoft.leonids.ParticleSystem;
+
+import nl.dionsegijn.konfetti.KonfettiView;
+import nl.dionsegijn.konfetti.models.Shape;
+import nl.dionsegijn.konfetti.models.Size;
+
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -65,6 +74,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
+
 
 public class MainActivity extends BaseActivity {
 
@@ -101,6 +111,11 @@ public class MainActivity extends BaseActivity {
     private TextView quest1ProgressText, quest2ProgressText;
     private ImageView quest1MedalImage, quest2MedalImage;
     private Button quest1Button, quest2Button;
+
+    // 불꽃 효과를 관리할 ParticleSystem 객체
+    //private ParticleSystem particleSystem;
+
+
 
     // Sample data for dictionary
     private List<String> words = new ArrayList<>();
@@ -471,15 +486,14 @@ public class MainActivity extends BaseActivity {
                 default:
                     throw new IllegalStateException("Unexpected value: " + gen);
             }
-            NoticeDialog evolutionDialog = new NoticeDialog.Builder(MainActivity.this) // 수정된 부분
+            NoticeDialog evolutionDialog = new NoticeDialog.Builder(MainActivity.this)
                     .setTitle("Evolution")
                     .setCenterMessage("!!!진화했어!!!")
                     .setCenterImage(prev_profile)
                     .build();
-            evolutionDialog.showDialog(); // 수정된 부분
+            evolutionDialog.showDialog();
 
-            // 애니메이션 설정
-            ImageView centerImageView = evolutionDialog.getCenterImageView(); // 수정된 부분
+            ImageView centerImageView = evolutionDialog.getCenterImageView();
             if (centerImageView != null) {
                 RotateAnimation rotateAnimation = new RotateAnimation(
                         0f, 360f,
@@ -504,6 +518,22 @@ public class MainActivity extends BaseActivity {
 
                     @Override
                     public void onAnimationEnd(Animation animation) {
+                        // Konfetti 효과 추가
+                        ViewGroup rootView = (ViewGroup) findViewById(android.R.id.content);
+                        KonfettiView konfettiView = new KonfettiView(MainActivity.this);
+                        rootView.addView(konfettiView);
+
+                        konfettiView.build()
+                                .addColors(Color.YELLOW, Color.GREEN, Color.MAGENTA)
+                                .setDirection(0.0, 359.0)
+                                .setSpeed(1f, 5f)
+                                .setFadeOutEnabled(true)
+                                .setTimeToLive(2000L)
+                                .addShapes(Shape.RECT, Shape.CIRCLE)
+                                .addSizes(new Size(12, 5f))
+                                .setPosition(konfettiView.getWidth() / 2, konfettiView.getHeight() / 3)
+                                .streamFor(300, 5000L);
+
                         centerImageView.setImageResource(current_profile);
                         AlphaAnimation fadeInAnimation = new AlphaAnimation(0.0f, 1.0f);
                         fadeInAnimation.setDuration(1000);
@@ -516,6 +546,7 @@ public class MainActivity extends BaseActivity {
             }
         }
     }
+
 
 
     // 다음 메서드는 이미지 파일을 저장하고 해당 파일 경로를 반환하는 데 사용됩니다.
@@ -591,7 +622,7 @@ public class MainActivity extends BaseActivity {
                                 break;
                         }
                         count++;
-                        if (count * 500 > 10000) { // 10초를 초과하면 작업 중단
+                        if (count * 500 > 20000) { // 10초를 초과하면 작업 중단
                             handler.removeCallbacks(this); // Runnable을 제거하여 반복을 중지
                             loadingDialog.dismiss(); // 다이얼로그를 종료
                             if (httpsTask != null && !httpsTask.isCompleted()) {
@@ -662,7 +693,7 @@ public class MainActivity extends BaseActivity {
                             showTimeoutSnackbar(); // 팝업 창을 표시
                         }
                     }
-                }, 10000);
+                }, 20000);
             }
         }
     }

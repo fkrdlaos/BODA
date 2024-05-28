@@ -211,6 +211,9 @@ public class SettingsActivity extends BaseActivity {
 
         editTextNewNickname.setText(nickname);
 
+        // 닉네임의 초기 글자 수 설정
+        textViewCharCount.setText(String.valueOf(nickname.length()));
+
         editTextNewNickname.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {

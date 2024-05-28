@@ -52,14 +52,38 @@
 
     </LinearLayout>
 
+    <!-- New timer progress bar and text view -->
+    <ProgressBar
+        android:id="@+id/progress_bar1"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:layout_below="@id/progress"
+        android:layout_marginTop="10dp"
+        android:max="15"
+        android:progress="15" />
+
+    <!-- End of new timer progress bar and text view -->
+
+    <TextView
+        android:id="@+id/TextView_Time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/progress_bar1"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="-1dp"
+        android:layout_marginEnd="6dp"
+        android:text="15"
+        android:textSize="18sp" />
 
     <ImageView
         android:id="@+id/imageView7"
         android:layout_width="265dp"
         android:layout_height="24dp"
         android:layout_below="@+id/progress"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="120px"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="47dp"
+        android:layout_marginTop="87dp"
         app:srcCompat="@drawable/t3" />
 
     <Button
@@ -147,7 +171,6 @@
 
     <!-- 받아쓰기 유형 -->
 
-
     <LinearLayout
         android:id="@+id/spelling_layout"
         android:layout_width="match_parent"
@@ -180,6 +203,4 @@
             android:textColor="#FFFFFF"
             android:textStyle="bold" />
     </LinearLayout>
-
-
 </RelativeLayout>

@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.speech.tts.TextToSpeech;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,7 +34,9 @@ import java.util.Random;
 public class StudyActivity extends BaseActivity {
 
     private ProgressBar progressBar;
+    private ProgressBar timerProgressBar;
     private TextView textViewCon;
+    private TextView textViewTime;
     private TextView tv_word;
     private EditText et_input;
     private Button btn_check;
@@ -54,6 +57,8 @@ public class StudyActivity extends BaseActivity {
     private int correctCount = 0;
 
     private boolean isQuitDialogShowing = false; // 팝업 창이 열려있는지 여부를 저장하는 변수
+    private CountDownTimer countDownTimer;
+    private static final long TIMER_INTERVAL = 1000; // 1 second
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +66,9 @@ public class StudyActivity extends BaseActivity {
         setContentView(R.layout.activity_study);
 
         progressBar = findViewById(R.id.progress_bar);
+        timerProgressBar = findViewById(R.id.progress_bar1);
         textViewCon = findViewById(R.id.TextView_con);
+        textViewTime = findViewById(R.id.TextView_Time);
         progressBar.setMax(maxProgress);
 
         words = new ArrayList<>();
@@ -129,7 +136,6 @@ public class StudyActivity extends BaseActivity {
             }
         });
 
-
         btn_listen.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -164,6 +170,9 @@ public class StudyActivity extends BaseActivity {
         if (textToSpeech != null) {
             textToSpeech.stop();
             textToSpeech.shutdown();
+        }
+        if (countDownTimer != null) {
+            countDownTimer.cancel();
         }
     }
 
@@ -201,12 +210,14 @@ public class StudyActivity extends BaseActivity {
                 setMultipleChoice(word);
                 spellingLayout.setVisibility(View.GONE);
                 multipleChoiceLayout.setVisibility(View.VISIBLE);
+                startTimer(word);  // Fixed duration for multiple choice
             } else {
                 tv_word.setText(word);
                 et_input.setText("");
                 btn_check.setEnabled(true);
                 spellingLayout.setVisibility(View.VISIBLE);
                 multipleChoiceLayout.setVisibility(View.GONE);
+                startTimer(word);  // Variable duration for spelling
             }
 
             if (textToSpeech != null) {
@@ -216,6 +227,60 @@ public class StudyActivity extends BaseActivity {
         } else {
             showResult();
         }
+    }
+
+    private void startTimer(String word) {
+        if (countDownTimer != null) {
+            countDownTimer.cancel();
+        }
+        long timerDuration;
+        if (isMultipleChoice) {
+            timerDuration = 4000; // 4 seconds for multiple choice
+        } else {
+            timerDuration = getSpellingTimerDuration(word.length());
+        }
+        countDownTimer = new CountDownTimer(timerDuration, TIMER_INTERVAL) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                int secondsLeft = (int) (millisUntilFinished / 1000);
+                textViewTime.setText(String.valueOf(secondsLeft));
+                timerProgressBar.setProgress(secondsLeft);
+            }
+
+            @Override
+            public void onFinish() {
+                textViewTime.setText("0");
+                currentIndex++;
+                showNextWord();
+            }
+        }.start();
+    }
+
+    private long getSpellingTimerDuration(int wordLength) {
+        if (wordLength <= 5) {
+            return 8000; // 8 seconds
+        } else if (wordLength <= 8) {
+            return 10000; // 10 seconds
+        } else if (wordLength <= 12) {
+            return 12000; // 12 seconds
+        } else {
+            return 15000; // 15 seconds
+        }
+    }
+
+    private void resetTimer(String word) {
+        if (countDownTimer != null) {
+            countDownTimer.cancel();
+        }
+        if (isMultipleChoice) {
+            textViewTime.setText("4");
+            timerProgressBar.setProgress(4);
+        } else {
+            long duration = getSpellingTimerDuration(word.length());
+            textViewTime.setText(String.valueOf(duration / 1000));
+            timerProgressBar.setProgress((int) (duration / 1000));
+        }
+        startTimer(word);
     }
 
     private void setRandomIndex() {
@@ -254,6 +319,7 @@ public class StudyActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 checkMultipleChoice(true);
+                resetTimer(word);
             }
         });
 
@@ -267,6 +333,7 @@ public class StudyActivity extends BaseActivity {
                     @Override
                     public void onClick(View v) {
                         checkMultipleChoice(false);
+                        resetTimer(word);
                     }
                 });
             }
@@ -290,10 +357,16 @@ public class StudyActivity extends BaseActivity {
     }
 
     private void checkSpelling() {
-        if (et_input.getText().toString().equalsIgnoreCase(words.get(randomIndexes.get(currentIndex)))) {
+        String userInput = et_input.getText().toString();
+        if (userInput.isEmpty()) {
+            Toast.makeText(this, "최소 한글자를 입력해주세요", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (userInput.equalsIgnoreCase(words.get(randomIndexes.get(currentIndex)))) {
             correctCount++;
         }
-        wordAnswerMap.put(words.get(randomIndexes.get(currentIndex)), et_input.getText().toString().equalsIgnoreCase(words.get(randomIndexes.get(currentIndex))));
+        wordAnswerMap.put(words.get(randomIndexes.get(currentIndex)), userInput.equalsIgnoreCase(words.get(randomIndexes.get(currentIndex))));
         if (currentIndex < words.size() - 1) {
             currentIndex++;
             showNextWord();
@@ -377,7 +450,5 @@ public class StudyActivity extends BaseActivity {
         builder.setCancelable(false);
         builder.show();
     }
-
-
 
 }

@@ -106,4 +106,6 @@ dependencies {
     implementation ("org.tensorflow:tensorflow-lite-gpu:2.9.0")
     implementation ("com.github.bumptech.glide:glide:4.12.0")
     annotationProcessor ("com.github.bumptech.glide:compiler:4.12.0")
+    implementation (files("libs/LeonidsLib-1.3.2.jar"))
+    implementation ("nl.dionsegijn:konfetti:1.2.6")
 }
