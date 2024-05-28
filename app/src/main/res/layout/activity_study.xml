@@ -20,13 +20,13 @@
         android:id="@+id/progress"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="155px"
         android:orientation="horizontal">
 
         <Button
             android:id="@+id/button4"
             android:layout_width="150px"
             android:layout_height="150px"
-            android:layout_marginTop="150px"
             android:background="@drawable/back_gray"
             android:contentDescription="button4"/>
         <ProgressBar
@@ -34,7 +34,7 @@
             style="?android:attr/progressBarStyleHorizontal"
             android:layout_width="750px"
             android:layout_height="45px"
-            android:layout_marginTop="210px"
+            android:layout_marginTop="65px"
             android:layout_centerHorizontal="true"
             android:indeterminateDrawable="@drawable/progress_bar_exp"
             android:max="100"
@@ -46,7 +46,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="36px"
-            android:layout_marginTop="160px"
             android:text="0/10"
             android:textSize="16sp" />
 
@@ -58,14 +57,14 @@
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="match_parent"
         android:layout_height="20dp"
-        android:layout_below="@id/progress"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="0dp"
         android:max="15"
-        android:progress="15" />
+        android:progress="15"
+        android:progressDrawable="@drawable/activity_study_timer" />
 
     <!-- End of new timer progress bar and text view -->
 
-    <TextView
+    <!--<TextView
         android:id="@+id/TextView_Time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -74,7 +73,7 @@
         android:layout_marginTop="-1dp"
         android:layout_marginEnd="6dp"
         android:text="15"
-        android:textSize="18sp" />
+        android:textSize="18sp" />-->
 
     <ImageView
         android:id="@+id/imageView7"
@@ -189,6 +188,9 @@
             android:layout_marginTop="0px"
             android:hint="정답을 입력하세요"
             android:font="@font/pretendardvariable"
+            android:textColor="#999999"
+            android:textColorHint="#999999"
+            android:textColorHighlight="#FF6F0F"
             android:textSize="18sp" />
 
         <Button

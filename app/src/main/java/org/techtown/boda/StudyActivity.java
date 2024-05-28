@@ -273,11 +273,11 @@ public class StudyActivity extends BaseActivity {
             countDownTimer.cancel();
         }
         if (isMultipleChoice) {
-            textViewTime.setText("4");
+            //textViewTime.setText("4");
             timerProgressBar.setProgress(4);
         } else {
             long duration = getSpellingTimerDuration(word.length());
-            textViewTime.setText(String.valueOf(duration / 1000));
+            //textViewTime.setText(String.valueOf(duration / 1000));
             timerProgressBar.setProgress((int) (duration / 1000));
         }
         startTimer(word);
