@@ -8,12 +8,49 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:758241969651:android:b31abfd0b9be69662a3e86",
+        "android_client_info": {
+          "package_name": "com.example.fortest"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "758241969651-k0lha0smqagntq9h9qeu03lcj98ai2jr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDk8QhJbpsfftZqO4rKUrBygx_6KgAFqwc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "758241969651-k0lha0smqagntq9h9qeu03lcj98ai2jr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:758241969651:android:b73d7b4e9deb05dd2a3e86",
         "android_client_info": {
           "package_name": "org.techtown.boda"
         }
       },
       "oauth_client": [
+        {
+          "client_id": "758241969651-a2ro34k97f5m5vl2h1jlj2tgudvb95fp.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "org.techtown.boda",
+            "certificate_hash": "b958cca986a1956ead2792aa87e35f27acdb1070"
+          }
+        },
         {
           "client_id": "758241969651-k0lha0smqagntq9h9qeu03lcj98ai2jr.apps.googleusercontent.com",
           "client_type": 3
