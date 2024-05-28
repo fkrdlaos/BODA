@@ -189,10 +189,8 @@
             android:layout_gravity="center"
             android:layout_marginTop="0px"
             android:hint="정답을 입력하세요"
+            android:theme="@style/EditTextFocus"
             android:font="@font/pretendardvariable"
-            android:textColor="#999999"
-            android:textColorHint="#999999"
-            android:textColorHighlight="#FF6F0F"
             android:textSize="18sp" />
 
         <Button

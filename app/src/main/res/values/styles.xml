@@ -35,6 +35,8 @@
         <item name="android:windowExitAnimation">@anim/slide_out_left</item>
     </style>
 
-
+    <style name="EditTextFocus" parent="Widget.AppCompat.EditText">
+        <item name="colorControlActivated">#FF6F0F</item>
+    </style>
 
 </resources>
