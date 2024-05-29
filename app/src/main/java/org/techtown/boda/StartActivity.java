@@ -42,7 +42,7 @@ public class StartActivity extends AppCompatActivity {
                 editor.apply();
 
                 // LoginActivity로 이동
-                Intent intent = new Intent(StartActivity.this, LoginActivity.class);
+                Intent intent = new Intent(StartActivity.this, GuideCameraActivity.class);
                 startActivity(intent);
                 finish();
             }

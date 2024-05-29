@@ -7,10 +7,8 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
-
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.INTERNET" />
-
 
     <uses-feature
         android:name="android.hardware.camera"
@@ -24,7 +22,6 @@
     <uses-feature
         android:name="android.hardware.camera.front.autofocus"
         android:required="false" />
-
 
     <application
         android:name=".MyApp"
@@ -40,7 +37,21 @@
         android:theme="@style/Theme.BODA"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
-        <!-- FileProvider 설정 -->
+        <activity
+            android:name=".GuideEvolutionActivity"
+            android:exported="false" />
+        <activity
+            android:name=".GuideQuestActivity"
+            android:exported="false" />
+        <activity
+            android:name=".GuideStudyActivity"
+            android:exported="false" />
+        <activity
+            android:name=".GuideDictionaryActivity"
+            android:exported="false" />
+        <activity
+            android:name=".GuideCameraActivity"
+            android:exported="false" /> <!-- FileProvider 설정 -->
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="org.techtown.boda.fileprovider"
@@ -50,6 +61,7 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
+
         <activity
             android:name=".CatchActivity"
             android:exported="false" />
@@ -75,7 +87,6 @@
         <activity
             android:name=".StudyResultActivity"
             android:exported="false" />
-
         <activity
             android:name=".DetailActivity"
             android:exported="false" />
@@ -97,7 +108,6 @@
         <activity
             android:name=".MainActivity"
             android:exported="true" />
-
     </application>
 
 </manifest>

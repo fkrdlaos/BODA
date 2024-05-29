@@ -115,6 +115,7 @@ public class MainActivity extends BaseActivity {
 
     // 불꽃 효과를 관리할 ParticleSystem 객체
     private ParticleSystem particleSystem;
+    private GuidePopupManager guidePopupManager;
 
 
 
@@ -157,6 +158,8 @@ public class MainActivity extends BaseActivity {
         instance = RTDatabase.getInstance(userId); // DB 최초 접근 시 경로 설정 용
         Quest1RewardManager.initFirebase();
         Quest2RewardManager.initFirebase();
+        // Initialize the GuidePopupManager
+        guidePopupManager = new GuidePopupManager(this);
 
         tvResult = findViewById(R.id.tv_result);
         textViewExp = findViewById(R.id.textView2);
@@ -209,6 +212,16 @@ public class MainActivity extends BaseActivity {
                 alertDialog.show();
             }
         });
+
+        // Set up guide button to show the first popup
+        Button guideButton = findViewById(R.id.guide);
+        guideButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                guidePopupManager.showPopupGuideCamera();
+            }
+        });
+
 
         btnDictionary.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -271,9 +284,6 @@ public class MainActivity extends BaseActivity {
 
             }
         });
-
-
-
 
 
 
