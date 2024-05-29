@@ -44,11 +44,19 @@
       },
       "oauth_client": [
         {
-          "client_id": "758241969651-a2ro34k97f5m5vl2h1jlj2tgudvb95fp.apps.googleusercontent.com",
+          "client_id": "758241969651-984rgkug1tandjtdfh52pg1qmdfst03h.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "org.techtown.boda",
-            "certificate_hash": "b958cca986a1956ead2792aa87e35f27acdb1070"
+            "certificate_hash": "c37deca6af1da580e4a5ffbcc34cbbc8c5806c2b"
+          }
+        },
+        {
+          "client_id": "758241969651-be60rrvf3h5ua3k2mjfb6bscgr2ueg6q.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "org.techtown.boda",
+            "certificate_hash": "2193e2f70952b15ffd3775c5e6f5e144f93474b8"
           }
         },
         {

@@ -15,23 +15,26 @@ public class NoticeDialog {
     protected String title;
     protected String leftMessage;
     protected String centerMessage;
-
     protected String rightMessage;
     protected Integer leftImageResId;
     protected Integer centerImageResId;
     protected Integer rightImageResId;
 
     private ImageView centerImageView;
+    private OnDismissListener onDismissListener;
 
-    protected NoticeDialog(){
+    public interface OnDismissListener {
+        void onDismiss();
     }
+
+    protected NoticeDialog() {
+    }
+
     protected NoticeDialog(Builder builder) {
         this.context = builder.context;
-
         this.title = builder.title;
         this.leftMessage = builder.leftMessage;
         this.centerMessage = builder.centerMessage;
-
         this.rightMessage = builder.rightMessage;
         this.leftImageResId = builder.leftImageResId;
         this.centerImageResId = builder.centerImageResId;
@@ -43,7 +46,6 @@ public class NoticeDialog {
         private String title;
         private String leftMessage;
         private String centerMessage;
-
         private String rightMessage;
         private Integer leftImageResId;
         private Integer centerImageResId;
@@ -62,6 +64,7 @@ public class NoticeDialog {
             this.leftMessage = leftMessage;
             return this;
         }
+
         public Builder setCenterMessage(String centerMessage) {
             this.centerMessage = centerMessage;
             return this;
@@ -87,10 +90,13 @@ public class NoticeDialog {
             return this;
         }
 
-
         public NoticeDialog build() {
             return new NoticeDialog(this);
         }
+    }
+
+    public void setOnDismissListener(OnDismissListener listener) {
+        this.onDismissListener = listener;
     }
 
     public void showDialog() {
@@ -149,6 +155,9 @@ public class NoticeDialog {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
+                if (onDismissListener != null) {
+                    onDismissListener.onDismiss(); // 팝업창이 닫힐 때 콜백 호출
+                }
             }
         });
 

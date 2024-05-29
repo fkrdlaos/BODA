@@ -10,6 +10,15 @@ android {
     namespace = "org.techtown.boda"
     compileSdk = 34
 
+    signingConfigs {
+        create("release") {
+            keyAlias = "KEY_ALIAS"
+            keyPassword = "KEY_PASSWORD"
+            storeFile = (file("STORE_FILE"))
+            storePassword = "STORE_PASSWORD"
+        }
+    }
+
     defaultConfig {
         applicationId = "org.techtown.boda"
         minSdk = 24
@@ -23,23 +32,25 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = false
-            proguardFiles(
-                    getDefaultProguardFile("proguard-android-optimize.txt"),
-                    "proguard-rules.pro"
-            )
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            signingConfig = signingConfigs.getByName("release")
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
-    buildFeatures{
+
+    buildFeatures {
         dataBinding = true
         viewBinding = true
     }
+
     kotlinOptions {
         jvmTarget = "1.8"
     }
+
 }
 
 dependencies {

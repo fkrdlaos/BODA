@@ -25,6 +25,7 @@ import android.os.Looper;
 import android.os.Process;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -60,11 +61,11 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.bumptech.glide.Glide;
 
-//import com.plattysoft.leonids.ParticleSystem;
+import com.plattysoft.leonids.ParticleSystem;
 
-import nl.dionsegijn.konfetti.KonfettiView;
-import nl.dionsegijn.konfetti.models.Shape;
-import nl.dionsegijn.konfetti.models.Size;
+//import nl.dionsegijn.konfetti.KonfettiView;
+//import nl.dionsegijn.konfetti.models.Shape;
+//import nl.dionsegijn.konfetti.models.Size;
 
 
 import java.io.File;
@@ -113,7 +114,7 @@ public class MainActivity extends BaseActivity {
     private Button quest1Button, quest2Button;
 
     // 불꽃 효과를 관리할 ParticleSystem 객체
-    //private ParticleSystem particleSystem;
+    private ParticleSystem particleSystem;
 
 
 
@@ -486,6 +487,7 @@ public class MainActivity extends BaseActivity {
                 default:
                     throw new IllegalStateException("Unexpected value: " + gen);
             }
+
             NoticeDialog evolutionDialog = new NoticeDialog.Builder(MainActivity.this)
                     .setTitle("Evolution")
                     .setCenterMessage("!!!진화했어!!!")
@@ -518,34 +520,47 @@ public class MainActivity extends BaseActivity {
 
                     @Override
                     public void onAnimationEnd(Animation animation) {
-                        // Konfetti 효과 추가
-                        ViewGroup rootView = (ViewGroup) findViewById(android.R.id.content);
-                        KonfettiView konfettiView = new KonfettiView(MainActivity.this);
-                        rootView.addView(konfettiView);
-
-                        konfettiView.build()
-                                .addColors(Color.YELLOW, Color.GREEN, Color.MAGENTA)
-                                .setDirection(0.0, 359.0)
-                                .setSpeed(1f, 5f)
-                                .setFadeOutEnabled(true)
-                                .setTimeToLive(2000L)
-                                .addShapes(Shape.RECT, Shape.CIRCLE)
-                                .addSizes(new Size(12, 5f))
-                                .setPosition(konfettiView.getWidth() / 2, konfettiView.getHeight() / 3)
-                                .streamFor(300, 5000L);
-
                         centerImageView.setImageResource(current_profile);
                         AlphaAnimation fadeInAnimation = new AlphaAnimation(0.0f, 1.0f);
                         fadeInAnimation.setDuration(1000);
                         centerImageView.startAnimation(fadeInAnimation);
+
+                        // 벚꽃 효과 시작
+                        startSakuraParticleSystem(MainActivity.this, centerImageView);
                     }
 
                     @Override
                     public void onAnimationRepeat(Animation animation) {}
                 });
+
+                // 벚꽃 효과 시작
+                startSakuraParticleSystem(MainActivity.this, centerImageView);
+
+                // 진화 팝업창이 닫힐 때 벚꽃 효과 중지
+                evolutionDialog.setOnDismissListener(new NoticeDialog.OnDismissListener() {
+                    @Override
+                    public void onDismiss() {
+                        if (particleSystem != null) {
+                            particleSystem.cancel(); // 벚꽃 효과 중지
+                        }
+                    }
+                });
             }
         }
     }
+
+    private void startSakuraParticleSystem(MainActivity activity, ImageView centerImageView) {
+        if (particleSystem != null) {
+            particleSystem.cancel(); // 이전 벚꽃 효과 취소
+        }
+
+        particleSystem = new ParticleSystem(activity, 100, R.drawable.sakura, 3000)
+                .setSpeedRange(0.1f, 0.25f)
+                .setAcceleration(0.00003f, 90); // 아래로 향하는 가속도 설정 (90도)
+
+        particleSystem.emitWithGravity(centerImageView, Gravity.TOP, 100); // 위에서 아래로 방출
+    }
+
 
 
 
