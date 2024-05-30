@@ -322,13 +322,14 @@
 
     <Button
         android:id="@+id/guide"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
+        android:layout_width="144px"
+        android:layout_height="144px"
         android:layout_alignParentTop="true"
-        android:layout_marginStart="23dp"
-        android:layout_marginTop="5dp"
-        android:text="가이드" />
+        android:layout_alignStart="@+id/profile_car"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/help"
+        android:contentDescription="guide"
+        app:layout_constraintTop_toTopOf="parent" />
 
 
 </RelativeLayout>
