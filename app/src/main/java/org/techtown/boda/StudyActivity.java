@@ -248,7 +248,7 @@ public class StudyActivity extends BaseActivity {
             public void onTick(long millisUntilFinished) {
                 int secondsLeft = (int) (millisUntilFinished / TIMER_INTERVAL);
                 textViewTime.setText(String.valueOf(secondsLeft));
-                timerProgressBar.setProgress(secondsLeft);
+                timerProgressBar.setProgress(secondsLeft, true); // Animate progress bar update
             }
 
             @Override
@@ -260,6 +260,7 @@ public class StudyActivity extends BaseActivity {
             }
         }.start();
     }
+
 
     private long getSpellingTimerDuration(int wordLength) {
         if (wordLength <= 5) {

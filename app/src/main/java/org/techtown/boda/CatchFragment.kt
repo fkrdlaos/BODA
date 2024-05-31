@@ -1,9 +1,13 @@
 package org.techtown.boda
+
+import android.Manifest
 import android.annotation.SuppressLint
+import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.Matrix
 import android.os.Bundle
+import android.os.Environment
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -11,6 +15,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -18,12 +23,10 @@ import org.techtown.boda.databinding.FragmentCatchBinding
 import org.tensorflow.lite.task.vision.detector.Detection
 import java.io.File
 import java.io.FileOutputStream
+import java.io.IOException
 import java.util.LinkedList
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
-import android.content.DialogInterface
-
-
 
 class CatchFragment : Fragment(), ObjectDetectorHelper.DetectorListener {
 
@@ -43,14 +46,17 @@ class CatchFragment : Fragment(), ObjectDetectorHelper.DetectorListener {
 
     private var captureImageFlag = false
 
+    private val REQUEST_CODE_PERMISSIONS = 10
+    private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // 전달된 word 값을 받음
         arguments?.let {
             word = it.getString("word").toString()
         }
     }
+
     override fun onResume() {
         super.onResume()
         Log.i("onResume", "Camera resume")
@@ -77,6 +83,10 @@ class CatchFragment : Fragment(), ObjectDetectorHelper.DetectorListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        if (!allPermissionsGranted()) {
+            ActivityCompat.requestPermissions(requireActivity(), REQUIRED_PERMISSIONS, REQUEST_CODE_PERMISSIONS)
+        }
+
         objectDetectorHelper = ObjectDetectorHelper(
             context = requireContext(),
             objectDetectorListener = this
@@ -95,7 +105,10 @@ class CatchFragment : Fragment(), ObjectDetectorHelper.DetectorListener {
         fragmentCatchBinding.backButton.setOnClickListener {
             requireActivity().finish()
         }
+    }
 
+    private fun allPermissionsGranted() = REQUIRED_PERMISSIONS.all {
+        ContextCompat.checkSelfPermission(requireContext(), it) == PackageManager.PERMISSION_GRANTED
     }
 
     private fun updateControlsUi() {
@@ -177,15 +190,12 @@ class CatchFragment : Fragment(), ObjectDetectorHelper.DetectorListener {
             fragmentCatchBinding.overlay.setResults(results ?: LinkedList(), imageHeight, imageWidth)
             fragmentCatchBinding.overlay.invalidate()
 
-            // Check if the capture flag is set
             if (captureImageFlag && results != null) {
-                captureImageFlag = false // Reset the flag
-                // Process results and save the desired object
+                captureImageFlag = false
                 results.forEach { detection ->
-                    if (detection.categories[0].label == word) { // Replace "desired_label" with your label
+                    if (detection.categories[0].label == word) {
                         val boundingBox = detection.boundingBox
 
-                        // Ensure the bounding box is within the bitmap boundaries
                         val left = boundingBox.left.coerceAtLeast(0f).toInt()
                         val top = boundingBox.top.coerceAtLeast(0f).toInt()
                         val right = boundingBox.right.coerceAtMost(bitmapBuffer.width.toFloat()).toInt()
@@ -193,15 +203,12 @@ class CatchFragment : Fragment(), ObjectDetectorHelper.DetectorListener {
                         val width = right - left
                         val height = bottom - top
                         if (width > 0 && height > 0) {
-                            // Rotate the image back to the correct orientation
                             val matrix = Matrix()
-                            matrix.postRotate(90f) // Adjust the rotation if necessary
+                            matrix.postRotate(90f)
                             val rotatedBitmap = Bitmap.createBitmap(bitmapBuffer, 0, 0, bitmapBuffer.width, bitmapBuffer.height, matrix, true)
 
-                            // Crop the desired object
                             val croppedBitmap = Bitmap.createBitmap(rotatedBitmap, left, top, width, height)
 
-                            // Save the cropped bitmap
                             saveBitmapToFile(croppedBitmap)
                             CatchDialog.CatchBuilder(this.context)
                                 .setPositiveButtonListener { dialog, which ->
@@ -211,14 +218,13 @@ class CatchFragment : Fragment(), ObjectDetectorHelper.DetectorListener {
                                 .setTitle("CATCH")
                                 .setLeftMessage("")
                                 .setRightMessage("")
-                                .setCenterMessage(word+"를 찾았어!!!")
+                                .setCenterMessage("$word 를 찾았어!!!")
                                 .build()
                                 .showDialog()
-
                         }
                     } else {
-                        resultSize--;
-                        if(resultSize == 0){
+                        resultSize--
+                        if (resultSize == 0) {
                             NoticeDialog.Builder(this.context)
                                 .setTitle("")
                                 .setLeftMessage("")
@@ -226,31 +232,44 @@ class CatchFragment : Fragment(), ObjectDetectorHelper.DetectorListener {
                                 .setCenterMessage("찾는 그림이 없어요..")
                                 .build()
                                 .showDialog()
-
                         }
                     }
                 }
-
             }
         }
     }
 
     private fun saveBitmapToFile(bitmap: Bitmap) {
-        val filename = "cropped_image_${System.currentTimeMillis()}.png"
-        val file = File(requireContext().externalMediaDirs.firstOrNull(), filename)
+        val directoryPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).absolutePath + "/boda"
+        val directory = File(directoryPath)
 
-        FileOutputStream(file).use { out ->
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, out)
-            out.flush()
+        if (!directory.exists()) {
+            if (!directory.mkdirs()) {
+                Toast.makeText(context, "폴더 생성에 실패했습니다: $directoryPath", Toast.LENGTH_SHORT).show()
+                return
+            }
         }
 
-        Toast.makeText(context, "Image saved: ${file.absolutePath}", Toast.LENGTH_SHORT).show()
-        saveImgtoRTDB(file.absolutePath)
+        val filename = "cropped_image_${System.currentTimeMillis()}.png"
+        val file = File(directory, filename)
+
+        try {
+            FileOutputStream(file).use { out ->
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, out)
+                out.flush()
+            }
+
+            Toast.makeText(context, "Image saved: ${file.absolutePath}", Toast.LENGTH_SHORT).show()
+            saveImgtoRTDB(file.absolutePath)
+        } catch (e: IOException) {
+            Toast.makeText(context, "이미지 저장에 실패했습니다: ${e.message}", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun saveImgtoRTDB(path: String) {
         RTDatabase.addCatchImgPath(word, path)
     }
+
     override fun onError(error: String) {
         activity?.runOnUiThread {
             Toast.makeText(requireContext(), error, Toast.LENGTH_SHORT).show()
